@@ -5,10 +5,15 @@ use Marpa::R2;
 
 my $grammar_source = do {local $/; <DATA>};
 my $input = <<INPUT;
-select *
-  from mytable
-  where i = 1
--- A comment
+SELECT
+   Customers.*,
+   MAX(Orders.OrderTime) AS LatestOrderTime
+FROM
+   dbo.Customers INNER JOIN dbo.Orders
+       ON Customers.ID = Orders.CustomerID
+GROUP BY
+   Customers.ID, Customers.FirstName, Customers.LastName, Customers.Address,
+       Customers.City, Customers.State, Customers.Zip
 INPUT
 my $grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_source } );
 my $re = Marpa::R2::Scanless::R->new( { grammar => $grammar, trace_terminals => 1 } );
@@ -4036,10 +4041,11 @@ __DATA__
 		<host label identifier>
 	|	<unsigned integer>
 
-<not a digit nor white space> ~ [^0-9\s\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]
-<anything not a white space> ~ [^\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]*
+#
+# We assume the host label identifier follows C convention
+#
 
-<host label identifier> ::= <not a digit nor white space> <anything not a white space>
+<host label identifier> ::= <C host identifier>
 
 <embedded SQL C program> ::= <EXEC> <SQL>
 
