@@ -5,6 +5,9 @@ use Marpa::R2;
 
 my $grammar_source = do {local $/; <DATA>};
 my $input = <<INPUT;
+-- With the knowledge of a "GROUP BY" clause as explained above,
+-- people go overboard and do something like this:
+
 SELECT
    Customers.*,
    MAX(Orders.OrderTime) AS LatestOrderTime
@@ -189,13 +192,17 @@ __DATA__
 
 <_comment> ~ <_simple comment> | <_bracketed comment>
 
-<_comment character many> ~ <_comment character>+
+#
+# <_comment character> seems wrong to me: <_nonquote character> | <_quote character> will eat
+# everything
+#
+<_not_newline> ~ [^\N{U+000A}\N{U+000D}]
+<_comment character many> ~ <_not_newline>+
 
 <_simple comment> ~ <_simple comment introducer> <_newline>
                   | <_simple comment introducer> <_comment character many> <_newline>
 
 <_simple comment introducer> ~ <_minus sign><_minus sign>
-                               | <_simple comment introducer> <_minus sign>
 
 <_bracketed comment> ~ <_bracketed comment introducer> <_bracketed comment contents> <_bracketed comment terminator>
 
