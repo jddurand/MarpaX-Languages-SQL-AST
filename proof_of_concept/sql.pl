@@ -5,18 +5,12 @@ use Marpa::R2;
 
 my $grammar_source = do {local $/; <DATA>};
 my $input = <<INPUT;
--- With the knowledge of a "GROUP BY" clause as explained above,
--- people go overboard and do something like this:
-
-SELECT
-   Customers.*,
-   MAX(Orders.OrderTime) AS LatestOrderTime
-FROM
-   dbo.Customers INNER JOIN dbo.Orders
-       ON Customers.ID = Orders.CustomerID
-GROUP BY
-   Customers.ID, Customers.FirstName, Customers.LastName, Customers.Address,
-       Customers.City, Customers.State, Customers.Zip
+CREATE SCHEMA AUTHORIZATION oe
+   CREATE TABLE new_product 
+      (color VARCHAR(10)  PRIMARY KEY, quantity NUMBER) 
+   CREATE VIEW new_product_view 
+      AS SELECT color, quantity FROM new_product WHERE color = 'RED' 
+   GRANT select ON new_product_view TO hr
 INPUT
 my $grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_source } );
 my $re = Marpa::R2::Scanless::R->new( { grammar => $grammar, trace_terminals => 1 } );
@@ -28,7 +22,7 @@ __DATA__
 #
 
 :start ::= <SQL start>
-:discard ~ <_separator>
+:discard ~ <__separator>
 
 <SQL start> ::= <SQL executable statement>
               | <direct SQL statement>
@@ -38,162 +32,165 @@ __DATA__
               | <embedded SQL statement>
               | <SQL_client module definition>
 
-#
-# G0 Lexical Elements
-# -------------------
+# -----------------------------------------------------------------------------------
+# Lexemes are always: <CONSTANT> or <_something>
+# Any rule starting with <__XXX> is internal to G0 and cannot be exported as a lexeme
+# -----------------------------------------------------------------------------------
 
-<simple Latin letter> ::= <simple Latin upper case letter> | <simple Latin lower case letter>
+<_simple Latin letter> ~ <__simple Latin upper case letter> | <__simple Latin lower case letter>
 
-<simple Latin upper case letter> ~ [A-Z]
+<__simple Latin upper case letter> ~ [A-Z]
+<_simple Latin upper case letter> ~ <__simple Latin upper case letter>
 
-<simple Latin lower case letter> ~ [a-z]
+<__simple Latin lower case letter> ~ [a-z]
 
-<_digit> ~ [0-9]
-<digit> ~ <_digit>
+<__digit>     ~ [0-9]
+<_digit>      ~ <__digit>
+<__digit many> ~ <__digit>+
 
-<space> ~ [\N{U+0020}]
+<_space> ~ [\N{U+0020}]
 
-<_double quote> ~ '"'
-<double quote> ~ <_double quote>
+<__double quote>  ~ '"'
 
-<percent> ~ '%'
+<_percent> ~ '%'
 
-<_ampersand> ~ '&'
-<ampersand> ~ <_ampersand>
+<__ampersand> ~ '&'
+<_ampersand>  ~ <__ampersand>
 
-<_quote> ~ [']
-<quote> ~ <_quote>
+<__quote> ~ [']
 
-<left paren> ~ '('
+<_left paren> ~ '('
 
-<right paren> ~ ')'
+<_right paren> ~ ')'
 
-<_asterisk> ~ '*'
-<asterisk> ~ <_asterisk>
+<__asterisk> ~ '*'
+<_asterisk>  ~ <__asterisk>
 
-<plus sign> ~ '+'
+<__plus sign> ~ '+'
+<_plus sign> ~ <__plus sign>
 
-<comma> ~ ','
+<_comma> ~ ','
 
-<_minus sign> ~ '-'
-<minus sign> ~ <_minus sign>
+<__minus sign> ~ '-'
+<_minus sign>  ~ <__minus sign>
 
-<period> ~ '.'
+<__period> ~ '.'
+<_period> ~ <__period>
 
-<_solidus> ~ '/'
-<solidus> ~ <_solidus>
+<__solidus> ~ '/'
+<_solidus>  ~ <__solidus>
 
-<colon> ~ ':'
+<__colon> ~ ':'
+<_colon> ~ <__colon>
 
-<semicolon> ~ ';'
+<_semicolon> ~ ';'
 
-<less than operator> ~ '<'
+<__less than operator> ~ '<'
+<_less than operator> ~ <__less than operator>
 
-<equals operator> ~ '='
+<__equals operator> ~ '='
+<_equals operator> ~ <__equals operator>
 
-<greater than operator> ~ '>'
+<__greater than operator> ~ '>'
+<_greater than operator> ~ <__greater than operator>
 
-<question mark> ~ '?'
+<_question mark> ~ '?'
 
-<left bracket or trigraph> ~ <_left bracket> | <left bracket trigraph>
+<__left bracket> ~ '['
+<_left bracket>  ~ <__left bracket>
 
-<right bracket or trigraph> ~ <_right bracket> | <right bracket trigraph>
+<__left bracket trigraph> ~ '??('
 
-<_left bracket> ~ '['
-<left bracket> ~ <_left bracket>
+<_left bracket or trigraph> ~ <__left bracket> | <__left bracket trigraph>
 
-<left bracket trigraph> ~ '??('
+<__right bracket> ~ ']'
+<_right bracket>  ~ <__right bracket>
 
-<_right bracket> ~ ']'
-<right bracket> ~ <_right bracket>
+<__right bracket trigraph> ~ '??)'
 
-<right bracket trigraph> ~ '??)'
+<_right bracket or trigraph> ~ <__right bracket> | <__right bracket trigraph>
 
-<circumflex> ~ '^'
+<_circumflex> ~ '^'
 
-<underscore> ~ '_'
+<__underscore> ~ '_'
+<_underscore> ~ <__underscore>
 
-<vertical bar> ~ '|'
+<__vertical bar> ~ '|'
+<_vertical bar> ~ <__vertical bar>
 
-<left brace> ~ '{'
+<_left brace> ~ '{'
 
-<right brace> ~ '}'
+<_right brace> ~ '}'
 
-<regular identifier> ~ <identifier body>
+<_regular identifier> ~ <__identifier body>
 
-<identifier body> ~ <identifier start>
-                  | <identifier body> <identifier part>
+<__identifier body> ~ <__identifier start>
+                    | <__identifier body> <__identifier part>
 
-<identifier part> ~ <identifier start> | <identifier extend>
+<__identifier part> ~ <__identifier start> | <__identifier extend>
 
-<identifier start> ~ [\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]
+<__identifier start> ~ [\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]
 
-<identifier extend> ~ [\N{U+00B7}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]
+<__identifier extend> ~ [\N{U+00B7}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]
 
-<digit many> ~ <_digit>+
+<__multiplier> ~ [KMG]
+<_multiplier>  ~ <__multiplier>
 
-<large object length token> ~ <digit many> <_multiplier>
+<_large object length token> ~ <__digit many> <__multiplier>
 
-<_multiplier> ~ [KMG]
-<multiplier> ~ <_multiplier>
+<_delimited identifier> ~ <__double quote> <_delimited identifier body> <__double quote>
 
-<delimited identifier> ::= <double quote> <delimited identifier body> <double quote>
+<_delimited identifier part> ~ <_nondoublequote character> | <_doublequote symbol>
 
-<delimited identifier body> ::= <delimited identifier part>+
+<_delimited identifier body> ~ <_delimited identifier part>+
 
-<delimited identifier part> ::= <nondoublequote character> | <doublequote symbol>
+<__Unicode escape character> ~ [^A-Fa-f0-9\-\+\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]
 
-<U ampersand double quote> ~ <U><_ampersand><_double quote>
-<U ampersand quote> ~ <U><_ampersand><_quote>
+<_Unicode identifier part> ~ <_delimited identifier part> | <__Unicode escape value>
 
-<Unicode delimited identifier> ::= <U ampersand double quote> <Unicode delimiter body> <double quote> <Unicode escape specifier>
+<__Unicode escape value> ~ <_Unicode 4 digit escape value>
+                        | <_Unicode 6 digit escape value>
+                        | <_Unicode character escape value>
 
+<__Unicode escape specifier> ~ <__UESCAPE><__separator><__quote><__Unicode escape character><__quote>
 
-<Unicode escape specifier> ::= '[' 'UESCAPE' <quote> <Unicode escape character> <quote> ']'
+<_Unicode delimiter body> ~ <_Unicode identifier part>+
 
-<Unicode delimiter body> ::= <Unicode identifier part>+
+<_Unicode delimited identifier> ~ <__U><__ampersand><__double quote><_Unicode delimiter body><__double quote>
+                                | <__U><__ampersand><__double quote><_Unicode delimiter body><__double quote><__separator><__Unicode escape specifier>
 
-<Unicode identifier part> ::= <delimited identifier part> | <Unicode escape value>
+<_Unicode 4 digit escape value> ~ <__Unicode escape character><__hexit><__hexit><__hexit><__hexit>
 
-<Unicode escape value> ::= <Unicode 4 digit escape value>
-                         | <Unicode 6 digit escape value>
-                         | <Unicode character escape value>
+<_Unicode 6 digit escape value> ~ <__Unicode escape character><__plus sign><__hexit><__hexit><__hexit><__hexit><__hexit><__hexit>
 
-<Unicode 4 digit escape value> ::= <Unicode escape character><hexit><hexit><hexit><hexit>
+<_Unicode character escape value> ~ <__Unicode escape character><__Unicode escape character>
 
-<Unicode 6 digit escape value> ::= <Unicode escape character><plus sign><hexit><hexit><hexit><hexit><hexit><hexit>
+<_nondoublequote character> ~ [^"]
 
-<Unicode character escape value> ::= <Unicode escape character><Unicode escape character>
+<_doublequote symbol> ~ <__double quote> <__double quote>
 
-<Unicode escape character> ~ [^A-Fa-f0-9\-\+\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]
+<_not equals operator> ~ <__less than operator> <__greater than operator>
 
-<nondoublequote character> ~ [^"]
+<_greater than or equals operator> ~ <__greater than operator> <__equals operator>
 
-<doublequote symbol> ::= <double quote> <double quote>
+<_less than or equals operator> ~ <__less than operator> <__equals operator>
 
-<not equals operator> ::= <less than operator> <greater than operator>
+<_concatenation operator> ~ <__vertical bar> <__vertical bar>
 
-<greater than or equals operator> ::= <greater than operator> <equals operator>
+<_right arrow> ~ <__minus sign> <__greater than operator>
 
-<less than or equals operator> ::= <less than operator> <equals operator>
-
-<concatenation operator> ::= <vertical bar> <vertical bar>
-
-<right arrow> ::= <minus sign> <greater than operator>
-
-<double colon> ::= <colon> <colon>
+<_double colon> ~ <__colon> <__colon>
 
 <_white space> ~ [\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]
 
 <_separator unit> ~ <_comment> | <_white space>
 
-<_separator> ~ <_separator unit>+
-<separator> ~ <_separator>
+<__separator> ~ <_separator unit>+
 
 <_comment> ~ <_simple comment> | <_bracketed comment>
 
 #
-# <_comment character> seems wrong to me: <_nonquote character> | <_quote character> will eat
+# <_comment character> seems wrong to me: <__nonquote character> | <_quote character> will eat
 # everything
 #
 <_not_newline> ~ [^\N{U+000A}\N{U+000D}]
@@ -202,21 +199,21 @@ __DATA__
 <_simple comment> ~ <_simple comment introducer> <_newline>
                   | <_simple comment introducer> <_comment character many> <_newline>
 
-<_simple comment introducer> ~ <_minus sign><_minus sign>
+<_simple comment introducer> ~ <__minus sign><__minus sign>
 
 <_bracketed comment> ~ <_bracketed comment introducer> <_bracketed comment contents> <_bracketed comment terminator>
 
-<_bracketed comment introducer> ~ <_solidus> <_asterisk>
+<_bracketed comment introducer> ~ <__solidus> <__asterisk>
 
-<_bracketed comment terminator> ~ <_asterisk> <_solidus>
+<_bracketed comment terminator> ~ <__asterisk> <__solidus>
 
-<_bracketed comment contents unit> ~ <_comment character> | <_separator>
+<_bracketed comment contents unit> ~ <_comment character> | <__separator>
 
 <_bracketed comment contents> ~ <_bracketed comment contents unit>*
 
-<_comment character> ~ <_nonquote character> | <_quote>
+<_comment character> ~ <__nonquote character> | <__quote>
 #
-# NOTE 93 — <newline> is typically represented by U+000A (“Line Feed”) and/or U+000D (“Carriage Return”); however,
+# NOTE 93 — newline is typically represented by U+000A (“Line Feed”) and/or U+000D (“Carriage Return”); however,
 # this representation is not required by ISO/IEC 9075.
 #
 <_newline> ~ [\N{U+000A}] [\N{U+000D}] | [\N{U+000D}] [\N{U+000A}] | [\N{U+000A}] | [\N{U+000D}]
@@ -225,280 +222,298 @@ __DATA__
 
 <unsigned literal> ::= <unsigned numeric literal> | <general literal>
 
-<general literal> ::= <character string literal>
-                    | <national character string literal>
-                    | <Unicode character string literal>
-                    | <binary string literal>
-                    | <hex string literal>
+<general literal> ::= <_character string literal>
+                    | <_national character string literal>
+                    | <_Unicode character string literal>
+                    | <_binary string literal>
+                    | <_hex string literal>
                     | <datetime literal>
                     | <interval literal>
-                    | <boolean literal>
+                    | <_boolean literal>
 
-<character representation any> ::= <character representation>*
+<__character representation any> ~ <__character representation>*
 
-<introducer character set specification maybe> ::= <introducer><character set specification>
-<introducer character set specification maybe> ::=
+<__introducer character set specification maybe> ~ <_introducer><__character set specification>
 
-<character string literal> ::= <introducer character set specification maybe> <quote> <character representation any> <quote>
-                           | <character string literal> <separator> <quote> <character representation any> <quote>
+<__character string literal> ~ <__introducer character set specification maybe> <__quote> <__character representation any> <__quote>
+                             | <__quote> <__character representation any> <__quote>
+                             | <__character string literal> <__separator> <__quote> <__character representation any> <__quote>
 
-<introducer> ::= <underscore>
+<_character string literal> ~ <__character string literal>
 
-<character representation> ::= <nonquote character> | <quote symbol>
+<_introducer> ~ <__underscore>
 
-<_nonquote character> ~ [^']
-<nonquote character> ~ <_nonquote character>
+<__character representation> ~ <_nonquote character> | <_quote symbol>
+<_character representation> ~ <__character representation>
 
-<quote symbol> ::= <quote><quote>
+<__nonquote character> ~ [^']
+<_nonquote character> ~ <__nonquote character>
 
-<national character string literal> ::= <N> <quote> <character representation any> <quote>
-                                    | <national character string literal> <separator> <quote> <character representation any> <quote>
+<_quote symbol> ~ <__quote><__quote>
 
-<Unicode representation any> ::=  <Unicode representation>*
+<__national character string literal> ~ <__N> <__quote> <__character representation any> <__quote>
+                                      | <__national character string literal> <__separator> <__quote> <__character representation any> <__quote>
 
-<separator AND quote AND Unicode representation any AND quote> ::= <separator> <quote> <Unicode representation any> <quote>
+<_national character string literal> ~ <__national character string literal>
 
-<separator AND quote AND Unicode representation any AND quote any> ::= <separator AND quote AND Unicode representation any AND quote>*
+<__Unicode representation any> ~  <_Unicode representation>*
 
-<ESCAPE escape character> ::= <ESCAPE> <escape character>
+<__separator AND quote AND Unicode representation any AND quote> ~ <__separator> <__quote> <__Unicode representation any> <__quote>
 
-<ESCAPE escape character maybe> ::= <ESCAPE escape character>
-<ESCAPE escape character maybe> ::=
+<__separator AND quote AND Unicode representation any AND quote any> ~ <__separator AND quote AND Unicode representation any AND quote>*
 
-<Unicode character string literal> ::= <U ampersand quote> <Unicode representation any> <quote> <separator AND quote AND Unicode representation any AND quote any> <ESCAPE escape character maybe>
-                                   | <introducer><character set specification>
-                                     <U ampersand quote> <Unicode representation any> <quote> <separator AND quote AND Unicode representation any AND quote any> <ESCAPE escape character maybe>
+<_ESCAPE escape character> ~ <__ESCAPE> <__escape character>
 
-<Unicode representation> ::= <character representation> | <Unicode escape value>
+<_ESCAPE escape character maybe> ~ <_ESCAPE escape character>
+<_ESCAPE escape character maybe> ~
 
-<hexit AND hexit> ::= <hexit> <hexit>
+<_Unicode character string literal> ~ <__U><__ampersand><__quote><__Unicode representation any> <__quote> <__separator AND quote AND Unicode representation any AND quote any> <_ESCAPE escape character maybe>
+                                    | <_introducer><__character set specification>
+                                      <__U><__ampersand><__quote><__Unicode representation any> <__quote> <__separator AND quote AND Unicode representation any AND quote any> <_ESCAPE escape character maybe>
 
-<hexit AND hexit any> ::= <hexit AND hexit>*
+<_Unicode representation> ~ <__character representation> | <__Unicode escape value>
 
-<hexit any> ::= <hexit>*
+<__hexit AND hexit> ~ <__hexit> <__hexit>
 
-<separator AND quote AND hexit AND hexit any AND quote> ::=  <separator> <quote> <hexit AND hexit any> <quote>
+<__hexit AND hexit any> ~ <__hexit AND hexit>*
 
-<separator AND quote AND hexit AND hexit any AND quote any> ::= <separator AND quote AND hexit AND hexit any AND quote>*
+<__hexit any> ~ <__hexit>*
 
-<separator AND quote AND hexit any AND quote> ::=  <separator> <quote> <hexit any> <quote>
+<__separator AND quote AND hexit AND hexit any AND quote> ~  <__separator> <__quote> <__hexit AND hexit any> <__quote>
 
-<separator AND quote AND hexit any AND quote any> ::= <separator AND quote AND hexit any AND quote>*
+<__separator AND quote AND hexit AND hexit any AND quote any> ~ <__separator AND quote AND hexit AND hexit any AND quote>*
 
-<hex string literal> ::=
-		<X> <quote> <hexit any> <quote>
-		<separator AND quote AND hexit any AND quote any>
-		<ESCAPE escape character maybe>
+<__separator AND quote AND hexit any AND quote> ~  <__separator> <__quote> <__hexit any> <__quote>
 
-<binary string literal> ::=
-		<X> <quote> <hexit AND hexit any> <quote>
-		<separator AND quote AND hexit AND hexit any AND quote any>
-		<ESCAPE escape character maybe>
+<__separator AND quote AND hexit any AND quote any> ~ <__separator AND quote AND hexit any AND quote>*
 
-<hexit> ::= <digit> | [A-Fa-f]
+<_hex string literal> ~
+		<__X> <__quote> <__hexit any> <__quote>
+		<__separator AND quote AND hexit any AND quote any>
+		<_ESCAPE escape character maybe>
+
+<_binary string literal> ~
+		<__X> <__quote> <__hexit AND hexit any> <__quote>
+		<__separator AND quote AND hexit AND hexit any AND quote any>
+		<_ESCAPE escape character maybe>
+
+<__hexit> ~ <__digit> | [A-Fa-f]
 
 <signed numeric literal> ::= <unsigned numeric literal>
-                         | <sign> <unsigned numeric literal>
+                         | <_sign> <unsigned numeric literal>
 
-<unsigned numeric literal> ::= <exact numeric literal> | <approximate numeric literal>
+<unsigned numeric literal> ::= <_exact numeric literal> | <_approximate numeric literal>
 
-<exact numeric literal> ::=
-		<unsigned integer>
-	|	<unsigned integer> <period>
-	|	<unsigned integer> <period> <unsigned integer>
-	|	<period> <unsigned integer>
+<__exact numeric literal> ~
+        		<__unsigned integer>
+	       |	<__unsigned integer> <__period>
+	       |	<__unsigned integer> <__period> <__unsigned integer>
+	       |	<__period> <__unsigned integer>
 
-<sign> ::= <plus sign> | <minus sign>
+<_exact numeric literal> ~ <__exact numeric literal>
 
-<approximate numeric literal> ::= <mantissa> <E> <exponent>
+<__sign> ~ <__plus sign> | <__minus sign>
+<_sign> ~ <__sign>
 
-<mantissa> ::= <exact numeric literal>
+<_approximate numeric literal> ~ <_mantissa> <__E> <_exponent>
 
-<exponent> ::= <signed integer>
+<_mantissa> ~ <__exact numeric literal>
 
-<signed integer> ::= <unsigned integer>
-                 | <sign> <unsigned integer>
+<_exponent> ~ <_signed integer>
 
-<unsigned integer> ::= <digit>+
+<_signed integer> ~ <__unsigned integer>
+                  | <__sign> <__unsigned integer>
+
+<__unsigned integer> ~ <__digit>+
+<_unsigned integer> ~ <__unsigned integer>
 
 <datetime literal> ::= <date literal> | <time literal> | <timestamp literal>
 
-<date literal> ::= <DATE> <date string>
+<date literal> ::= <DATE> <_date string>
 
-<time literal> ::= <TIME> <time string>
+<time literal> ::= <TIME> <_time string>
 
-<timestamp literal> ::= <TIMESTAMP> <timestamp string>
+<timestamp literal> ::= <TIMESTAMP> <_timestamp string>
 
-<date string> ::= <quote> <unquoted date string> <quote>
+<_date string> ~ <__quote> <_unquoted date string> <__quote>
 
-<time string> ::= <quote> <unquoted time string> <quote>
+<_time string> ~ <__quote> <_unquoted time string> <__quote>
 
-<timestamp string> ::= <quote> <unquoted timestamp string> <quote>
+<_timestamp string> ~ <__quote> <_unquoted timestamp string> <__quote>
 
-<time zone interval> ::= <sign> <hours value> <colon> <minutes value>
+<_time zone interval> ~ <__sign> <_hours value> <__colon> <_minutes value>
 
-<date value> ::= <years value> <minus sign> <months value> <minus sign> <days value>
+<_date value> ~ <_years value> <__minus sign> <_months value> <__minus sign> <_days value>
 
-<time value> ::= <hours value> <colon> <minutes value> <colon> <seconds value>
+<_time value> ~ <_hours value> <__colon> <_minutes value> <__colon> <_seconds value>
 
-<interval literal> ::= <INTERVAL> <interval string> <interval qualifier>
-                   | <INTERVAL> <sign> <interval string> <interval qualifier>
+<interval literal> ::= <INTERVAL>         <_interval string> <interval qualifier>
+                     | <INTERVAL> <_sign> <_interval string> <interval qualifier>
 
-<interval string> ::= <quote> <unquoted interval string> <quote>
+<_interval string> ~ <__quote> <_unquoted interval string> <__quote>
 
-<unquoted date string> ::= <date value>
+<_unquoted date string> ~ <_date value>
 
-<unquoted time string> ::= <time value>
-                       | <time value> <time zone interval>
+<_unquoted time string> ~ <_time value>
+                       | <_time value> <_time zone interval>
 
-<unquoted timestamp string> ::= <unquoted date string> <space> <unquoted time string>
+<_unquoted timestamp string> ~ <_unquoted date string> <_space> <_unquoted time string>
 
-<unquoted interval string> ::= <year_month literal>
-                           | <day_time literal>
-                           | <sign> <year_month literal>
-                           | <sign> <day_time literal>
+<_unquoted interval string> ~ <_year_month literal>
+                           | <_day_time literal>
+                           | <__sign> <_year_month literal>
+                           | <__sign> <_day_time literal>
 
-<year_month literal> ::= <years value>
-                     | <months value>
-                     | <years value> <minus sign> <months value>
+<_year_month literal> ~ <_years value>
+                     | <_months value>
+                     | <_years value> <__minus sign> <_months value>
 
-<day_time literal> ::= <day_time interval>
-                   | <time interval>
+<_day_time literal> ~ <_day_time interval>
+                   | <_time interval>
 
-<day_time interval> ::=
-		<days value>
-	|	<days value> <space> <hours value>
-	|	<days value> <space> <hours value> <colon> <minutes value>
-	|	<days value> <space> <hours value> <colon> <minutes value> <colon> <seconds value>
+<_day_time interval> ~
+		<_days value>
+	|	<_days value> <_space> <_hours value>
+	|	<_days value> <_space> <_hours value> <__colon> <_minutes value>
+	|	<_days value> <_space> <_hours value> <__colon> <_minutes value> <__colon> <_seconds value>
 
-<time interval> ::=
-		<hours value>
-	|	<hours value> <colon> <minutes value>
-	|	<hours value> <colon> <minutes value> <colon> <seconds value>
-	|	<minutes value>
-	|	<minutes value> <colon> <seconds value>
-	|	<seconds value>
+<_time interval> ~
+		<_hours value>
+	|	<_hours value> <__colon> <_minutes value>
+	|	<_hours value> <__colon> <_minutes value> <__colon> <_seconds value>
+	|	<_minutes value>
+	|	<_minutes value> <__colon> <_seconds value>
+	|	<_seconds value>
 
-<years value> ::= <datetime value>
+<_years value> ~ <_datetime value>
 
-<months value> ::= <datetime value>
+<_months value> ~ <_datetime value>
 
-<days value> ::= <datetime value>
+<_days value> ~ <_datetime value>
 
-<hours value> ::= <datetime value>
+<_hours value> ~ <_datetime value>
 
-<minutes value> ::= <datetime value>
+<_minutes value> ~ <_datetime value>
 
-<seconds value> ::= <seconds integer value>
-                | <seconds integer value> <period>
-                | <seconds integer value> <period> <seconds fraction>
+<_seconds value> ~ <_seconds integer value>
+                | <_seconds integer value> <__period>
+                | <_seconds integer value> <__period> <_seconds fraction>
 
-<seconds integer value> ::= <unsigned integer>
+<_seconds integer value> ~ <__unsigned integer>
 
-<seconds fraction> ::= <unsigned integer>
+<_seconds fraction> ~ <__unsigned integer>
 
-<datetime value> ::= <unsigned integer>
+<_datetime value> ~ <__unsigned integer>
 
-<boolean literal> ::= <TRUE> | <FALSE> | <UNKNOWN>
+<_boolean literal> ~ <__TRUE> | <__FALSE> | <__UNKNOWN>
 
-<identifier> ::= <actual identifier>
+<__identifier> ~ <__actual identifier>
 
-<actual identifier> ::= <regular identifier>
-                      | <delimited identifier>
-                      | <Unicode delimited identifier>
+<_identifier> ~ <__identifier>
 
+<__actual identifier> ~ <_regular identifier>
+                      | <_delimited identifier>
+                      | <_Unicode delimited identifier>
 
-<SQL language identifier> ::= <SQL language identifier start>
-                          | <SQL language identifier> <underscore>
-                          | <SQL language identifier> <SQL language identifier part>
 
-<SQL language identifier start> ::= <simple Latin letter>
+<_SQL language identifier> ~ <_SQL language identifier start>
+                          | <_SQL language identifier> <__underscore>
+                          | <_SQL language identifier> <_SQL language identifier part>
 
-<SQL language identifier part> ::= <simple Latin letter> | <digit>
+<_SQL language identifier start> ~ <_simple Latin letter>
 
-<authorization identifier> ::= <role name> | <user identifier>
+<_SQL language identifier part> ~ <_simple Latin letter> | <__digit>
 
-<table name> ::= <local or schema qualified name>
+<_authorization identifier> ~ <__role name> | <_user identifier>
 
-<domain name> ::= <schema qualified name>
+<_table name> ~ <_local or schema qualified name>
 
-<schema name> ::= <unqualified schema name>
-              | <catalog name> <period> <unqualified schema name>
+<_domain name> ~ <_schema qualified name>
 
-<unqualified schema name> ::= <identifier>
+<__schema name> ~ <_unqualified schema name>
+                | <_catalog name> <__period> <_unqualified schema name>
+<_schema name> ~ <__schema name>
 
-<catalog name> ::= <identifier>
+<_unqualified schema name> ~ <__identifier>
 
-<schema qualified name> ::= <qualified identifier>
-                        | <schema name> <period> <qualified identifier>
+<_catalog name> ~ <__identifier>
 
-<local or schema qualified name> ::= <qualified identifier>
-                                 | <local or schema qualifier> <period> <qualified identifier>
+<_schema qualified name> ~ <__qualified identifier>
+                         | <__schema name> <__period> <__qualified identifier>
 
-<local or schema qualifier> ::= <schema name> | <MODULE>
+<_local or schema qualified name> ~ <__qualified identifier>
+                                 | <_local or schema qualifier> <__period> <__qualified identifier>
 
-<qualified identifier> ::= <identifier>
+<_local or schema qualifier> ~ <__schema name> | <__MODULE>
 
-<column name> ::= <identifier>
+<__qualified identifier> ~ <__identifier>
+<_qualified identifier> ~ <__qualified identifier>
 
-<correlation name> ::= <identifier>
+<__column name> ~ <__identifier>
+<_column name> ~ <__column name>
 
-<query name> ::= <identifier>
+<_correlation name> ~ <__identifier>
 
-<SQL_client module name> ::= <identifier>
+<_query name> ~ <__identifier>
 
-<procedure name> ::= <identifier>
+<_SQL_client module name> ~ <__identifier>
 
-<schema qualified routine name> ::= <schema qualified name>
+<_procedure name> ~ <__identifier>
 
-<method name> ::= <identifier>
+<_schema qualified routine name> ~ <_schema qualified name>
 
-<specific name> ::= <schema qualified name>
+<_method name> ~ <__identifier>
 
-<cursor name> ::= <local qualified name>
+<_specific name> ~ <_schema qualified name>
 
-<local qualified name> ::= <qualified identifier>
-                       | <local qualifier> <period> <qualified identifier>
+<_cursor name> ~ <_local qualified name>
 
-<local qualifier> ::= <MODULE>
+<_local qualified name> ~ <__qualified identifier>
+                       | <_local qualifier> <__period> <__qualified identifier>
 
-<host parameter name> ::= <colon> <identifier>
+<_local qualifier> ~ <__MODULE>
 
-<SQL parameter name> ::= <identifier>
+<_host parameter name> ~ <__colon> <__identifier>
 
-<constraint name> ::= <schema qualified name>
+<_SQL parameter name> ~ <__identifier>
 
-<external routine name> ::= <identifier> | <character string literal>
+<_constraint name> ~ <_schema qualified name>
 
-<trigger name> ::= <schema qualified name>
+<_external routine name> ~ <__identifier> | <__character string literal>
 
-<collation name> ::= <schema qualified name>
+<_trigger name> ~ <_schema qualified name>
 
-<character set name> ::= <SQL language identifier>
-                     | <schema name> <period> <SQL language identifier>
+<_collation name> ~ <_schema qualified name>
 
-<transliteration name> ::= <schema qualified name>
+<__character set name> ~ <_SQL language identifier>
+                       | <__schema name> <__period> <_SQL language identifier>
 
-<transcoding name> ::= <schema qualified name>
+<_character set name> ~ <__character set name>
 
-<user_defined type name> ::= <schema qualified type name>
+<transliteration name> ~ <_schema qualified name>
 
-<schema_resolved user_defined type name> ::= <user_defined type name>
+<transcoding name> ~ <_schema qualified name>
 
-<schema qualified type name> ::= <qualified identifier>
-                             | <schema name> <period> <qualified identifier>
+<__user_defined type name> ~ <schema qualified type name>
+<_user_defined type name> ~ <__user_defined type name>
 
-<attribute name> ::= <identifier>
+<schema_resolved user_defined type name> ~ <__user_defined type name>
 
-<field name> ::= <identifier>
+<schema qualified type name> ~ <__qualified identifier>
+                             | <__schema name> <__period> <__qualified identifier>
 
-<savepoint name> ::= <identifier>
+<attribute name> ~ <__identifier>
 
-<sequence generator name> ::= <schema qualified name>
+<field name> ~ <__identifier>
 
-<role name> ::= <identifier>
+<savepoint name> ~ <__identifier>
 
-<user identifier> ::= <identifier>
+<sequence generator name> ~ <_schema qualified name>
+
+<__role name> ~ <__identifier>
+<_role name> ~ <__role name>
+
+<_user identifier> ~ <__identifier>
 
 <connection name> ::= <simple value specification>
 
@@ -508,12 +523,12 @@ __DATA__
 
 <SQL statement name> ::= <statement name> | <extended statement name>
 
-<statement name> ::= <identifier>
+<statement name> ::= <_identifier>
 
 <extended statement name> ::= <simple value specification>
                           | <scope option> <simple value specification>
 
-<dynamic cursor name> ::= <cursor name> | <extended cursor name>
+<dynamic cursor name> ::= <_cursor name> | <extended cursor name>
 
 <extended cursor name> ::= <simple value specification>
                        | <scope option> <simple value specification>
@@ -521,9 +536,9 @@ __DATA__
 <descriptor name> ::= <simple value specification>
                   | <scope option> <simple value specification>
 
-<scope option> ::= <GLOBAL> | <LOCAL>
+<scope option> ~ <__GLOBAL> | <__LOCAL>
 
-<window name> ::= <identifier>
+<_window name> ~ <__identifier>
 
 #
 # G1 Scalar expressions
@@ -538,8 +553,8 @@ __DATA__
 <predefined type> ::=
 		<character string type>
 	|	<character string type> <collate clause>
-	|	<character string type> <CHARACTER> <SET> <character set specification>
-	|	<character string type> <CHARACTER> <SET> <character set specification> <collate clause>
+	|	<character string type> <CHARACTER> <SET> <_character set specification>
+	|	<character string type> <CHARACTER> <SET> <_character set specification> <collate clause>
 	|	<national character string type>
 	|	<national character string type>  <collate clause>
 	|	<binary large object string type>
@@ -550,54 +565,54 @@ __DATA__
 
 <character string type> ::=
 		<CHARACTER>
-	|	<CHARACTER> <left paren> <length> <right paren>
+	|	<CHARACTER> <_left paren> <length> <_right paren>
 	|	<CHAR>
-	|	<CHAR> <left paren> <length> <right paren>
-	|	<CHARACTER> <VARYING> <left paren> <length> <right paren>
-	|	<CHAR> <VARYING> <left paren> <length> <right paren>
-	|	<VARCHAR> <left paren> <length> <right paren>
+	|	<CHAR> <_left paren> <length> <_right paren>
+	|	<CHARACTER> <VARYING> <_left paren> <length> <_right paren>
+	|	<CHAR> <VARYING> <_left paren> <length> <_right paren>
+	|	<VARCHAR> <_left paren> <length> <_right paren>
 	|	<CHARACTER> <LARGE> <OBJECT>
-	|	<CHARACTER> <LARGE> <OBJECT> <left paren> <large object length> <right paren>
+	|	<CHARACTER> <LARGE> <OBJECT> <_left paren> <large object length> <_right paren>
 	|	<CHAR> <LARGE> <OBJECT>
-	|	<CHAR> <LARGE> <OBJECT> <left paren> <large object length> <right paren>
+	|	<CHAR> <LARGE> <OBJECT> <_left paren> <large object length> <_right paren>
 	|	<CLOB>
-	|	<CLOB> <left paren> <large object length> <right paren>
+	|	<CLOB> <_left paren> <large object length> <_right paren>
 
 <national character string type> ::=
 		<NATIONAL> <CHARACTER>
-	|	<NATIONAL> <CHARACTER> <left paren> <length> <right paren>
+	|	<NATIONAL> <CHARACTER> <_left paren> <length> <_right paren>
 	|	<NATIONAL> <CHAR>
-	|	<NATIONAL> <CHAR> <left paren> <length> <right paren>
+	|	<NATIONAL> <CHAR> <_left paren> <length> <_right paren>
 	|	<NCHAR>
-	|	<NCHAR> <left paren> <length> <right paren>
-	|	<NATIONAL> <CHARACTER> <VARYING> <left paren> <length> <right paren>
-	|	<NATIONAL> <CHAR> <VARYING> <left paren> <length> <right paren>
-	|	<NCHAR> <VARYING> <left paren> <length> <right paren>
+	|	<NCHAR> <_left paren> <length> <_right paren>
+	|	<NATIONAL> <CHARACTER> <VARYING> <_left paren> <length> <_right paren>
+	|	<NATIONAL> <CHAR> <VARYING> <_left paren> <length> <_right paren>
+	|	<NCHAR> <VARYING> <_left paren> <length> <_right paren>
 	|	<NATIONAL> <CHARACTER> <LARGE> <OBJECT>
-	|	<NATIONAL> <CHARACTER> <LARGE> <OBJECT> <left paren> <large object length> <right paren>
+	|	<NATIONAL> <CHARACTER> <LARGE> <OBJECT> <_left paren> <large object length> <_right paren>
 	|	<NCHAR> <LARGE> <OBJECT>
-	|	<NCHAR> <LARGE> <OBJECT> <left paren> <large object length> <right paren>
+	|	<NCHAR> <LARGE> <OBJECT> <_left paren> <large object length> <_right paren>
 	|	<NCLOB>
-	|	<NCLOB> <left paren> <large object length> <right paren>
+	|	<NCLOB> <_left paren> <large object length> <_right paren>
 
 <binary large object string type> ::=
 		<BINARY> <LARGE> <OBJECT>
-	|	<BINARY> <LARGE> <OBJECT> <left paren> <large object length> <right paren>
+	|	<BINARY> <LARGE> <OBJECT> <_left paren> <large object length> <_right paren>
 	|	<BLOB>
-	|	<BLOB> <left paren> <large object length> <right paren>
+	|	<BLOB> <_left paren> <large object length> <_right paren>
 
 <numeric type> ::= <exact numeric type> | <approximate numeric type>
 
 <exact numeric type> ::=
 		<NUMERIC>
-	|	<NUMERIC> <left paren> <precision>  <right paren>
-	|	<NUMERIC> <left paren> <precision> <comma> <scale> <right paren>
+	|	<NUMERIC> <_left paren> <precision>  <_right paren>
+	|	<NUMERIC> <_left paren> <precision> <_comma> <scale> <_right paren>
 	|	<DECIMAL>
-	|	<DECIMAL> <left paren> <precision> <right paren>
-	|	<DECIMAL> <left paren> <precision> <comma> <scale> <right paren>
+	|	<DECIMAL> <_left paren> <precision> <_right paren>
+	|	<DECIMAL> <_left paren> <precision> <_comma> <scale> <_right paren>
 	|	<DEC>
-	|	<DEC> <left paren> <precision> <right paren>
-	|	<DEC> <left paren> <precision> <comma> <scale> <right paren>
+	|	<DEC> <_left paren> <precision> <_right paren>
+	|	<DEC> <_left paren> <precision> <_comma> <scale> <_right paren>
 	|	<SMALLINT>
 	|	<INTEGER>
 	|	<INT>
@@ -605,25 +620,25 @@ __DATA__
 
 <approximate numeric type> ::=
 		<FLOAT>
-	|	<FLOAT> <left paren> <precision> <right paren>
+	|	<FLOAT> <_left paren> <precision> <_right paren>
 	|	<REAL>
 	|	<DOUBLE> <PRECISION>
 
-<length> ::= <unsigned integer>
+<length> ::= <_unsigned integer>
 
 <large object length> ::=
-		<unsigned integer>
-	|	<unsigned integer> <char length units>
-	|	<unsigned integer> <multiplier>
-	|	<unsigned integer> <multiplier> <char length units>
-	|	<large object length token>
-	|	<large object length token> <char length units>
+		<_unsigned integer>
+	|	<_unsigned integer> <char length units>
+	|	<_unsigned integer> <_multiplier>
+	|	<_unsigned integer> <_multiplier> <char length units>
+	|	<_large object length token>
+	|	<_large object length token> <char length units>
 
 <char length units> ::= <CHARACTERS> | <CODE_UNITS> | <OCTETS>
 
-<precision> ::= <unsigned integer>
+<precision> ::= <_unsigned integer>
 
-<scale> ::= <unsigned integer>
+<scale> ::= <_unsigned integer>
 
 <boolean type> ::= <BOOLEAN>
 
@@ -631,12 +646,12 @@ __DATA__
 		<DATE>
 	|	<TIME>
 	|	<TIME> <with or without time zone>
-	|	<TIME> <left paren> <time precision> <right paren>
-	|	<TIME> <left paren> <time precision> <right paren> <with or without time zone>
+	|	<TIME> <_left paren> <time precision> <_right paren>
+	|	<TIME> <_left paren> <time precision> <_right paren> <with or without time zone>
 	|	<TIMESTAMP>
 	|	<TIMESTAMP> <with or without time zone>
-	|	<TIMESTAMP> <left paren> <timestamp precision> <right paren>
-	|	<TIMESTAMP> <left paren> <timestamp precision> <right paren> <with or without time zone>
+	|	<TIMESTAMP> <_left paren> <timestamp precision> <_right paren>
+	|	<TIMESTAMP> <_left paren> <timestamp precision> <_right paren> <with or without time zone>
 
 <with or without time zone> ::= <WITH> <TIME> <ZONE> | <WITHOUT> <TIME> <ZONE>
 
@@ -644,30 +659,30 @@ __DATA__
 
 <timestamp precision> ::= <time fractional seconds precision>
 
-<time fractional seconds precision> ::= <unsigned integer>
+<time fractional seconds precision> ::= <_unsigned integer>
 
 <interval type> ::= <INTERVAL> <interval qualifier>
 
 <row type> ::= <ROW> <row type body>
 
 <field definitions> ::= <field definition>
-                      | <field definitions> <comma> <field definition>
+                      | <field definitions> <_comma> <field definition>
 
-<row type body> ::= <left paren> <field definitions> <right paren>
+<row type body> ::= <_left paren> <field definitions> <_right paren>
 
-<reference type> ::= <REF> <left paren> <referenced type> <right paren>
-                   | <REF> <left paren> <referenced type> <right paren> <scope clause>
+<reference type> ::= <REF> <_left paren> <referenced type> <_right paren>
+                   | <REF> <_left paren> <referenced type> <_right paren> <scope clause>
 
-<scope clause> ::= <SCOPE> <table name>
+<scope clause> ::= <SCOPE> <_table name>
 
 <referenced type> ::= <path_resolved user_defined type name>
 
-<path_resolved user_defined type name> ::= <user_defined type name>
+<path_resolved user_defined type name> ::= <_user_defined type name>
 
 <collection type> ::= <array type> | <multiset type>
 
 <array type> ::= <data type> <ARRAY>
-               | <data type> <ARRAY> <left bracket or trigraph> <unsigned integer> <right bracket or trigraph>
+               | <data type> <ARRAY> <_left bracket or trigraph> <_unsigned integer> <_right bracket or trigraph>
 
 <multiset type> ::= <data type> <MULTISET>
 
@@ -678,7 +693,7 @@ __DATA__
 		<parenthesized value expression>
 	|	<nonparenthesized value expression primary>
 
-<parenthesized value expression> ::= <left paren> <value expression> <right paren>
+<parenthesized value expression> ::= <_left paren> <value expression> <_right paren>
 
 <nonparenthesized value expression primary> ::=
 		<unsigned value specification>
@@ -723,9 +738,9 @@ __DATA__
 
 <simple value specification> ::=
 		<literal>
-	|	<host parameter name>
+	|	<_host parameter name>
 	|	<SQL parameter reference>
-	|	<embedded variable name>
+	|	<_embedded variable name>
 
 <target specification> ::=
 		<host parameter specification>
@@ -739,28 +754,28 @@ __DATA__
 		<host parameter specification>
 	|	<SQL parameter reference>
 	|	<column reference>
-	|	<embedded variable name>
+	|	<_embedded variable name>
 
-<host parameter specification> ::= <host parameter name>
-                                 | <host parameter name> <indicator parameter>
+<host parameter specification> ::= <_host parameter name>
+                                 | <_host parameter name> <indicator parameter>
 
-<dynamic parameter specification> ::= <question mark>
+<dynamic parameter specification> ::= <_question mark>
 
-<embedded variable specification> ::= <embedded variable name>
-                                    | <embedded variable name> <indicator variable>
+<embedded variable specification> ::= <_embedded variable name>
+                                    | <_embedded variable name> <indicator variable>
 
-<indicator variable> ::= <embedded variable name>
-                       | <INDICATOR> <embedded variable name>
+<indicator variable> ::= <_embedded variable name>
+                       | <INDICATOR> <_embedded variable name>
 
-<indicator parameter> ::= <host parameter name>
-                        | <INDICATOR> <host parameter name>
+<indicator parameter> ::= <_host parameter name>
+                        | <INDICATOR> <_host parameter name>
 
 <target array element specification> ::=
-		<target array reference> <left bracket or trigraph> <simple value specification> <right bracket or trigraph> 
+		<target array reference> <_left bracket or trigraph> <simple value specification> <_right bracket or trigraph> 
 
 <target array reference> ::= <SQL parameter reference> | <column reference>
 
-<current collation specification> ::= <CURRENT_COLLATION> <left paren> <string value expression> <right paren>
+<current collation specification> ::= <CURRENT_COLLATION> <_left paren> <string value expression> <_right paren>
 
 <contextually typed value specification> ::=
 		<implicitly typed value specification> | <default specification>
@@ -770,50 +785,51 @@ __DATA__
 <null specification> ::= <NULL>
 
 <empty specification> ::=
-		<ARRAY> <left bracket or trigraph> <right bracket or trigraph>
-	|	<MULTISET> <left bracket or trigraph> <right bracket or trigraph>
+		<ARRAY> <_left bracket or trigraph> <_right bracket or trigraph>
+	|	<MULTISET> <_left bracket or trigraph> <_right bracket or trigraph>
 
 <default specification> ::= <DEFAULT>
 
-<identifier chain> ::= <identifier>
-                     | <identifier chain> <period> <identifier>
+<__identifier chain> ~ <__identifier>
+                     | <__identifier chain> <__period> <__identifier>
 
-<basic identifier chain> ::= <identifier chain>
+<__basic identifier chain> ~ <__identifier chain>
+<_basic identifier chain> ~ <__basic identifier chain>
 
-<column reference> ::=
-		<basic identifier chain>
-	|	<MODULE> <period> <qualified identifier> <period> <column name>
+<column reference> ~
+		<__basic identifier chain>
+	|	<__MODULE> <__period> <__qualified identifier> <__period> <__column name>
 
-<SQL parameter reference> ::= <basic identifier chain>
+<SQL parameter reference> ::= <_basic identifier chain>
 
 <set function specification> ::= <aggregate function> | <grouping operation>
 
 <column reference chain> ::= <column reference>
-                           | <column reference chain> <comma> <column reference>
-<grouping operation> ::= <GROUPING> <left paren> <column reference chain> <right paren>
+                           | <column reference chain> <_comma> <column reference>
+<grouping operation> ::= <GROUPING> <_left paren> <column reference chain> <_right paren>
 
 <window function> ::= <window function type> <OVER> <window name or specification>
 
 <window function type> ::=
-		<rank function type> <left paren> <right paren>
-	|	<ROW_NUMBER> <left paren> <right paren>
+		<rank function type> <_left paren> <_right paren>
+	|	<ROW_NUMBER> <_left paren> <_right paren>
 	|	<aggregate function>
 
 <rank function type> ::= <RANK> | <DENSE_RANK> | <PERCENT_RANK> | <CUME_DIST>
 
-<window name or specification> ::= <window name> | <in_line window specification>
+<window name or specification> ::= <_window name> | <in_line window specification>
 
 <in_line window specification> ::= <window specification>
 
 <case expression> ::= <case abbreviation> | <case specification>
 
-<comma AND value expression> ::= <comma> <value expression>
+<comma AND value expression> ::= <_comma> <value expression>
 
 <comma AND value expression many> ::= <comma AND value expression>+
 
 <case abbreviation> ::=
-		<NULLIF> <left paren> <value expression> <comma> <value expression> <right paren>
-	|	<COALESCE> <left paren> <value expression> <comma AND value expression many> <right paren>
+		<NULLIF> <_left paren> <value expression> <_comma> <value expression> <_right paren>
+	|	<COALESCE> <_left paren> <value expression> <comma AND value expression many> <_right paren>
 
 <case specification> ::= <simple case> | <searched case>
 
@@ -857,17 +873,17 @@ __DATA__
 
 <result expression> ::= <value expression>
 
-<cast specification> ::= <CAST> <left paren> <cast operand> <AS> <cast target> <right paren>
+<cast specification> ::= <CAST> <_left paren> <cast operand> <AS> <cast target> <_right paren>
 
 <cast operand> ::= <value expression> | <implicitly typed value specification>
 
-<cast target> ::= <domain name> | <data type>
+<cast target> ::= <_domain name> | <data type>
 
 <next value expression> ::= <NEXT> <VALUE> <FOR> <sequence generator name>
 
-<field reference> ::= <value expression primary> <period> <field name>
+<field reference> ::= <value expression primary> <_period> <field name>
 
-<subtype treatment> ::=	<TREAT> <left paren> <subtype operand> <AS> <target subtype> <right paren>
+<subtype treatment> ::=	<TREAT> <_left paren> <subtype operand> <AS> <target subtype> <_right paren>
 
 <subtype operand> ::= <value expression>
 
@@ -877,27 +893,27 @@ __DATA__
 
 <method invocation> ::= <direct invocation> | <generalized invocation>
 
-<direct invocation> ::=	<value expression primary> <period> <method name>
-                      | <value expression primary> <period> <method name> <SQL argument list>
+<direct invocation> ::=	<value expression primary> <_period> <_method name>
+                      | <value expression primary> <_period> <_method name> <SQL argument list>
 
-<generalized invocation> ::= <left paren> <value expression primary> <AS> <data type> <right paren> <period> <method name>
-                           | <left paren> <value expression primary> <AS> <data type> <right paren> <period> <method name> <SQL argument list>
+<generalized invocation> ::= <_left paren> <value expression primary> <AS> <data type> <_right paren> <_period> <_method name>
+                           | <_left paren> <value expression primary> <AS> <data type> <_right paren> <_period> <_method name> <SQL argument list>
 
-<static method invocation> ::= <path_resolved user_defined type name> <double colon> <method name>
-                             | <path_resolved user_defined type name> <double colon> <method name> <SQL argument list>
+<static method invocation> ::= <path_resolved user_defined type name> <_double colon> <_method name>
+                             | <path_resolved user_defined type name> <_double colon> <_method name> <SQL argument list>
 
 <new specification> ::= <NEW> <routine invocation>
 
-<attribute or method reference> ::= <value expression primary> <dereference operator> <qualified identifier>
-                                  | <value expression primary> <dereference operator> <qualified identifier> <SQL argument list>
+<attribute or method reference> ::= <value expression primary> <dereference operator> <_qualified identifier>
+                                  | <value expression primary> <dereference operator> <_qualified identifier> <SQL argument list>
 
-<dereference operator> ::= <right arrow>
+<dereference operator> ::= <_right arrow>
 
-<reference resolution> ::= <DEREF> <left paren> <reference value expression> <right paren>
+<reference resolution> ::= <DEREF> <_left paren> <reference value expression> <_right paren>
 
-<array element reference> ::= <array value expression> <left bracket or trigraph> <numeric value expression> <right bracket or trigraph> 
+<array element reference> ::= <array value expression> <_left bracket or trigraph> <numeric value expression> <_right bracket or trigraph> 
 
-<multiset element reference> ::= <ELEMENT> <left paren> <multiset value expression> <right paren>
+<multiset element reference> ::= <ELEMENT> <_left paren> <multiset value expression> <_right paren>
 
 <value expression> ::=
 		<common value expression>
@@ -923,16 +939,16 @@ __DATA__
 
 <numeric value expression> ::=
 		<term>
-	|	<numeric value expression> <plus sign> <term>
-	|	<numeric value expression> <minus sign> <term>
+	|	<numeric value expression> <_plus sign> <term>
+	|	<numeric value expression> <_minus sign> <term>
 
 <term> ::=
 		<factor>
-	|	<term> <asterisk> <factor>
-	|	<term> <solidus> <factor>
+	|	<term> <_asterisk> <factor>
+	|	<term> <_solidus> <factor>
 
 <factor> ::= <numeric primary>
-           | <sign> <numeric primary>
+           | <_sign> <numeric primary>
 
 <numeric primary> ::=
 		<value expression primary>
@@ -957,23 +973,23 @@ __DATA__
 		<string position expression>
 	|	<blob position expression>
 
-<string position expression> ::= <POSITION> <left paren> <string value expression> <IN> <string value expression>                             <right paren>
-                               | <POSITION> <left paren> <string value expression> <IN> <string value expression> <USING> <char length units> <right paren>
+<string position expression> ::= <POSITION> <_left paren> <string value expression> <IN> <string value expression>                             <_right paren>
+                               | <POSITION> <_left paren> <string value expression> <IN> <string value expression> <USING> <char length units> <_right paren>
 
-<blob position expression> ::= <POSITION> <left paren> <blob value expression> <IN> <blob value expression> <right paren>
+<blob position expression> ::= <POSITION> <_left paren> <blob value expression> <IN> <blob value expression> <_right paren>
 
 <length expression> ::=
 		<char length expression>
 	|	<octet length expression>
 
-<char length expression> ::= <CHAR_LENGTH>      <left paren> <string value expression>                             <right paren>
-                           | <CHAR_LENGTH>      <left paren> <string value expression> <USING> <char length units> <right paren>
-                           | <CHARACTER_LENGTH> <left paren> <string value expression>                             <right paren>
-                           | <CHARACTER_LENGTH> <left paren> <string value expression> <USING> <char length units> <right paren>
+<char length expression> ::= <CHAR_LENGTH>      <_left paren> <string value expression>                             <_right paren>
+                           | <CHAR_LENGTH>      <_left paren> <string value expression> <USING> <char length units> <_right paren>
+                           | <CHARACTER_LENGTH> <_left paren> <string value expression>                             <_right paren>
+                           | <CHARACTER_LENGTH> <_left paren> <string value expression> <USING> <char length units> <_right paren>
 
-<octet length expression> ::= <OCTET_LENGTH> <left paren> <string value expression> <right paren>
+<octet length expression> ::= <OCTET_LENGTH> <_left paren> <string value expression> <_right paren>
 
-<extract expression> ::= <EXTRACT> <left paren> <extract field> <FROM> <extract source> <right paren>
+<extract expression> ::= <EXTRACT> <_left paren> <extract field> <FROM> <extract source> <_right paren>
 
 <extract field> ::= <primary datetime field> | <time zone field>
 
@@ -981,34 +997,34 @@ __DATA__
 
 <extract source> ::= <datetime value expression> | <interval value expression>
 
-<cardinality expression> ::= <CARDINALITY> <left paren> <collection value expression> <right paren>
+<cardinality expression> ::= <CARDINALITY> <_left paren> <collection value expression> <_right paren>
 
-<absolute value expression> ::= <ABS> <left paren> <numeric value expression> <right paren>
+<absolute value expression> ::= <ABS> <_left paren> <numeric value expression> <_right paren>
 
-<modulus expression> ::= <MOD> <left paren> <numeric value expression dividend> <comma> <numeric value expression divisor><right paren>
+<modulus expression> ::= <MOD> <_left paren> <numeric value expression dividend> <_comma> <numeric value expression divisor><_right paren>
 
 <numeric value expression dividend> ::= <numeric value expression>
 
 <numeric value expression divisor> ::= <numeric value expression>
 
-<natural logarithm> ::= <LN> <left paren> <numeric value expression> <right paren>
+<natural logarithm> ::= <LN> <_left paren> <numeric value expression> <_right paren>
 
-<exponential function> ::= <EXP> <left paren> <numeric value expression> <right paren>
+<exponential function> ::= <EXP> <_left paren> <numeric value expression> <_right paren>
 
-<power function> ::= <POWER> <left paren> <numeric value expression base> <comma> <numeric value expression exponent> <right paren>
+<power function> ::= <POWER> <_left paren> <numeric value expression base> <_comma> <numeric value expression exponent> <_right paren>
 
 <numeric value expression base> ::= <numeric value expression>
 
 <numeric value expression exponent> ::= <numeric value expression>
 
-<square root> ::= <SQRT> <left paren> <numeric value expression> <right paren>
+<square root> ::= <SQRT> <_left paren> <numeric value expression> <_right paren>
 
-<floor function> ::= <FLOOR> <left paren> <numeric value expression> <right paren>
+<floor function> ::= <FLOOR> <_left paren> <numeric value expression> <_right paren>
 
-<ceiling function> ::= <CEIL>    <left paren> <numeric value expression> <right paren>
-                     | <CEILING> <left paren> <numeric value expression> <right paren>
+<ceiling function> ::= <CEIL>    <_left paren> <numeric value expression> <_right paren>
+                     | <CEILING> <_left paren> <numeric value expression> <_right paren>
 
-<width bucket function> ::= <WIDTH_BUCKET> <left paren> <width bucket operand> <comma> <width bucket bound 1> <comma> <width bucket bound 2> <comma> <width bucket count> <right paren>
+<width bucket function> ::= <WIDTH_BUCKET> <_left paren> <width bucket operand> <_comma> <width bucket bound 1> <_comma> <width bucket bound 2> <_comma> <width bucket count> <_right paren>
 
 <width bucket operand> ::= <numeric value expression>
 
@@ -1022,7 +1038,7 @@ __DATA__
 
 <character value expression> ::= <concatenation> | <character factor>
 
-<concatenation> ::= <character value expression> <concatenation operator> <character factor>
+<concatenation> ::= <character value expression> <_concatenation operator> <character factor>
 
 <character factor> ::= <character primary>
                      | <character primary> <collate clause>
@@ -1035,7 +1051,7 @@ __DATA__
 
 <blob primary> ::= <value expression primary> | <string value function>
 
-<blob concatenation> ::= <blob value expression> <concatenation operator> <blob factor>
+<blob concatenation> ::= <blob value expression> <_concatenation operator> <blob factor>
 
 <string value function> ::= <character value function> | <blob value function>
 
@@ -1050,23 +1066,23 @@ __DATA__
 	|	<normalize function>
 	|	<specific type method>
 
-<character substring function> ::= <SUBSTRING> <left paren> <character value expression> <FROM> <start position> <right paren>
-                                 | <SUBSTRING> <left paren> <character value expression> <FROM> <start position> <FOR> <string length> <right paren>
-                                 | <SUBSTRING> <left paren> <character value expression> <FROM> <start position> <USING> <char length units> <right paren>
-                                 | <SUBSTRING> <left paren> <character value expression> <FROM> <start position> <FOR> <string length> <USING> <char length units> <right paren>
+<character substring function> ::= <SUBSTRING> <_left paren> <character value expression> <FROM> <start position> <_right paren>
+                                 | <SUBSTRING> <_left paren> <character value expression> <FROM> <start position> <FOR> <string length> <_right paren>
+                                 | <SUBSTRING> <_left paren> <character value expression> <FROM> <start position> <USING> <char length units> <_right paren>
+                                 | <SUBSTRING> <_left paren> <character value expression> <FROM> <start position> <FOR> <string length> <USING> <char length units> <_right paren>
 
 <regular expression substring function> ::=
-		<SUBSTRING> <left paren> <character value expression>
-		<SIMILAR> <character value expression> <ESCAPE> <escape character> <right paren>
+		<SUBSTRING> <_left paren> <character value expression>
+		<SIMILAR> <character value expression> <ESCAPE> <_escape character> <_right paren>
 
-<fold> ::= <UPPER> <left paren> <character value expression> <right paren>
-         | <LOWER> <left paren> <character value expression> <right paren>
+<fold> ::= <UPPER> <_left paren> <character value expression> <_right paren>
+         | <LOWER> <_left paren> <character value expression> <_right paren>
 
-<transcoding> ::= <CONVERT> <left paren> <character value expression> <USING> <transcoding name> <right paren>
+<transcoding> ::= <CONVERT> <_left paren> <character value expression> <USING> <transcoding name> <_right paren>
 
-<character transliteration> ::= <TRANSLATE> <left paren> <character value expression> <USING> <transliteration name> <right paren>
+<character transliteration> ::= <TRANSLATE> <_left paren> <character value expression> <USING> <transliteration name> <_right paren>
 
-<trim function> ::= <TRIM> <left paren> <trim operands> <right paren>
+<trim function> ::= <TRIM> <_left paren> <trim operands> <_right paren>
 
 <trim operands> ::= <trim source>
                   | <FROM> <trim source>
@@ -1081,14 +1097,14 @@ __DATA__
 <trim character> ::= <character value expression>
 
 <character overlay function> ::=
-    <OVERLAY> <left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position>                                                   <right paren>
- |  <OVERLAY> <left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position> <FOR> <string length>                             <right paren>
- |  <OVERLAY> <left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position>                       <USING> <char length units> <right paren>
- |  <OVERLAY> <left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position> <FOR> <string length> <USING> <char length units> <right paren>
+    <OVERLAY> <_left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position>                                                   <_right paren>
+ |  <OVERLAY> <_left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position> <FOR> <string length>                             <_right paren>
+ |  <OVERLAY> <_left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position>                       <USING> <char length units> <_right paren>
+ |  <OVERLAY> <_left paren> <character value expression> <PLACING> <character value expression> <FROM> <start position> <FOR> <string length> <USING> <char length units> <_right paren>
 
-<normalize function> ::= <NORMALIZE> <left paren> <character value expression> <right paren>
+<normalize function> ::= <NORMALIZE> <_left paren> <character value expression> <_right paren>
 
-<specific type method> ::= <user_defined type value expression> <period> <SPECIFICTYPE>
+<specific type method> ::= <user_defined type value expression> <_period> <SPECIFICTYPE>
 
 <blob value function> ::=
 		<blob substring function>
@@ -1096,10 +1112,10 @@ __DATA__
 	|	<blob overlay function>
 
 <blob substring function> ::=
-		<SUBSTRING> <left paren> <blob value expression> <FROM> <start position>                       <right paren>
-	|	<SUBSTRING> <left paren> <blob value expression> <FROM> <start position> <FOR> <string length> <right paren>
+		<SUBSTRING> <_left paren> <blob value expression> <FROM> <start position>                       <_right paren>
+	|	<SUBSTRING> <_left paren> <blob value expression> <FROM> <start position> <FOR> <string length> <_right paren>
 
-<blob trim function> ::= <TRIM> <left paren> <blob trim operands> <right paren>
+<blob trim function> ::= <TRIM> <_left paren> <blob trim operands> <_right paren>
 
 <blob trim operands> ::=                                          <blob trim source>
                        |                                   <FROM> <blob trim source>
@@ -1112,8 +1128,8 @@ __DATA__
 <trim octet> ::= <blob value expression>
 
 <blob overlay function> ::=
-		<OVERLAY> <left paren> <blob value expression> <PLACING> <blob value expression> <FROM> <start position> <FOR> <string length> <right paren>
-	|	<OVERLAY> <left paren> <blob value expression> <PLACING> <blob value expression> <FROM> <start position>                       <right paren>
+		<OVERLAY> <_left paren> <blob value expression> <PLACING> <blob value expression> <FROM> <start position> <FOR> <string length> <_right paren>
+	|	<OVERLAY> <_left paren> <blob value expression> <PLACING> <blob value expression> <FROM> <start position>                       <_right paren>
 
 <start position> ::= <numeric value expression>
 
@@ -1121,9 +1137,9 @@ __DATA__
 
 <datetime value expression> ::=
 		<datetime term>
-	|	<interval value expression> <plus sign> <datetime term>
-	|	<datetime value expression> <plus sign> <interval term>
-	|	<datetime value expression> <minus sign> <interval term>
+	|	<interval value expression> <_plus sign> <datetime term>
+	|	<datetime value expression> <_plus sign> <interval term>
+	|	<datetime value expression> <_minus sign> <interval term>
 
 <datetime term> ::= <datetime factor>
 
@@ -1146,31 +1162,31 @@ __DATA__
 <current date value function> ::= <CURRENT_DATE>
 
 <current time value function> ::= <CURRENT_TIME>
-                                | <CURRENT_TIME> <left paren> <time precision> <right paren>
+                                | <CURRENT_TIME> <_left paren> <time precision> <_right paren>
 
 <current local time value function> ::= <LOCALTIME>
-                                      | <LOCALTIME> <left paren> <time precision> <right paren>
+                                      | <LOCALTIME> <_left paren> <time precision> <_right paren>
 
 <current timestamp value function> ::= <CURRENT_TIMESTAMP>
-                                     | <CURRENT_TIMESTAMP> <left paren> <timestamp precision> <right paren>
+                                     | <CURRENT_TIMESTAMP> <_left paren> <timestamp precision> <_right paren>
 
 <current local timestamp value function> ::= <LOCALTIMESTAMP>
-                                           | <LOCALTIMESTAMP> <left paren> <timestamp precision> <right paren>
+                                           | <LOCALTIMESTAMP> <_left paren> <timestamp precision> <_right paren>
 
 <interval value expression> ::=
 		<interval term>
-	|	<interval value expression 1> <plus sign> <interval term 1>
-	|	<interval value expression 1> <minus sign> <interval term 1>
-	|	<left paren> <datetime value expression> <minus sign> <datetime term> <right paren> <interval qualifier>
+	|	<interval value expression 1> <_plus sign> <interval term 1>
+	|	<interval value expression 1> <_minus sign> <interval term 1>
+	|	<_left paren> <datetime value expression> <_minus sign> <datetime term> <_right paren> <interval qualifier>
 
 <interval term> ::=
 		<interval factor>
-	|	<interval term 2> <asterisk> <factor>
-	|	<interval term 2> <solidus> <factor>
-	|	<term> <asterisk> <interval factor>
+	|	<interval term 2> <_asterisk> <factor>
+	|	<interval term 2> <_solidus> <factor>
+	|	<term> <_asterisk> <interval factor>
 
 <interval factor> ::= <interval primary>
-                    | <sign> <interval primary>
+                    | <_sign> <interval primary>
 
 <interval primary> ::=
 		<value expression primary>
@@ -1185,7 +1201,7 @@ __DATA__
 
 <interval value function> ::= <interval absolute value function>
 
-<interval absolute value function> ::= <ABS> <left paren> <interval value expression> <right paren>
+<interval absolute value function> ::= <ABS> <_left paren> <interval value expression> <_right paren>
 
 <boolean value expression> ::=
 		<boolean term>
@@ -1210,11 +1226,11 @@ __DATA__
 		<parenthesized boolean value expression>
 	|	<nonparenthesized value expression primary>
 
-<parenthesized boolean value expression> ::= <left paren> <boolean value expression> <right paren>
+<parenthesized boolean value expression> ::= <_left paren> <boolean value expression> <_right paren>
 
 <array value expression> ::= <array concatenation> | <array factor>
 
-<array concatenation> ::= <array value expression 1> <concatenation operator> <array factor>
+<array concatenation> ::= <array value expression 1> <_concatenation operator> <array factor>
 
 <array value expression 1> ::= <array value expression>
 
@@ -1225,15 +1241,15 @@ __DATA__
 	|	<array value constructor by query>
 
 <array value constructor by enumeration> ::=
-		<ARRAY> <left bracket or trigraph> <array element list> <right bracket or trigraph>
+		<ARRAY> <_left bracket or trigraph> <array element list> <_right bracket or trigraph>
 
 <array element list> ::= <array element>
-                       | <array element list> <comma> <array element>
+                       | <array element list> <_comma> <array element>
 
 <array element> ::= <value expression>
 
-<array value constructor by query> ::= <ARRAY> <left paren> <query expression> <right paren>
-                                     | <ARRAY> <left paren> <query expression> <order by clause> <right paren>
+<array value constructor by query> ::= <ARRAY> <_left paren> <query expression> <_right paren>
+                                     | <ARRAY> <_left paren> <query expression> <order by clause> <_right paren>
 
 <multiset value expression> ::=
 		<multiset term>
@@ -1254,23 +1270,23 @@ __DATA__
 
 <multiset value function> ::= <multiset set function>
 
-<multiset set function> ::= <SET> <left paren> <multiset value expression> <right paren>
+<multiset set function> ::= <SET> <_left paren> <multiset value expression> <_right paren>
 
 <multiset value constructor> ::=
 		<multiset value constructor by enumeration>
 	|	<multiset value constructor by query>
 	|	<table value constructor by query>
 
-<multiset value constructor by enumeration> ::= <MULTISET> <left bracket or trigraph> <multiset element list> <right bracket or trigraph>
+<multiset value constructor by enumeration> ::= <MULTISET> <_left bracket or trigraph> <multiset element list> <_right bracket or trigraph>
 
 <multiset element list> ::= <multiset element>
-                          | <multiset element list> <comma> <multiset element>
+                          | <multiset element list> <_comma> <multiset element>
 
 <multiset element> ::= <value expression>
 
-<multiset value constructor by query> ::= <MULTISET> <left paren> <query expression> <right paren>
+<multiset value constructor by query> ::= <MULTISET> <_left paren> <query expression> <_right paren>
 
-<table value constructor by query> ::= <TABLE> <left paren> <query expression> <right paren>
+<table value constructor by query> ::= <TABLE> <_left paren> <query expression> <_right paren>
 
 <row value constructor> ::=
 		<common value expression>
@@ -1278,12 +1294,12 @@ __DATA__
 	|	<explicit row value constructor>
 
 <explicit row value constructor> ::=
-		<left paren> <row value constructor element> <comma> <row value constructor element list> <right paren>
-	|	<ROW> <left paren> <row value constructor element list> <right paren>
+		<_left paren> <row value constructor element> <_comma> <row value constructor element list> <_right paren>
+	|	<ROW> <_left paren> <row value constructor element list> <_right paren>
 	|	<row subquery>
 
 <row value constructor element list> ::= <row value constructor element>
-                                       | <row value constructor element list> <comma> <row value constructor element>
+                                       | <row value constructor element list> <_comma> <row value constructor element>
 
 <row value constructor element> ::= <value expression>
 
@@ -1291,11 +1307,11 @@ __DATA__
 		<common value expression>
 	|	<boolean value expression>
 	|	<contextually typed value specification>
-	|	<left paren> <contextually typed row value constructor element> <comma> <contextually typed row value constructor element list> <right paren>
-	|	<ROW> <left paren> <contextually typed row value constructor element list> <right paren>
+	|	<_left paren> <contextually typed row value constructor element> <_comma> <contextually typed row value constructor element list> <_right paren>
+	|	<ROW> <_left paren> <contextually typed row value constructor element list> <_right paren>
 
 <contextually typed row value constructor element list> ::= <contextually typed row value constructor element>
-                                                          | <contextually typed row value constructor element list> <comma> <contextually typed row value constructor element>
+                                                          | <contextually typed row value constructor element list> <_comma> <contextually typed row value constructor element>
 
 <contextually typed row value constructor element> ::=
 		<value expression>
@@ -1327,12 +1343,12 @@ __DATA__
 <table value constructor> ::= <VALUES> <row value expression list>
 
 <row value expression list> ::= <table row value expression>
-                              | <row value expression list> <comma> <table row value expression>
+                              | <row value expression list> <_comma> <table row value expression>
 
 <contextually typed table value constructor> ::= <VALUES> <contextually typed row value expression list>
 
 <contextually typed row value expression list> ::= <contextually typed row value expression>
-                                                 | <contextually typed row value expression list> <comma> <contextually typed row value expression>
+                                                 | <contextually typed row value expression list> <_comma> <contextually typed row value expression>
 
 <table expression> ::= <from clause>
 	|	<from clause> <where clause>
@@ -1354,19 +1370,19 @@ __DATA__
 <from clause> ::= <FROM> <table reference list>
 
 <table reference list> ::= <table reference>
-                         | <table reference list> <comma> <table reference>
+                         | <table reference list> <_comma> <table reference>
 
 <table reference> ::= <table primary or joined table>
                     | <table primary or joined table> <sample clause>
 
 <table primary or joined table> ::= <table primary> | <joined table>
 
-<sample clause> ::= <TABLESAMPLE> <sample method> <left paren> <sample percentage> <right paren>
-                  | <TABLESAMPLE> <sample method> <left paren> <sample percentage> <right paren> <repeatable clause>
+<sample clause> ::= <TABLESAMPLE> <sample method> <_left paren> <sample percentage> <_right paren>
+                  | <TABLESAMPLE> <sample method> <_left paren> <sample percentage> <_right paren> <repeatable clause>
 
 <sample method> ::= <BERNOULLI> | <SYSTEM>
 
-<repeatable clause> ::= <REPEATABLE> <left paren> <repeat argument> <right paren>
+<repeatable clause> ::= <REPEATABLE> <_left paren> <repeat argument> <_right paren>
 
 <sample percentage> ::= <numeric value expression>
 
@@ -1374,50 +1390,50 @@ __DATA__
 
 <table primary> ::=
 		<table or query name>
-	|	<table or query name>      <correlation name>
-	|	<table or query name>      <correlation name> <left paren> <derived column list> <right paren>
-	|	<table or query name> <AS> <correlation name>
-	|	<table or query name> <AS> <correlation name> <left paren> <derived column list> <right paren>
-	|	<derived table>      <correlation name>
-	|	<derived table>      <correlation name> <left paren> <derived column list> <right paren>
-	|	<derived table> <AS> <correlation name>
-	|	<derived table> <AS> <correlation name> <left paren> <derived column list> <right paren>
-	|	<lateral derived table>      <correlation name>
-	|	<lateral derived table>      <correlation name> <left paren> <derived column list> <right paren>
-	|	<lateral derived table> <AS> <correlation name>
-	|	<lateral derived table> <AS> <correlation name> <left paren> <derived column list> <right paren>
-	|	<collection derived table>      <correlation name>
-	|	<collection derived table>      <correlation name> <left paren> <derived column list> <right paren>
-	|	<collection derived table> <AS> <correlation name>
-	|	<collection derived table> <AS> <correlation name> <left paren> <derived column list> <right paren>
-	|	<table function derived table>      <correlation name>
-	|	<table function derived table>      <correlation name> <left paren> <derived column list> <right paren>
-	|	<table function derived table> <AS> <correlation name>
-	|	<table function derived table> <AS> <correlation name> <left paren> <derived column list> <right paren>
+	|	<table or query name>      <_correlation name>
+	|	<table or query name>      <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<table or query name> <AS> <_correlation name>
+	|	<table or query name> <AS> <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<derived table>      <_correlation name>
+	|	<derived table>      <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<derived table> <AS> <_correlation name>
+	|	<derived table> <AS> <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<lateral derived table>      <_correlation name>
+	|	<lateral derived table>      <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<lateral derived table> <AS> <_correlation name>
+	|	<lateral derived table> <AS> <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<collection derived table>      <_correlation name>
+	|	<collection derived table>      <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<collection derived table> <AS> <_correlation name>
+	|	<collection derived table> <AS> <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<table function derived table>      <_correlation name>
+	|	<table function derived table>      <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<table function derived table> <AS> <_correlation name>
+	|	<table function derived table> <AS> <_correlation name> <_left paren> <derived column list> <_right paren>
 	|	<only spec>
-	|	<only spec>      <correlation name>
-	|	<only spec>      <correlation name> <left paren> <derived column list> <right paren>
-	|	<only spec> <AS> <correlation name>
-	|	<only spec> <AS> <correlation name> <left paren> <derived column list> <right paren>
-	|	<left paren> <joined table> <right paren>
+	|	<only spec>      <_correlation name>
+	|	<only spec>      <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<only spec> <AS> <_correlation name>
+	|	<only spec> <AS> <_correlation name> <_left paren> <derived column list> <_right paren>
+	|	<_left paren> <joined table> <_right paren>
 
-<only spec> ::= <ONLY> <left paren> <table or query name> <right paren>
+<only spec> ::= <ONLY> <_left paren> <table or query name> <_right paren>
 
 <lateral derived table> ::= <LATERAL> <table subquery>
 
-<collection derived table> ::= <UNNEST> <left paren> <collection value expression> <right paren>
-                             | <UNNEST> <left paren> <collection value expression> <right paren> <WITH> <ORDINALITY>
+<collection derived table> ::= <UNNEST> <_left paren> <collection value expression> <_right paren>
+                             | <UNNEST> <_left paren> <collection value expression> <_right paren> <WITH> <ORDINALITY>
 
-<table function derived table> ::= <TABLE> <left paren> <collection value expression> <right paren>
+<table function derived table> ::= <TABLE> <_left paren> <collection value expression> <_right paren>
 
 <derived table> ::= <table subquery>
 
-<table or query name> ::= <table name> | <query name>
+<table or query name> ::= <_table name> | <_query name>
 
 <derived column list> ::= <column name list>
 
-<column name list> ::= <column name>
-                     | <column name list> <comma> <column name>
+<column name list> ::= <_column name>
+                     | <column name list> <_comma> <_column name>
 
 <joined table> ::=
 		<cross join>
@@ -1439,7 +1455,7 @@ __DATA__
 
 <join condition> ::= <ON> <search condition>
 
-<named columns join> ::= <USING> <left paren> <join column list> <right paren>
+<named columns join> ::= <USING> <_left paren> <join column list> <_right paren>
 
 <join type> ::= <INNER>
               | <outer join type>
@@ -1455,7 +1471,7 @@ __DATA__
                     | <GROUP> <BY> <set quantifier> <grouping element list>
 
 <grouping element list> ::= <grouping element>
-                          | <grouping element list> <comma> <grouping element>
+                          | <grouping element list> <_comma> <grouping element>
 
 <grouping element> ::=
 		<ordinary grouping set>
@@ -1466,25 +1482,25 @@ __DATA__
 
 <ordinary grouping set> ::=
 		<grouping column reference>
-	|	<left paren> <grouping column reference list> <right paren>
+	|	<_left paren> <grouping column reference list> <_right paren>
 
 <grouping column reference> ::= <column reference>
                               | <column reference> <collate clause>
 
 <grouping column reference list> ::= <grouping column reference>
-                                   | <grouping column reference list> <comma> <grouping column reference>
+                                   | <grouping column reference list> <_comma> <grouping column reference>
 
-<rollup list> ::= <ROLLUP> <left paren> <ordinary grouping set list> <right paren>
+<rollup list> ::= <ROLLUP> <_left paren> <ordinary grouping set list> <_right paren>
 
 <ordinary grouping set list> ::= <ordinary grouping set>
-                               | <ordinary grouping set list> <comma> <ordinary grouping set>
+                               | <ordinary grouping set list> <_comma> <ordinary grouping set>
 
-<cube list> ::= <CUBE> <left paren> <ordinary grouping set list> <right paren>
+<cube list> ::= <CUBE> <_left paren> <ordinary grouping set list> <_right paren>
 
-<grouping sets specification> ::= <GROUPING> <SETS> <left paren> <grouping set list> <right paren>
+<grouping sets specification> ::= <GROUPING> <SETS> <_left paren> <grouping set list> <_right paren>
 
 <grouping set list> ::= <grouping set>
-                      | <grouping set list> <comma> <grouping set>
+                      | <grouping set list> <_comma> <grouping set>
 
 <grouping set> ::=
 		<ordinary grouping set>
@@ -1493,24 +1509,24 @@ __DATA__
 	|	<grouping sets specification>
 	|	<empty grouping set>
 
-<empty grouping set> ::= <left paren> <right paren>
+<empty grouping set> ::= <_left paren> <_right paren>
 
 <having clause> ::= <HAVING> <search condition>
 
 <window clause> ::= <WINDOW> <window definition list>
 
 <window definition list> ::= <window definition>
-                           | <window definition list> <comma> <window definition>
+                           | <window definition list> <_comma> <window definition>
 
 <window definition> ::= <new window name> <AS> <window specification>
 
-<new window name> ::= <window name>
+<new window name> ::= <_window name>
 
 #
 # Little grammar deviation: I make <window specification details> explicitely optional in <window specification> 
 #
-<window specification> ::= <left paren> <right paren>
-                         | <left paren> <window specification details> <right paren>
+<window specification> ::= <_left paren> <_right paren>
+                         | <_left paren> <window specification details> <_right paren>
 
 <window specification details> ::=
 		<existing window name>
@@ -1529,12 +1545,12 @@ __DATA__
 	|	<window order clause> <window frame clause>
 	|	<window frame clause>
 
-<existing window name> ::= <window name>
+<existing window name> ::= <_window name>
 
 <window partition clause> ::= <PARTITION> <BY> <window partition column reference list>
 
 <window partition column reference list> ::= <window partition column reference>
-                                           | <window partition column reference list> <comma> <window partition column reference>
+                                           | <window partition column reference list> <_comma> <window partition column reference>
 
 <window partition column reference> ::= <column reference>
                                       | <column reference> <collate clause>
@@ -1578,29 +1594,29 @@ __DATA__
 # I create a <select sublist list> explicit sequence here
 #
 <select sublist list> ::= <select sublist>
-                        | <select sublist list> <comma> <select sublist>
+                        | <select sublist list> <_comma> <select sublist>
 
-<select list> ::= <asterisk> | <select sublist list>
+<select list> ::= <_asterisk> | <select sublist list>
 
 <select sublist> ::= <derived column> | <qualified asterisk>
 
 <qualified asterisk> ::=
-		<asterisked identifier chain> <period> <asterisk>
+		<asterisked identifier chain> <_period> <_asterisk>
 	|	<all fields reference>
 
 <asterisked identifier chain> ::= <asterisked identifier>
-                                | <asterisked identifier chain> <period> <asterisked identifier>
+                                | <asterisked identifier chain> <_period> <asterisked identifier>
 
-<asterisked identifier> ::= <identifier>
+<asterisked identifier> ::= <_identifier>
 
 <derived column> ::= <value expression>
                    | <value expression> <as clause>
 
-<as clause> ::=      <column name>
-              | <AS> <column name>
+<as clause> ::=      <_column name>
+              | <AS> <_column name>
 
-<all fields reference> ::= <value expression primary> <period> <asterisk>
-                         | <value expression primary> <period> <asterisk> <AS> <left paren> <all fields column name list> <right paren>
+<all fields reference> ::= <value expression primary> <_period> <_asterisk>
+                         | <value expression primary> <_period> <_asterisk> <AS> <_left paren> <all fields column name list> <_right paren>
 
 <all fields column name list> ::= <column name list>
 
@@ -1611,12 +1627,12 @@ __DATA__
                 | <WITH> <RECURSIVE> <with list>
 
 <with list> ::= <with list element>
-              | <with list> <comma> <with list element>
+              | <with list> <_comma> <with list element>
 
-<with list element> ::= <query name>                                               <AS> <left paren> <query expression> <right paren>
-                      | <query name>                                               <AS> <left paren> <query expression> <right paren> <search or cycle clause>
-                      | <query name> <left paren> <with column list> <right paren> <AS> <left paren> <query expression> <right paren>
-                      | <query name> <left paren> <with column list> <right paren> <AS> <left paren> <query expression> <right paren> <search or cycle clause>
+<with list element> ::= <_query name>                                               <AS> <_left paren> <query expression> <_right paren>
+                      | <_query name>                                               <AS> <_left paren> <query expression> <_right paren> <search or cycle clause>
+                      | <_query name> <_left paren> <with column list> <_right paren> <AS> <_left paren> <query expression> <_right paren>
+                      | <_query name> <_left paren> <with column list> <_right paren> <AS> <_left paren> <query expression> <_right paren> <search or cycle clause>
 
 <with column list> ::= <column name list>
 
@@ -1650,7 +1666,7 @@ __DATA__
 
 <query primary> ::= <non_join query primary> | <joined table>
 
-<non_join query primary> ::= <simple table> | <left paren> <non_join query expression> <right paren>
+<non_join query primary> ::= <simple table> | <_left paren> <non_join query expression> <_right paren>
 
 <simple table> ::=
 		<query specification>
@@ -1660,7 +1676,7 @@ __DATA__
 <explicit table> ::= <TABLE> <table or query name>
 
 <corresponding spec> ::= <CORRESPONDING>
-                       | <CORRESPONDING> <BY> <left paren> <corresponding column list> <right paren>
+                       | <CORRESPONDING> <BY> <_left paren> <corresponding column list> <_right paren>
 
 <corresponding column list> ::= <column name list>
 
@@ -1675,7 +1691,7 @@ __DATA__
 		<DEPTH> <FIRST> <BY> <sort specification list>
 	|	<BREADTH> <FIRST> <BY> <sort specification list>
 
-<sequence column> ::= <column name>
+<sequence column> ::= <_column name>
 
 <cycle clause> ::=
 		<CYCLE> <cycle column list>
@@ -1684,13 +1700,13 @@ __DATA__
 		<USING> <path column>
 
 <cycle column list> ::= <cycle column>
-                      | <cycle column list> <comma> <cycle column>
+                      | <cycle column list> <_comma> <cycle column>
 
-<cycle column> ::= <column name>
+<cycle column> ::= <_column name>
 
-<cycle mark column> ::= <column name>
+<cycle mark column> ::= <_column name>
 
-<path column> ::= <column name>
+<path column> ::= <_column name>
 
 <cycle mark value> ::= <value expression>
 
@@ -1702,7 +1718,7 @@ __DATA__
 
 <table subquery> ::= <subquery>
 
-<subquery> ::= <left paren> <query expression> <right paren>
+<subquery> ::= <_left paren> <query expression> <_right paren>
 
 <predicate> ::=
 		<comparison predicate>
@@ -1728,12 +1744,12 @@ __DATA__
 <comparison predicate part 2> ::= <comp op> <row value predicand>
 
 <comp op> ::=
-		<equals operator>
-	|	<not equals operator>
-	|	<less than operator>
-	|	<greater than operator>
-	|	<less than or equals operator>
-	|	<greater than or equals operator>
+		<_equals operator>
+	|	<_not equals operator>
+	|	<_less than operator>
+	|	<_greater than operator>
+	|	<_less than or equals operator>
+	|	<_greater than or equals operator>
 
 <between predicate> ::= <row value predicand> <between predicate part 2>
 
@@ -1751,23 +1767,30 @@ __DATA__
 
 <in predicate value> ::=
 		<table subquery>
-	|	<left paren> <in value list> <right paren>
+	|	<_left paren> <in value list> <_right paren>
 
 <in value list> ::= <row value expression>
-                  | <in value list> <comma> <row value expression>
+                  | <in value list> <_comma> <row value expression>
 
 <like predicate> ::= <character like predicate> | <octet like predicate>
 
 <character like predicate> ::= <row value predicand> <character like predicate part 2>
 
 <character like predicate part 2> ::=       <LIKE> <character pattern>
-                                    |       <LIKE> <character pattern> <ESCAPE> <escape character>
+                                    |       <LIKE> <character pattern> <ESCAPE> <_escape character>
                                     | <NOT> <LIKE> <character pattern>
-                                    | <NOT> <LIKE> <character pattern> <ESCAPE> <escape character>
+                                    | <NOT> <LIKE> <character pattern> <ESCAPE> <_escape character>
 
 <character pattern> ::= <character value expression>
 
-<escape character> ::= <character value expression>
+#
+# Disgression from the standard: in the BNF there is
+# <_escape character> ::= <character value expression>
+# and in reality this is always in the form 'X'
+#
+<__any character> ~ [.]
+<__escape character> ~ <__quote><__any character><__quote>
+<_escape character> ~ <__escape character>
 
 <octet like predicate> ::= <row value predicand> <octet like predicate part 2>
 
@@ -1783,15 +1806,15 @@ __DATA__
 <similar predicate> ::= <row value predicand> <similar predicate part 2>
 
 <similar predicate part 2> ::=       <SIMILAR> <TO> <similar pattern>
-                             |       <SIMILAR> <TO> <similar pattern> <ESCAPE> <escape character>
+                             |       <SIMILAR> <TO> <similar pattern> <ESCAPE> <_escape character>
                              | <NOT> <SIMILAR> <TO> <similar pattern>
-                             | <NOT> <SIMILAR> <TO> <similar pattern> <ESCAPE> <escape character>
+                             | <NOT> <SIMILAR> <TO> <similar pattern> <ESCAPE> <_escape character>
 
 <similar pattern> ::= <regular expression>
 
 <regular expression> ::=
 		<regular term>
-	|	<regular expression> <vertical bar> <regular term>
+	|	<regular expression> <_vertical bar> <regular term>
 
 <regular term> ::=
 		<regular factor>
@@ -1799,26 +1822,26 @@ __DATA__
 
 <regular factor> ::=
 		<regular primary>
-	|	<regular primary> <asterisk>
-	|	<regular primary> <plus sign>
-	|	<regular primary> <question mark>
+	|	<regular primary> <_asterisk>
+	|	<regular primary> <_plus sign>
+	|	<regular primary> <_question mark>
 	|	<regular primary> <repeat factor>
 
-<repeat factor> ::= <left brace> <low value> <right brace>
-                  | <left brace> <low value> <upper limit> <right brace>
+<repeat factor> ::= <_left brace> <low value> <_right brace>
+                  | <_left brace> <low value> <upper limit> <_right brace>
 
-<upper limit> ::= <comma>
-                | <comma> <high value>
+<upper limit> ::= <_comma>
+                | <_comma> <high value>
 
-<low value> ::= <unsigned integer>
+<low value> ::= <_unsigned integer>
 
-<high value> ::= <unsigned integer>
+<high value> ::= <_unsigned integer>
 
 <regular primary> ::=
 		<character specifier>
-	|	<percent>
+	|	<_percent>
 	|	<regular character set>
-	|	<left paren> <regular expression> <right paren>
+	|	<_left paren> <regular expression> <_right paren>
 
 <character specifier> ::= <non_escaped character> | <escaped character>
 
@@ -1840,10 +1863,10 @@ __DATA__
 <character enumeration exclude many> ::= <character enumeration exclude>+
 
 <regular character set> ::=
-		<underscore>
-	|	<left bracket> <character enumeration many> <right bracket>
-	|	<left bracket> <circumflex> <character enumeration many> <right bracket>
-	|	<left bracket> <character enumeration include many>  <circumflex> <character enumeration exclude many> <right bracket>
+		<_underscore>
+	|	<_left bracket> <character enumeration many> <_right bracket>
+	|	<_left bracket> <_circumflex> <character enumeration many> <_right bracket>
+	|	<_left bracket> <character enumeration include many>  <_circumflex> <character enumeration exclude many> <_right bracket>
 
 <character enumeration include> ::= <character enumeration>
 
@@ -1851,10 +1874,10 @@ __DATA__
 
 <character enumeration> ::=
 		<character specifier>
-	|	<character specifier> <minus sign> <character specifier>
-	|	<left bracket> <colon> <regular character set identifier> <colon> <right bracket>
+	|	<character specifier> <_minus sign> <character specifier>
+	|	<_left bracket> <_colon> <regular character set identifier> <_colon> <_right bracket>
 
-<regular character set identifier> ::= <identifier>
+<regular character set identifier> ::= <_identifier>
 
 <null predicate> ::= <row value predicand> <null predicate part 2>
 
@@ -1928,11 +1951,11 @@ __DATA__
 
 <type predicate> ::= <row value predicand> <type predicate part 2>
 
-<type predicate part 2> ::= <IS>       <OF> <left paren> <type list> <right paren>
-                          | <IS> <NOT> <OF> <left paren> <type list> <right paren>
+<type predicate part 2> ::= <IS>       <OF> <_left paren> <type list> <_right paren>
+                          | <IS> <NOT> <OF> <_left paren> <type list> <_right paren>
 
 <type list> ::= <user_defined type specification>
-              | <type list> <comma> <user_defined type specification>
+              | <type list> <_comma> <user_defined type specification>
 
 <user_defined type specification> ::=
 		<inclusive user_defined type specification>
@@ -1949,19 +1972,19 @@ __DATA__
 	|	<single datetime field>
 
 <start field> ::= <non_second primary datetime field>
-                | <non_second primary datetime field> <left paren> <interval leading field precision> <right paren>
+                | <non_second primary datetime field> <_left paren> <interval leading field precision> <_right paren>
 
 <end field> ::=
 		<non_second primary datetime field>
 	|	<SECOND>
-	|	<SECOND> <left paren> <interval fractional seconds precision> <right paren>
+	|	<SECOND> <_left paren> <interval fractional seconds precision> <_right paren>
 
 <single datetime field> ::=
 		<non_second primary datetime field>
-	|	<non_second primary datetime field> <left paren> <interval leading field precision> <right paren>
+	|	<non_second primary datetime field> <_left paren> <interval leading field precision> <_right paren>
 	|	<SECOND>
-	|	<SECOND> <left paren> <interval leading field precision> <right paren>
-	|	<SECOND> <left paren> <interval leading field precision> <comma> <interval fractional seconds precision> <right paren>
+	|	<SECOND> <_left paren> <interval leading field precision> <_right paren>
+	|	<SECOND> <_left paren> <interval leading field precision> <_comma> <interval fractional seconds precision> <_right paren>
 
 <primary datetime field> ::=
 		<non_second primary datetime field>
@@ -1969,9 +1992,9 @@ __DATA__
 
 <non_second primary datetime field> ::= <YEAR> | <MONTH> | <DAY> | <HOUR> | <MINUTE>
 
-<interval fractional seconds precision> ::= <unsigned integer>
+<interval fractional seconds precision> ::= <_unsigned integer>
 
-<interval leading field precision> ::= <unsigned integer>
+<interval leading field precision> ::= <_unsigned integer>
 
 <language clause> ::= <LANGUAGE> <language name>
 
@@ -1979,19 +2002,19 @@ __DATA__
 
 <path specification> ::= <PATH> <schema name list>
 
-<schema name list> ::= <schema name>
-                     | <schema name list> <comma> <schema name>
+<schema name list> ::= <_schema name>
+                     | <schema name list> <_comma> <_schema name>
 
 <routine invocation> ::= <routine name> <SQL argument list>
 
-<routine name> ::= <qualified identifier>
-                 | <schema name> <period> <qualified identifier>
+<routine name> ::= <_qualified identifier>
+                 | <_schema name> <_period> <_qualified identifier>
 
 <SQL arguments> ::= <SQL argument>
-                  | <SQL arguments> <comma> <SQL argument>
+                  | <SQL arguments> <_comma> <SQL argument>
 
-<SQL argument list> ::= <left paren> <right paren>
-                      | <left paren> <SQL arguments> <right paren>
+<SQL argument list> ::= <_left paren> <_right paren>
+                      | <_left paren> <SQL arguments> <_right paren>
 
 <SQL argument> ::=
 		<value expression>
@@ -2000,19 +2023,21 @@ __DATA__
 
 <generalized expression> ::= <value expression> <AS> <path_resolved user_defined type name>
 
-<character set specification> ::=
-		<standard character set name>
-	|	<implementation_defined character set name>
-	|	<user_defined character set name>
+<__character set specification> ~
+		<_standard character set name>
+	|	<_implementation_defined character set name>
+	|	<_user_defined character set name>
 
-<standard character set name> ::= <character set name>
+<_character set specification> ~ <__character set specification>
 
-<implementation_defined character set name> ::= <character set name>
+<_standard character set name> ~ <__character set name>
 
-<user_defined character set name> ::= <character set name>
+<_implementation_defined character set name> ~ <__character set name>
+
+<_user_defined character set name> ~ <__character set name>
 
 <specific routine designator> ::=
-		<SPECIFIC> <routine type> <specific name>
+		<SPECIFIC> <routine type> <_specific name>
 	|	<routine type> <member name>
 	|	<routine type> <member name> <FOR> <schema_resolved user_defined type name>
 
@@ -2028,17 +2053,17 @@ __DATA__
 <member name> ::= <member name alternatives>
                 | <member name alternatives> <data type list>
 
-<member name alternatives> ::= <schema qualified routine name> | <method name>
+<member name alternatives> ::= <_schema qualified routine name> | <_method name>
 
 <data types> ::= <data type>
-               | <data types> <comma> <data type>
+               | <data types> <_comma> <data type>
 
-<data type list> ::= <left paren> <right paren>
-                   | <left paren> <data types> <right paren>
+<data type list> ::= <_left paren> <_right paren>
+                   | <_left paren> <data types> <_right paren>
 
-<collate clause> ::= <COLLATE> <collation name>
+<collate clause> ::= <COLLATE> <_collation name>
 
-<constraint name definition> ::= <CONSTRAINT> <constraint name>
+<constraint name definition> ::= <CONSTRAINT> <_constraint name>
 
 <constraint characteristics> ::=
 		<constraint check time>
@@ -2052,8 +2077,8 @@ __DATA__
 <constraint check time> ::= <INITIALLY> <DEFERRED> | <INITIALLY> <IMMEDIATE>
 
 <aggregate function> ::=
-		<COUNT> <left paren> <asterisk> <right paren>
-	|	<COUNT> <left paren> <asterisk> <right paren> <filter clause>
+		<COUNT> <_left paren> <_asterisk> <_right paren>
+	|	<COUNT> <_left paren> <_asterisk> <_right paren> <filter clause>
 	|	<general set function>
 	|	<general set function> <filter clause>
 	|	<binary set function>
@@ -2061,8 +2086,8 @@ __DATA__
 	|	<ordered set function>
 	|	<ordered set function> <filter clause>
 
-<general set function> ::= <set function type> <left paren> <value expression> <right paren>
-                         | <set function type> <left paren> <set quantifier> <value expression> <right paren>
+<general set function> ::= <set function type> <_left paren> <value expression> <_right paren>
+                         | <set function type> <_left paren> <set quantifier> <value expression> <_right paren>
 
 <set function type> ::= <computational operation>
 
@@ -2075,9 +2100,9 @@ __DATA__
 
 <set quantifier> ::= <DISTINCT> | <ALL>
 
-<filter clause> ::= <FILTER> <left paren> <WHERE> <search condition> <right paren>
+<filter clause> ::= <FILTER> <_left paren> <WHERE> <search condition> <_right paren>
 
-<binary set function> ::= <binary set function type> <left paren> <dependent variable expression> <comma> <independent variable expression> <right paren>
+<binary set function> ::= <binary set function type> <_left paren> <dependent variable expression> <_comma> <independent variable expression> <_right paren>
 
 <binary set function type> ::=
 		<COVAR_POP> | <COVAR_SAMP> | <CORR> | <REGR_SLOPE>
@@ -2090,21 +2115,21 @@ __DATA__
 
 <ordered set function> ::= <hypothetical set function> | <inverse distribution function>
 
-<hypothetical set function> ::= <rank function type> <left paren> <hypothetical set function value expression list> <right paren> <within group specification>
+<hypothetical set function> ::= <rank function type> <_left paren> <hypothetical set function value expression list> <_right paren> <within group specification>
 
-<within group specification> ::= <WITHIN> <GROUP> <left paren> <ORDER> <BY> <sort specification list> <right paren>
+<within group specification> ::= <WITHIN> <GROUP> <_left paren> <ORDER> <BY> <sort specification list> <_right paren>
 
 <hypothetical set function value expression list> ::= <value expression>
-                                                    | <hypothetical set function value expression list> <comma> <value expression>
+                                                    | <hypothetical set function value expression list> <_comma> <value expression>
 
-<inverse distribution function> ::= <inverse distribution function type> <left paren> <inverse distribution function argument> <right paren> <within group specification>
+<inverse distribution function> ::= <inverse distribution function type> <_left paren> <inverse distribution function argument> <_right paren> <within group specification>
 
 <inverse distribution function argument> ::= <numeric value expression>
 
 <inverse distribution function type> ::= <PERCENTILE_CONT> | <PERCENTILE_DISC>
 
 <sort specification list> ::= <sort specification>
-                            | <sort specification list> <comma> <sort specification>
+                            | <sort specification list> <_comma> <sort specification>
 
 <sort specification> ::= <sort key>
                        | <sort key> <ordering specification>
@@ -2131,13 +2156,13 @@ __DATA__
 	|	<schema path specification> <schema character set specification>
 
 <schema name clause> ::=
-		<schema name>
+		<_schema name>
 	|	<AUTHORIZATION> <schema authorization identifier>
-	|	<schema name> <AUTHORIZATION> <schema authorization identifier>
+	|	<_schema name> <AUTHORIZATION> <schema authorization identifier>
 
-<schema authorization identifier> ::= <authorization identifier>
+<schema authorization identifier> ::= <_authorization identifier>
 
-<schema character set specification> ::= <DEFAULT> <CHARACTER> <SET> <character set specification>
+<schema character set specification> ::= <DEFAULT> <CHARACTER> <SET> <_character set specification>
 
 <schema path specification> ::= <path specification>
 
@@ -2159,15 +2184,15 @@ __DATA__
 	|	<grant statement>
 	|	<role definition>
 
-<drop schema statement> ::= <DROP> <SCHEMA> <schema name> <drop behavior>
+<drop schema statement> ::= <DROP> <SCHEMA> <_schema name> <drop behavior>
 
 <drop behavior> ::= <CASCADE> | <RESTRICT>
 
 <table definition> ::=
-		<CREATE>               <TABLE> <table name> <table contents source>
-	|	<CREATE>               <TABLE> <table name> <table contents source> <ON> <COMMIT> <table commit action> <ROWS>
-	|	<CREATE> <table scope> <TABLE> <table name> <table contents source>
-	|	<CREATE> <table scope> <TABLE> <table name> <table contents source> <ON> <COMMIT> <table commit action> <ROWS>
+		<CREATE>               <TABLE> <_table name> <table contents source>
+	|	<CREATE>               <TABLE> <_table name> <table contents source> <ON> <COMMIT> <table commit action> <ROWS>
+	|	<CREATE> <table scope> <TABLE> <_table name> <table contents source>
+	|	<CREATE> <table scope> <TABLE> <_table name> <table contents source> <ON> <COMMIT> <table commit action> <ROWS>
 
 <table contents source> ::=
 		<table element list>
@@ -2184,9 +2209,9 @@ __DATA__
 <table commit action> ::= <PRESERVE> | <DELETE>
 
 <table elements> ::= <table element>
-                   | <table elements> <comma> <table element>
+                   | <table elements> <_comma> <table element>
 
-<table element list> ::= <left paren> <table elements> <right paren>
+<table element list> ::= <_left paren> <table elements> <_right paren>
 
 <table element> ::=
 		<column definition>
@@ -2199,13 +2224,13 @@ __DATA__
 
 <reference generation> ::= <SYSTEM> <GENERATED> | <USER> <GENERATED> | <DERIVED>
 
-<self_referencing column name> ::= <column name>
+<self_referencing column name> ::= <_column name>
 
 #
 # Little deviation: <column option list> is made non-empty
 #
-<column options> ::= <column name> <WITH> <OPTIONS>
-                   | <column name> <WITH> <OPTIONS> <column option list>
+<column options> ::= <_column name> <WITH> <OPTIONS>
+                   | <_column name> <WITH> <OPTIONS> <column option list>
 
 <column constraint definitions> ::= <column constraint definition>+
 
@@ -2223,10 +2248,10 @@ __DATA__
 
 <supertable clause> ::= <supertable name>
 
-<supertable name> ::= <table name>
+<supertable name> ::= <_table name>
 
-<like clause> ::= <LIKE> <table name>
-                | <LIKE> <table name> <like options>
+<like clause> ::= <LIKE> <_table name>
+                | <LIKE> <_table name> <like options>
 
 <like options> ::= <identity option> | <column default option>
 
@@ -2235,106 +2260,106 @@ __DATA__
 <column default option> ::= <INCLUDING> <DEFAULTS> | <EXCLUDING> <DEFAULTS>
 
 <as subquery clause> ::= <AS> <subquery> <with or without data>
-                       | <left paren> <column name list> <right paren> <AS> <subquery> <with or without data>
+                       | <_left paren> <column name list> <_right paren> <AS> <subquery> <with or without data>
 
 <with or without data> ::= <WITH> <NO> <DATA> | <WITH> <DATA>
 
 <column definition> ::=
-	  <column name> <data type>
-	| <column name> <data type> <reference scope check>
-	| <column name> <data type> <reference scope check> <default clause>
-	| <column name> <data type> <reference scope check> <default clause> <column constraint definitions>
-	| <column name> <data type> <reference scope check> <default clause> <column constraint definitions> <collate clause>
-	| <column name> <data type> <reference scope check> <default clause> <collate clause>
-	| <column name> <data type> <reference scope check> <identity column specification>
-	| <column name> <data type> <reference scope check> <identity column specification> <column constraint definitions>
-	| <column name> <data type> <reference scope check> <identity column specification> <column constraint definitions> <collate clause>
-	| <column name> <data type> <reference scope check> <identity column specification> <collate clause>
-	| <column name> <data type> <reference scope check> <generation clause>
-	| <column name> <data type> <reference scope check> <generation clause> <column constraint definitions>
-	| <column name> <data type> <reference scope check> <generation clause> <column constraint definitions> <collate clause>
-	| <column name> <data type> <reference scope check> <generation clause> <collate clause>
-	| <column name> <data type> <reference scope check> <column constraint definitions>
-	| <column name> <data type> <reference scope check> <column constraint definitions> <collate clause>
-	| <column name> <data type> <reference scope check> <collate clause>
-	| <column name> <data type> <default clause>
-	| <column name> <data type> <default clause> <column constraint definitions>
-	| <column name> <data type> <default clause> <column constraint definitions> <collate clause>
-	| <column name> <data type> <default clause> <collate clause>
-	| <column name> <data type> <identity column specification>
-	| <column name> <data type> <identity column specification> <column constraint definitions>
-	| <column name> <data type> <identity column specification> <column constraint definitions> <collate clause>
-	| <column name> <data type> <identity column specification> <collate clause>
-	| <column name> <data type> <generation clause>
-	| <column name> <data type> <generation clause> <column constraint definitions>
-	| <column name> <data type> <generation clause> <column constraint definitions> <collate clause>
-	| <column name> <data type> <generation clause> <collate clause>
-	| <column name> <data type> <column constraint definitions>
-	| <column name> <data type> <column constraint definitions> <collate clause>
-	| <column name> <data type> <collate clause>
-	| <column name> <domain name>
-	| <column name> <domain name> <reference scope check>
-	| <column name> <domain name> <reference scope check> <default clause>
-	| <column name> <domain name> <reference scope check> <default clause> <column constraint definitions>
-	| <column name> <domain name> <reference scope check> <default clause> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <reference scope check> <default clause> <collate clause>
-	| <column name> <domain name> <reference scope check> <identity column specification>
-	| <column name> <domain name> <reference scope check> <identity column specification> <column constraint definitions>
-	| <column name> <domain name> <reference scope check> <identity column specification> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <reference scope check> <identity column specification> <collate clause>
-	| <column name> <domain name> <reference scope check> <generation clause>
-	| <column name> <domain name> <reference scope check> <generation clause> <column constraint definitions>
-	| <column name> <domain name> <reference scope check> <generation clause> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <reference scope check> <generation clause> <collate clause>
-	| <column name> <domain name> <reference scope check> <column constraint definitions>
-	| <column name> <domain name> <reference scope check> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <reference scope check> <collate clause>
-	| <column name> <domain name> <default clause>
-	| <column name> <domain name> <default clause> <column constraint definitions>
-	| <column name> <domain name> <default clause> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <default clause> <collate clause>
-	| <column name> <domain name> <identity column specification>
-	| <column name> <domain name> <identity column specification> <column constraint definitions>
-	| <column name> <domain name> <identity column specification> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <identity column specification> <collate clause>
-	| <column name> <domain name> <generation clause>
-	| <column name> <domain name> <generation clause> <column constraint definitions>
-	| <column name> <domain name> <generation clause> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <generation clause> <collate clause>
-	| <column name> <domain name> <column constraint definitions>
-	| <column name> <domain name> <column constraint definitions> <collate clause>
-	| <column name> <domain name> <collate clause>
-	| <column name> <reference scope check>
-	| <column name> <reference scope check> <default clause>
-	| <column name> <reference scope check> <default clause> <column constraint definitions>
-	| <column name> <reference scope check> <default clause> <column constraint definitions> <collate clause>
-	| <column name> <reference scope check> <default clause> <collate clause>
-	| <column name> <reference scope check> <identity column specification>
-	| <column name> <reference scope check> <identity column specification> <column constraint definitions>
-	| <column name> <reference scope check> <identity column specification> <column constraint definitions> <collate clause>
-	| <column name> <reference scope check> <identity column specification> <collate clause>
-	| <column name> <reference scope check> <generation clause>
-	| <column name> <reference scope check> <generation clause> <column constraint definitions>
-	| <column name> <reference scope check> <generation clause> <column constraint definitions> <collate clause>
-	| <column name> <reference scope check> <generation clause> <collate clause>
-	| <column name> <reference scope check> <column constraint definitions>
-	| <column name> <reference scope check> <column constraint definitions> <collate clause>
-	| <column name> <reference scope check> <collate clause>
-	| <column name> <default clause>
-	| <column name> <default clause> <column constraint definitions>
-	| <column name> <default clause> <column constraint definitions> <collate clause>
-	| <column name> <default clause> <collate clause>
-	| <column name> <identity column specification>
-	| <column name> <identity column specification> <column constraint definitions>
-	| <column name> <identity column specification> <column constraint definitions> <collate clause>
-	| <column name> <identity column specification> <collate clause>
-	| <column name> <generation clause>
-	| <column name> <generation clause> <column constraint definitions>
-	| <column name> <generation clause> <column constraint definitions> <collate clause>
-	| <column name> <generation clause> <collate clause>
-	| <column name> <column constraint definitions>
-	| <column name> <column constraint definitions> <collate clause>
-	| <column name> <collate clause>
+	  <_column name> <data type>
+	| <_column name> <data type> <reference scope check>
+	| <_column name> <data type> <reference scope check> <default clause>
+	| <_column name> <data type> <reference scope check> <default clause> <column constraint definitions>
+	| <_column name> <data type> <reference scope check> <default clause> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <reference scope check> <default clause> <collate clause>
+	| <_column name> <data type> <reference scope check> <identity column specification>
+	| <_column name> <data type> <reference scope check> <identity column specification> <column constraint definitions>
+	| <_column name> <data type> <reference scope check> <identity column specification> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <reference scope check> <identity column specification> <collate clause>
+	| <_column name> <data type> <reference scope check> <generation clause>
+	| <_column name> <data type> <reference scope check> <generation clause> <column constraint definitions>
+	| <_column name> <data type> <reference scope check> <generation clause> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <reference scope check> <generation clause> <collate clause>
+	| <_column name> <data type> <reference scope check> <column constraint definitions>
+	| <_column name> <data type> <reference scope check> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <reference scope check> <collate clause>
+	| <_column name> <data type> <default clause>
+	| <_column name> <data type> <default clause> <column constraint definitions>
+	| <_column name> <data type> <default clause> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <default clause> <collate clause>
+	| <_column name> <data type> <identity column specification>
+	| <_column name> <data type> <identity column specification> <column constraint definitions>
+	| <_column name> <data type> <identity column specification> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <identity column specification> <collate clause>
+	| <_column name> <data type> <generation clause>
+	| <_column name> <data type> <generation clause> <column constraint definitions>
+	| <_column name> <data type> <generation clause> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <generation clause> <collate clause>
+	| <_column name> <data type> <column constraint definitions>
+	| <_column name> <data type> <column constraint definitions> <collate clause>
+	| <_column name> <data type> <collate clause>
+	| <_column name> <_domain name>
+	| <_column name> <_domain name> <reference scope check>
+	| <_column name> <_domain name> <reference scope check> <default clause>
+	| <_column name> <_domain name> <reference scope check> <default clause> <column constraint definitions>
+	| <_column name> <_domain name> <reference scope check> <default clause> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <default clause> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <identity column specification>
+	| <_column name> <_domain name> <reference scope check> <identity column specification> <column constraint definitions>
+	| <_column name> <_domain name> <reference scope check> <identity column specification> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <identity column specification> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <generation clause>
+	| <_column name> <_domain name> <reference scope check> <generation clause> <column constraint definitions>
+	| <_column name> <_domain name> <reference scope check> <generation clause> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <generation clause> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <column constraint definitions>
+	| <_column name> <_domain name> <reference scope check> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <reference scope check> <collate clause>
+	| <_column name> <_domain name> <default clause>
+	| <_column name> <_domain name> <default clause> <column constraint definitions>
+	| <_column name> <_domain name> <default clause> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <default clause> <collate clause>
+	| <_column name> <_domain name> <identity column specification>
+	| <_column name> <_domain name> <identity column specification> <column constraint definitions>
+	| <_column name> <_domain name> <identity column specification> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <identity column specification> <collate clause>
+	| <_column name> <_domain name> <generation clause>
+	| <_column name> <_domain name> <generation clause> <column constraint definitions>
+	| <_column name> <_domain name> <generation clause> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <generation clause> <collate clause>
+	| <_column name> <_domain name> <column constraint definitions>
+	| <_column name> <_domain name> <column constraint definitions> <collate clause>
+	| <_column name> <_domain name> <collate clause>
+	| <_column name> <reference scope check>
+	| <_column name> <reference scope check> <default clause>
+	| <_column name> <reference scope check> <default clause> <column constraint definitions>
+	| <_column name> <reference scope check> <default clause> <column constraint definitions> <collate clause>
+	| <_column name> <reference scope check> <default clause> <collate clause>
+	| <_column name> <reference scope check> <identity column specification>
+	| <_column name> <reference scope check> <identity column specification> <column constraint definitions>
+	| <_column name> <reference scope check> <identity column specification> <column constraint definitions> <collate clause>
+	| <_column name> <reference scope check> <identity column specification> <collate clause>
+	| <_column name> <reference scope check> <generation clause>
+	| <_column name> <reference scope check> <generation clause> <column constraint definitions>
+	| <_column name> <reference scope check> <generation clause> <column constraint definitions> <collate clause>
+	| <_column name> <reference scope check> <generation clause> <collate clause>
+	| <_column name> <reference scope check> <column constraint definitions>
+	| <_column name> <reference scope check> <column constraint definitions> <collate clause>
+	| <_column name> <reference scope check> <collate clause>
+	| <_column name> <default clause>
+	| <_column name> <default clause> <column constraint definitions>
+	| <_column name> <default clause> <column constraint definitions> <collate clause>
+	| <_column name> <default clause> <collate clause>
+	| <_column name> <identity column specification>
+	| <_column name> <identity column specification> <column constraint definitions>
+	| <_column name> <identity column specification> <column constraint definitions> <collate clause>
+	| <_column name> <identity column specification> <collate clause>
+	| <_column name> <generation clause>
+	| <_column name> <generation clause> <column constraint definitions>
+	| <_column name> <generation clause> <column constraint definitions> <collate clause>
+	| <_column name> <generation clause> <collate clause>
+	| <_column name> <column constraint definitions>
+	| <_column name> <column constraint definitions> <collate clause>
+	| <_column name> <collate clause>
 
 <column constraint definition> ::=                              <column constraint>
                                  |                              <column constraint> <constraint characteristics>
@@ -2355,15 +2380,15 @@ __DATA__
 <reference scope check action> ::= <referential action>
 
 <identity column specification> ::= <GENERATED> <ALWAYS>       <AS> <IDENTITY>
-                                  | <GENERATED> <ALWAYS>       <AS> <IDENTITY> <left paren> <common sequence generator options> <right paren>
+                                  | <GENERATED> <ALWAYS>       <AS> <IDENTITY> <_left paren> <common sequence generator options> <_right paren>
                                   | <GENERATED> <BY> <DEFAULT> <AS> <IDENTITY>
-                                  | <GENERATED> <BY> <DEFAULT> <AS> <IDENTITY> <left paren> <common sequence generator options> <right paren>
+                                  | <GENERATED> <BY> <DEFAULT> <AS> <IDENTITY> <_left paren> <common sequence generator options> <_right paren>
 
 <generation clause> ::= <generation rule> <AS> <generation expression>
 
 <generation rule> ::= <GENERATED> <ALWAYS>
 
-<generation expression> ::= <left paren> <value expression> <right paren>
+<generation expression> ::= <_left paren> <value expression> <_right paren>
 
 <default clause> ::= <DEFAULT> <default option>
 
@@ -2389,14 +2414,14 @@ __DATA__
 	|	<check constraint definition>
 
 <unique constraint definition> ::=
-		<unique specification> <left paren> <unique column list> <right paren>
+		<unique specification> <_left paren> <unique column list> <_right paren>
 	|	<UNIQUE> '(' 'VALUE' ')'
 
 <unique specification> ::= <UNIQUE> | <PRIMARY> <KEY>
 
 <unique column list> ::= <column name list>
 
-<referential constraint definition> ::= <FOREIGN> <KEY> <left paren> <referencing columns> <right paren> <references specification>
+<referential constraint definition> ::= <FOREIGN> <KEY> <_left paren> <referencing columns> <_right paren> <references specification>
 
 <references specification> ::= <REFERENCES> <referenced table and columns>
                              | <REFERENCES> <referenced table and columns> <MATCH> <match type>
@@ -2407,8 +2432,8 @@ __DATA__
 
 <referencing columns> ::= <reference column list>
 
-<referenced table and columns> ::= <table name>
-                                 | <table name> <left paren> <reference column list> <right paren>
+<referenced table and columns> ::= <_table name>
+                                 | <_table name> <_left paren> <reference column list> <_right paren>
 
 <reference column list> ::= <column name list>
 
@@ -2423,9 +2448,9 @@ __DATA__
 
 <referential action> ::= <CASCADE> | <SET> <NULL> | <SET> <DEFAULT> | <RESTRICT> | <NO> <ACTION>
 
-<check constraint definition> ::= <CHECK> <left paren> <search condition> <right paren>
+<check constraint definition> ::= <CHECK> <_left paren> <search condition> <_right paren>
 
-<alter table statement> ::= <ALTER> <TABLE> <table name> <alter table action>
+<alter table statement> ::= <ALTER> <TABLE> <_table name> <alter table action>
 
 <alter table action> ::=
 		<add column definition>
@@ -2437,8 +2462,8 @@ __DATA__
 <add column definition> ::= <ADD>          <column definition>
                           | <ADD> <COLUMN> <column definition>
 
-<alter column definition> ::= <ALTER>          <column name> <alter column action>
-                            | <ALTER> <COLUMN> <column name> <alter column action>
+<alter column definition> ::= <ALTER>          <_column name> <alter column action>
+                            | <ALTER> <COLUMN> <_column name> <alter column action>
 
 <alter column action> ::=
 		<set column default clause>
@@ -2461,25 +2486,25 @@ __DATA__
 		<alter sequence generator restart option>
 	|	<SET> <basic sequence generator option>
 
-<drop column definition> ::= <DROP>          <column name> <drop behavior>
-                           | <DROP> <COLUMN> <column name> <drop behavior>
+<drop column definition> ::= <DROP>          <_column name> <drop behavior>
+                           | <DROP> <COLUMN> <_column name> <drop behavior>
 
 <add table constraint definition> ::= <ADD> <table constraint definition>
 
-<drop table constraint definition> ::= <DROP> <CONSTRAINT> <constraint name> <drop behavior>
+<drop table constraint definition> ::= <DROP> <CONSTRAINT> <_constraint name> <drop behavior>
 
-<drop table statement> ::= <DROP> <TABLE> <table name> <drop behavior>
+<drop table statement> ::= <DROP> <TABLE> <_table name> <drop behavior>
 
-<view definition> ::= <CREATE>             <VIEW> <table name> <view specification> <AS> <query expression>
-                    | <CREATE>             <VIEW> <table name> <view specification> <AS> <query expression> <WITH>                 <CHECK> <OPTION>
-                    | <CREATE>             <VIEW> <table name> <view specification> <AS> <query expression> <WITH> <levels clause> <CHECK> <OPTION>
-                    | <CREATE> <RECURSIVE> <VIEW> <table name> <view specification> <AS> <query expression>
-                    | <CREATE> <RECURSIVE> <VIEW> <table name> <view specification> <AS> <query expression> <WITH>                 <CHECK> <OPTION>
-                    | <CREATE> <RECURSIVE> <VIEW> <table name> <view specification> <AS> <query expression> <WITH> <levels clause> <CHECK> <OPTION>
+<view definition> ::= <CREATE>             <VIEW> <_table name> <view specification> <AS> <query expression>
+                    | <CREATE>             <VIEW> <_table name> <view specification> <AS> <query expression> <WITH>                 <CHECK> <OPTION>
+                    | <CREATE>             <VIEW> <_table name> <view specification> <AS> <query expression> <WITH> <levels clause> <CHECK> <OPTION>
+                    | <CREATE> <RECURSIVE> <VIEW> <_table name> <view specification> <AS> <query expression>
+                    | <CREATE> <RECURSIVE> <VIEW> <_table name> <view specification> <AS> <query expression> <WITH>                 <CHECK> <OPTION>
+                    | <CREATE> <RECURSIVE> <VIEW> <_table name> <view specification> <AS> <query expression> <WITH> <levels clause> <CHECK> <OPTION>
 
 <view specification> ::= <regular view specification> | <referenceable view specification>
 
-<regular view specification> ::= <left paren> <view column list> <right paren>
+<regular view specification> ::= <_left paren> <view column list> <_right paren>
 <regular view specification> ::=
 
 <referenceable view specification> ::= <OF> <path_resolved user_defined type name>
@@ -2487,49 +2512,49 @@ __DATA__
                                      | <OF> <path_resolved user_defined type name> <subview clause> <view element list>
                                      | <OF> <path_resolved user_defined type name> <view element list>
 
-<subview clause> ::= <UNDER> <table name>
+<subview clause> ::= <UNDER> <_table name>
 
 <view elements> ::= <view element>
-                  | <view elements> <comma> <view element>
+                  | <view elements> <_comma> <view element>
 
-<view element list> ::= <left paren> <view elements> <right paren>
+<view element list> ::= <_left paren> <view elements> <_right paren>
 
 <view element> ::= <self_referencing column specification> | <view column option>
 
-<view column option> ::= <column name> <WITH> <OPTIONS> <scope clause>
+<view column option> ::= <_column name> <WITH> <OPTIONS> <scope clause>
 
 <levels clause> ::= <CASCADED> | <LOCAL>
 
 <view column list> ::= <column name list>
 
-<drop view statement> ::= <DROP> <VIEW> <table name> <drop behavior>
+<drop view statement> ::= <DROP> <VIEW> <_table name> <drop behavior>
 
 <domain constraints> ::= <domain constraint>+
 
 <domain definition> ::=
-          <CREATE> <DOMAIN> <domain name>      <data type>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <default clause>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <default clause> <domain constraints>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <default clause> <domain constraints> <collate clause>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <default clause> <collate clause>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <domain constraints>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <domain constraints> <collate clause>
-	| <CREATE> <DOMAIN> <domain name>      <data type> <collate clause>
-        | <CREATE> <DOMAIN> <domain name> <AS> <data type>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <default clause>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <default clause> <domain constraints>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <default clause> <domain constraints> <collate clause>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <default clause> <collate clause>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <domain constraints>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <domain constraints> <collate clause>
-	| <CREATE> <DOMAIN> <domain name> <AS> <data type> <collate clause>
+          <CREATE> <DOMAIN> <_domain name>      <data type>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <default clause>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <default clause> <domain constraints>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <default clause> <domain constraints> <collate clause>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <default clause> <collate clause>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <domain constraints>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <domain constraints> <collate clause>
+	| <CREATE> <DOMAIN> <_domain name>      <data type> <collate clause>
+        | <CREATE> <DOMAIN> <_domain name> <AS> <data type>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <default clause>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <default clause> <domain constraints>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <default clause> <domain constraints> <collate clause>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <default clause> <collate clause>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <domain constraints>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <domain constraints> <collate clause>
+	| <CREATE> <DOMAIN> <_domain name> <AS> <data type> <collate clause>
 
 <domain constraint> ::=                              <check constraint definition>
                       |                              <check constraint definition> <constraint characteristics>
                       | <constraint name definition> <check constraint definition>
                       | <constraint name definition> <check constraint definition> <constraint characteristics>
 
-<alter domain statement> ::= <ALTER> <DOMAIN> <domain name> <alter domain action>
+<alter domain statement> ::= <ALTER> <DOMAIN> <_domain name> <alter domain action>
 
 <alter domain action> ::=
 		<set domain default clause>
@@ -2543,33 +2568,33 @@ __DATA__
 
 <add domain constraint definition> ::= <ADD> <domain constraint>
 
-<drop domain constraint definition> ::= <DROP> <CONSTRAINT> <constraint name>
+<drop domain constraint definition> ::= <DROP> <CONSTRAINT> <_constraint name>
 
-<drop domain statement> ::= <DROP> <DOMAIN> <domain name> <drop behavior>
+<drop domain statement> ::= <DROP> <DOMAIN> <_domain name> <drop behavior>
 
-<character set definition> ::= <CREATE> <CHARACTER> <SET> <character set name>      <character set source>
-                             | <CREATE> <CHARACTER> <SET> <character set name>      <character set source> <collate clause>
-                             | <CREATE> <CHARACTER> <SET> <character set name> <AS> <character set source>
-                             | <CREATE> <CHARACTER> <SET> <character set name> <AS> <character set source> <collate clause>
+<character set definition> ::= <CREATE> <CHARACTER> <SET> <_character set name>      <character set source>
+                             | <CREATE> <CHARACTER> <SET> <_character set name>      <character set source> <collate clause>
+                             | <CREATE> <CHARACTER> <SET> <_character set name> <AS> <character set source>
+                             | <CREATE> <CHARACTER> <SET> <_character set name> <AS> <character set source> <collate clause>
 
-<character set source> ::= <GET> <character set specification>
+<character set source> ::= <GET> <_character set specification>
 
-<drop character set statement> ::= <DROP> <CHARACTER> <SET> <character set name>
+<drop character set statement> ::= <DROP> <CHARACTER> <SET> <_character set name>
 
-<collation definition> ::= <CREATE> <COLLATION> <collation name> <FOR> <character set specification> <FROM> <existing collation name>
-                         | <CREATE> <COLLATION> <collation name> <FOR> <character set specification> <FROM> <existing collation name> <pad characteristic>
+<collation definition> ::= <CREATE> <COLLATION> <_collation name> <FOR> <_character set specification> <FROM> <existing collation name>
+                         | <CREATE> <COLLATION> <_collation name> <FOR> <_character set specification> <FROM> <existing collation name> <pad characteristic>
 
-<existing collation name> ::= <collation name>
+<existing collation name> ::= <_collation name>
 
 <pad characteristic> ::= <NO> <PAD> | <PAD> <SPACE>
 
-<drop collation statement> ::= <DROP> <COLLATION> <collation name> <drop behavior>
+<drop collation statement> ::= <DROP> <COLLATION> <_collation name> <drop behavior>
 
 <transliteration definition> ::= <CREATE> <TRANSLATION> <transliteration name> <FOR> <source character set specification> <TO> <target character set specification> <FROM> <transliteration source>
 
-<source character set specification> ::= <character set specification>
+<source character set specification> ::= <_character set specification>
 
-<target character set specification> ::= <character set specification>
+<target character set specification> ::= <_character set specification>
 
 <transliteration source> ::= <existing transliteration name> | <transliteration routine>
 
@@ -2579,13 +2604,13 @@ __DATA__
 
 <drop transliteration statement> ::= <DROP> <TRANSLATION> <transliteration name>
 
-<assertion definition> ::= <CREATE> <ASSERTION> <constraint name> <CHECK> <left paren> <search condition> <right paren>
-                         | <CREATE> <ASSERTION> <constraint name> <CHECK> <left paren> <search condition> <right paren> <constraint characteristics>
+<assertion definition> ::= <CREATE> <ASSERTION> <_constraint name> <CHECK> <_left paren> <search condition> <_right paren>
+                         | <CREATE> <ASSERTION> <_constraint name> <CHECK> <_left paren> <search condition> <_right paren> <constraint characteristics>
 
-<drop assertion statement> ::= <DROP> <ASSERTION> <constraint name>
+<drop assertion statement> ::= <DROP> <ASSERTION> <_constraint name>
 
-<trigger definition> ::= <CREATE> <TRIGGER> <trigger name> <trigger action time> <trigger event> <ON> <table name>                                              <triggered action>
-                       | <CREATE> <TRIGGER> <trigger name> <trigger action time> <trigger event> <ON> <table name> <REFERENCING> <old or new values alias list> <triggered action>
+<trigger definition> ::= <CREATE> <TRIGGER> <_trigger name> <trigger action time> <trigger event> <ON> <_table name>                                              <triggered action>
+                       | <CREATE> <TRIGGER> <_trigger name> <trigger action time> <trigger event> <ON> <_table name> <REFERENCING> <old or new values alias list> <triggered action>
 
 <trigger action time> ::= <BEFORE> | <AFTER>
 
@@ -2599,11 +2624,11 @@ __DATA__
 <triggered action> ::= <triggered SQL statement>
                      | <FOR> <EACH> <ROW>                                                            <triggered SQL statement>
                      | <FOR> <EACH> <STATEMENT>                                                      <triggered SQL statement>
-                     | <FOR> <EACH> <ROW>       <WHEN> <left paren> <search condition> <right paren> <triggered SQL statement>
-                     | <FOR> <EACH> <STATEMENT> <WHEN> <left paren> <search condition> <right paren> <triggered SQL statement>
-                     |                          <WHEN> <left paren> <search condition> <right paren> <triggered SQL statement>
+                     | <FOR> <EACH> <ROW>       <WHEN> <_left paren> <search condition> <_right paren> <triggered SQL statement>
+                     | <FOR> <EACH> <STATEMENT> <WHEN> <_left paren> <search condition> <_right paren> <triggered SQL statement>
+                     |                          <WHEN> <_left paren> <search condition> <_right paren> <triggered SQL statement>
 
-<SQL procedure statement AND semicolon> ::= <SQL procedure statement> <semicolon>
+<SQL procedure statement AND semicolon> ::= <SQL procedure statement> <_semicolon>
 
 <SQL procedure statement AND semicolon many> ::= <SQL procedure statement AND semicolon>+
 
@@ -2627,15 +2652,15 @@ __DATA__
 	|	<NEW> <TABLE>      <new values table alias>
 	|	<NEW> <TABLE> <AS> <new values table alias>
 
-<old values table alias> ::= <identifier>
+<old values table alias> ::= <_identifier>
 
-<new values table alias> ::= <identifier>
+<new values table alias> ::= <_identifier>
 
-<old values correlation name> ::= <correlation name>
+<old values correlation name> ::= <_correlation name>
 
-<new values correlation name> ::= <correlation name>
+<new values correlation name> ::= <_correlation name>
 
-<drop trigger statement> ::= <DROP> <TRIGGER> <trigger name>
+<drop trigger statement> ::= <DROP> <TRIGGER> <_trigger name>
 
 <user_defined type definition> ::= <CREATE> <TYPE> <user_defined type body>
 
@@ -2673,9 +2698,9 @@ __DATA__
 <representation> ::= <predefined type> | <member list>
 
 <members> ::= <member>
-            | <members> <comma> <member>
+            | <members> <_comma> <member>
 
-<member list> ::= <left paren> <members> <right paren>
+<member list> ::= <_left paren> <members> <_right paren>
 
 <member> ::= <attribute definition>
 
@@ -2699,34 +2724,34 @@ __DATA__
 	| <cast to ref> <cast to type>
 	| <cast to type>
 
-<cast to ref> ::= <CAST> <left paren> <SOURCE> <AS> <REF> <right paren> <WITH> <cast to ref identifier>
+<cast to ref> ::= <CAST> <_left paren> <SOURCE> <AS> <REF> <_right paren> <WITH> <cast to ref identifier>
 
-<cast to ref identifier> ::= <identifier>
+<cast to ref identifier> ::= <_identifier>
 
-<cast to type> ::= <CAST> <left paren> <REF> <AS> <SOURCE> <right paren> <WITH> <cast to type identifier>
+<cast to type> ::= <CAST> <_left paren> <REF> <AS> <SOURCE> <_right paren> <WITH> <cast to type identifier>
 
-<cast to type identifier> ::= <identifier>
+<cast to type identifier> ::= <_identifier>
 
 <attribute names> ::= <attribute name>
-                    | <attribute names> <comma> <attribute name>
+                    | <attribute names> <_comma> <attribute name>
 
-<list of attributes> ::= <left paren> <attribute names> <right paren>
+<list of attributes> ::= <_left paren> <attribute names> <_right paren>
 
 <cast option> ::=
 	  <cast to distinct>
 	| <cast to distinct> <cast to source>
 	| <cast to source>
 
-<cast to distinct> ::= <CAST> <left paren> <SOURCE> <AS> <DISTINCT> <right paren> <WITH> <cast to distinct identifier>
+<cast to distinct> ::= <CAST> <_left paren> <SOURCE> <AS> <DISTINCT> <_right paren> <WITH> <cast to distinct identifier>
 
-<cast to distinct identifier> ::= <identifier>
+<cast to distinct identifier> ::= <_identifier>
 
-<cast to source> ::= <CAST> <left paren> <DISTINCT> <AS> <SOURCE> <right paren> <WITH> <cast to source identifier>
+<cast to source> ::= <CAST> <_left paren> <DISTINCT> <AS> <SOURCE> <_right paren> <WITH> <cast to source identifier>
 
-<cast to source identifier> ::= <identifier>
+<cast to source identifier> ::= <_identifier>
 
 <method specification list> ::= <method specification>
-                              | <method specification list> <comma> <method specification>
+                              | <method specification list> <_comma> <method specification>
 
 <method specification> ::= <original method specification> | <overriding method specification>
 
@@ -2741,17 +2766,17 @@ __DATA__
 
 <overriding method specification> ::= <OVERRIDING> <partial method specification>
 
-<partial method specification> ::=               <METHOD> <method name> <SQL parameter declaration list> <returns clause>
-                                 |               <METHOD> <method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
-                                 | <INSTANCE>    <METHOD> <method name> <SQL parameter declaration list> <returns clause>
-                                 | <STATIC>      <METHOD> <method name> <SQL parameter declaration list> <returns clause>
-                                 | <CONSTRUCTOR> <METHOD> <method name> <SQL parameter declaration list> <returns clause>
-                                 | <INSTANCE>    <METHOD> <method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
-                                 | <STATIC>      <METHOD> <method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
-                                 | <CONSTRUCTOR> <METHOD> <method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
+<partial method specification> ::=               <METHOD> <_method name> <SQL parameter declaration list> <returns clause>
+                                 |               <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
+                                 | <INSTANCE>    <METHOD> <_method name> <SQL parameter declaration list> <returns clause>
+                                 | <STATIC>      <METHOD> <_method name> <SQL parameter declaration list> <returns clause>
+                                 | <CONSTRUCTOR> <METHOD> <_method name> <SQL parameter declaration list> <returns clause>
+                                 | <INSTANCE>    <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
+                                 | <STATIC>      <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
+                                 | <CONSTRUCTOR> <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <SPECIFIC> <specific method name>
 
-<specific method name> ::= <qualified identifier>
-                         | <schema name> <period> <qualified identifier>
+<specific method name> ::= <_qualified identifier>
+                         | <_schema name> <_period> <_qualified identifier>
 
 <method characteristics> ::= <method characteristic>+
 
@@ -2792,10 +2817,10 @@ __DATA__
 
 <drop method specification> ::= <DROP> <specific method specification designator> <RESTRICT>
 
-<specific method specification designator> ::=               <METHOD> <method name> <data type list>
-                                             | <INSTANCE>    <METHOD> <method name> <data type list>
-                                             | <STATIC>      <METHOD> <method name> <data type list>
-                                             | <CONSTRUCTOR> <METHOD> <method name> <data type list>
+<specific method specification designator> ::=               <METHOD> <_method name> <data type list>
+                                             | <INSTANCE>    <METHOD> <_method name> <data type list>
+                                             | <STATIC>      <METHOD> <_method name> <data type list>
+                                             | <CONSTRUCTOR> <METHOD> <_method name> <data type list>
 
 <drop data type statement> ::= <DROP> <TYPE> <schema_resolved user_defined type name> <drop behavior>
 
@@ -2807,24 +2832,24 @@ __DATA__
 
 <schema function> ::= <CREATE> <SQL_invoked function>
 
-<SQL_invoked procedure> ::= <PROCEDURE> <schema qualified routine name> <SQL parameter declaration list> <routine characteristics> <routine body>
+<SQL_invoked procedure> ::= <PROCEDURE> <_schema qualified routine name> <SQL parameter declaration list> <routine characteristics> <routine body>
 
 <SQL_invoked function> ::= <function specification> <routine body>
                          | <method specification designator> <routine body>
 
 <SQL parameter declarations> ::= <SQL parameter declaration>
-                               | <SQL parameter declarations> <comma> <SQL parameter declaration>
+                               | <SQL parameter declarations> <_comma> <SQL parameter declaration>
 
-<SQL parameter declaration list> ::= <left paren> <right paren>
-                                   | <left paren> <SQL parameter declarations> <right paren>
+<SQL parameter declaration list> ::= <_left paren> <_right paren>
+                                   | <_left paren> <SQL parameter declarations> <_right paren>
 
 <SQL parameter declaration> ::=
 	  <parameter mode> <parameter type>
 	|  <parameter mode> <parameter type> <RESULT>
-	| <parameter mode> <SQL parameter name> <parameter type>
-	| <parameter mode> <SQL parameter name> <parameter type> <RESULT>
-	| <SQL parameter name> <parameter type>
-	| <SQL parameter name> <parameter type> <RESULT>
+	| <parameter mode> <_SQL parameter name> <parameter type>
+	| <parameter mode> <_SQL parameter name> <parameter type> <RESULT>
+	| <_SQL parameter name> <parameter type>
+	| <_SQL parameter name> <parameter type> <RESULT>
 
 <parameter mode> ::= <IN> | <OUT> | <INOUT>
 
@@ -2833,26 +2858,26 @@ __DATA__
 
 <locator indication> ::= <AS> <LOCATOR>
 
-<function specification> ::= <FUNCTION> <schema qualified routine name> <SQL parameter declaration list> <returns clause> <routine characteristics>
-                           | <FUNCTION> <schema qualified routine name> <SQL parameter declaration list> <returns clause> <routine characteristics> <dispatch clause>
+<function specification> ::= <FUNCTION> <_schema qualified routine name> <SQL parameter declaration list> <returns clause> <routine characteristics>
+                           | <FUNCTION> <_schema qualified routine name> <SQL parameter declaration list> <returns clause> <routine characteristics> <dispatch clause>
 
 <method specification designator> ::=
 		<SPECIFIC>    <METHOD> <specific method name>
-	|	              <METHOD> <method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
-	|	              <METHOD> <method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
-	|	<INSTANCE>    <METHOD> <method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
-	|	<STATIC>      <METHOD> <method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
-	|	<CONSTRUCTOR> <METHOD> <method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
-	|	<INSTANCE>    <METHOD> <method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
-	|	<STATIC>      <METHOD> <method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
-	|	<CONSTRUCTOR> <METHOD> <method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
+	|	              <METHOD> <_method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
+	|	              <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
+	|	<INSTANCE>    <METHOD> <_method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
+	|	<STATIC>      <METHOD> <_method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
+	|	<CONSTRUCTOR> <METHOD> <_method name> <SQL parameter declaration list>                  <FOR> <schema_resolved user_defined type name>
+	|	<INSTANCE>    <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
+	|	<STATIC>      <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
+	|	<CONSTRUCTOR> <METHOD> <_method name> <SQL parameter declaration list> <returns clause> <FOR> <schema_resolved user_defined type name>
 
 <routine characteristics> ::= <routine characteristic>*
 
 <routine characteristic> ::=
 		<language clause>
 	|	<parameter style clause>
-	|	<SPECIFIC> <specific name>
+	|	<SPECIFIC> <_specific name>
 	|	<deterministic characteristic>
 	|	<SQL_data access indication>
 	|	<null_call clause>
@@ -2877,11 +2902,11 @@ __DATA__
 <returns table type> ::= <TABLE> <table function column list>
 
 <table function column list elements> ::= <table function column list element>
-                                        | <table function column list elements> <comma> <table function column list element>
+                                        | <table function column list elements> <_comma> <table function column list element>
 
-<table function column list> ::= <left paren> <table function column list elements> <right paren>
+<table function column list> ::= <_left paren> <table function column list elements> <_right paren>
 
-<table function column list element> ::= <column name> <data type>
+<table function column list element> ::= <_column name> <data type>
 
 <result cast> ::= <CAST> <FROM> <result cast from type>
 
@@ -2903,14 +2928,14 @@ __DATA__
 <SQL routine body> ::= <SQL procedure statement>
 
 <external body reference> ::=
-	  <EXTERNAL><NAME> <external routine name>
-	| <EXTERNAL><NAME> <external routine name> <parameter style clause>
-	| <EXTERNAL><NAME> <external routine name> <parameter style clause> <transform group specification>
-	| <EXTERNAL><NAME> <external routine name> <parameter style clause> <transform group specification> <external security clause>
-	| <EXTERNAL><NAME> <external routine name> <parameter style clause> <external security clause>
-	| <EXTERNAL><NAME> <external routine name> <transform group specification>
-	| <EXTERNAL><NAME> <external routine name> <transform group specification> <external security clause>
-	| <EXTERNAL><NAME> <external routine name> <external security clause>
+	  <EXTERNAL><NAME> <_external routine name>
+	| <EXTERNAL><NAME> <_external routine name> <parameter style clause>
+	| <EXTERNAL><NAME> <_external routine name> <parameter style clause> <transform group specification>
+	| <EXTERNAL><NAME> <_external routine name> <parameter style clause> <transform group specification> <external security clause>
+	| <EXTERNAL><NAME> <_external routine name> <parameter style clause> <external security clause>
+	| <EXTERNAL><NAME> <_external routine name> <transform group specification>
+	| <EXTERNAL><NAME> <_external routine name> <transform group specification> <external security clause>
+	| <EXTERNAL><NAME> <_external routine name> <external security clause>
 	| <EXTERNAL><parameter style clause>
 	| <EXTERNAL><parameter style clause> <transform group specification>
 	| <EXTERNAL><parameter style clause> <transform group specification> <external security clause>
@@ -2938,7 +2963,7 @@ __DATA__
 		<RETURNS> <NULL> <ON> <NULL> <INPUT>
 	|	<CALLED> <ON> <NULL> <INPUT>
 
-<maximum dynamic result sets> ::= <unsigned integer>
+<maximum dynamic result sets> ::= <_unsigned integer>
 
 <transform group specification> ::= <TRANSFORM> <GROUP> <single group specification>
                                   | <TRANSFORM> <GROUP> <multiple group specification>
@@ -2946,7 +2971,7 @@ __DATA__
 <single group specification> ::= <group name>
 
 <multiple group specification> ::= <group specification>
-                                 | <multiple group specification> <comma> <group specification>
+                                 | <multiple group specification> <_comma> <group specification>
 
 <group specification> ::= <group name> <FOR> <TYPE> <path_resolved user_defined type name>
 
@@ -2960,14 +2985,14 @@ __DATA__
 	|	<SQL_data access indication>
 	|	<null_call clause>
 	|	<dynamic result sets characteristic>
-	|	<NAME> <external routine name>
+	|	<NAME> <_external routine name>
 
 <alter routine behavior> ::= <RESTRICT>
 
 <drop routine statement> ::= <DROP> <specific routine designator> <drop behavior>
 
-<user_defined cast definition> ::= <CREATE> <CAST> <left paren> <source data type> <AS> <target data type> <right paren> <WITH> <cast function>
-                                 | <CREATE> <CAST> <left paren> <source data type> <AS> <target data type> <right paren> <WITH> <cast function> <AS> <ASSIGNMENT>
+<user_defined cast definition> ::= <CREATE> <CAST> <_left paren> <source data type> <AS> <target data type> <_right paren> <WITH> <cast function>
+                                 | <CREATE> <CAST> <_left paren> <source data type> <AS> <target data type> <_right paren> <WITH> <cast function> <AS> <ASSIGNMENT>
 
 <cast function> ::= <specific routine designator>
 
@@ -2975,7 +3000,7 @@ __DATA__
 
 <target data type> ::= <data type>
 
-<drop user_defined cast statement> ::= <DROP> <CAST> <left paren> <source data type> <AS> <target data type> <right paren> <drop behavior>
+<drop user_defined cast statement> ::= <DROP> <CAST> <_left paren> <source data type> <AS> <target data type> <_right paren> <drop behavior>
 
 <user_defined ordering definition> ::= <CREATE> <ORDERING> <FOR> <schema_resolved user_defined type name> <ordering form>
 
@@ -2992,7 +3017,7 @@ __DATA__
 <map category> ::= <MAP> <WITH> <map function specification>
 
 <state category> ::= <STATE>
-                   | <STATE> <specific name>
+                   | <STATE> <_specific name>
 
 <relative function specification> ::= <specific routine designator>
 
@@ -3005,12 +3030,12 @@ __DATA__
 <transform definition> ::= <CREATE> <TRANSFORM>  <FOR> <schema_resolved user_defined type name> <transform group many>
                          | <CREATE> <TRANSFORMS> <FOR> <schema_resolved user_defined type name> <transform group many>
 
-<transform group> ::= <group name> <left paren> <transform element list> <right paren>
+<transform group> ::= <group name> <_left paren> <transform element list> <_right paren>
 
-<group name> ::= <identifier>
+<group name> ::= <_identifier>
 
 <transform element list> ::= <transform element>
-                           | <transform element list> <comma> <transform element>
+                           | <transform element list> <_comma> <transform element>
 
 <transform element> ::= <to sql> | <from sql>
 
@@ -3027,17 +3052,17 @@ __DATA__
 <alter transform statement> ::= <ALTER> <TRANSFORM>  <FOR> <schema_resolved user_defined type name> <alter group many>
                               | <ALTER> <TRANSFORMS> <FOR> <schema_resolved user_defined type name> <alter group many>
 
-<alter group> ::= <group name> <left paren> <alter transform action list> <right paren>
+<alter group> ::= <group name> <_left paren> <alter transform action list> <_right paren>
 
 <alter transform action list> ::= <alter transform action>
-                                | <alter transform action list> <comma> <alter transform action>
+                                | <alter transform action list> <_comma> <alter transform action>
 
 <alter transform action> ::= <add transform element list> | <drop transform element list>
 
-<add transform element list> ::= <ADD> <left paren> <transform element list> <right paren>
+<add transform element list> ::= <ADD> <_left paren> <transform element list> <_right paren>
 
-<drop transform element list> ::= <DROP> <left paren> <transform kind>                          <drop behavior> <right paren>
-                                | <DROP> <left paren> <transform kind> <comma> <transform kind> <drop behavior> <right paren>
+<drop transform element list> ::= <DROP> <_left paren> <transform kind>                          <drop behavior> <_right paren>
+                                | <DROP> <_left paren> <transform kind> <_comma> <transform kind> <drop behavior> <_right paren>
 
 <transform kind> ::= <TO> <SQL> | <FROM> <SQL>
 
@@ -3104,7 +3129,7 @@ __DATA__
 <grant statement> ::= <grant privilege statement> | <grant role statement>
 
 <grantees> ::= <grantee>
-             | <grantees> <comma> <grantee>
+             | <grantees> <_comma> <grantee>
 
 <grant privilege statement> ::=
 	  <GRANT> <privileges> <TO> <grantees> <WITH> <HIERARCHY> <OPTION>
@@ -3118,18 +3143,18 @@ __DATA__
 <privileges> ::= <object privileges> <ON> <object name>
 
 <object name> ::=
-		<table name>
-	|	<TABLE> <table name>
-	|	<DOMAIN> <domain name>
-	|	<COLLATION> <collation name>
-	|	<CHARACTER> <SET> <character set name>
+		<_table name>
+	|	<TABLE> <_table name>
+	|	<DOMAIN> <_domain name>
+	|	<COLLATION> <_collation name>
+	|	<CHARACTER> <SET> <_character set name>
 	|	<TRANSLATION> <transliteration name>
 	|	<TYPE> <schema_resolved user_defined type name>
 	|	<SEQUENCE> <sequence generator name>
 	|	<specific routine designator>
 
 <actions> ::= <action>
-            | <actions> <comma> <action>
+            | <actions> <_comma> <action>
 
 <object privileges> ::=
 		<ALL> <PRIVILEGES>
@@ -3137,43 +3162,43 @@ __DATA__
 
 <action> ::=
 		<SELECT>
-	|	<SELECT> <left paren> <privilege column list> <right paren>
-	|	<SELECT> <left paren> <privilege method list> <right paren>
+	|	<SELECT> <_left paren> <privilege column list> <_right paren>
+	|	<SELECT> <_left paren> <privilege method list> <_right paren>
 	|	<DELETE>
 	|	<INSERT>
-	|	<INSERT> <left paren> <privilege column list> <right paren>
+	|	<INSERT> <_left paren> <privilege column list> <_right paren>
 	|	<UPDATE>
-	|	<UPDATE> <left paren> <privilege column list> <right paren>
+	|	<UPDATE> <_left paren> <privilege column list> <_right paren>
 	|	<REFERENCES>
-	|	<REFERENCES> <left paren> <privilege column list> <right paren>
+	|	<REFERENCES> <_left paren> <privilege column list> <_right paren>
 	|	<USAGE>
 	|	<TRIGGER>
 	|	<UNDER>
 	|	<EXECUTE>
 
 <privilege method list> ::= <specific routine designator>
-                          | <privilege method list> <comma> <specific routine designator>
+                          | <privilege method list> <_comma> <specific routine designator>
 
 <privilege column list> ::= <column name list>
 
-<grantee> ::= <PUBLIC> | <authorization identifier>
+<grantee> ::= <PUBLIC> | <_authorization identifier>
 
 <grantor> ::= <CURRENT_USER> | <CURRENT_ROLE>
 
-<role definition> ::= <CREATE> <ROLE> <role name>
-                    | <CREATE> <ROLE> <role name> <WITH> <ADMIN> <grantor>
+<role definition> ::= <CREATE> <ROLE> <_role name>
+                    | <CREATE> <ROLE> <_role name> <WITH> <ADMIN> <grantor>
 
 <role granted many> ::= <role granted>
-                      | <role granted many> <comma> <role granted>
+                      | <role granted many> <_comma> <role granted>
 
 <grant role statement> ::=
 	  <GRANT> <role granted many> <TO> <grantees> <WITH> <ADMIN> <OPTION>
 	| <GRANT> <role granted many> <TO> <grantees> <WITH> <ADMIN> <OPTION> <GRANTED> <BY> <grantor>
 	| <GRANT> <role granted many> <TO> <grantees> <GRANTED> <BY> <grantor>
 
-<role granted> ::= <role name>
+<role granted> ::= <_role name>
 
-<drop role statement> ::= <DROP> <ROLE> <role name>
+<drop role statement> ::= <DROP> <ROLE> <_role name>
 
 <revoke statement> ::=
 		<revoke privilege statement>
@@ -3187,14 +3212,14 @@ __DATA__
 <revoke option extension> ::= <GRANT> <OPTION> <FOR> | <HIERARCHY> <OPTION> <FOR>
 
 <role revoked many> ::= <role revoked>
-                      | <role revoked many> <comma> <role revoked>
+                      | <role revoked many> <_comma> <role revoked>
 
 <revoke role statement> ::= <REVOKE>                        <role revoked many> <FROM> <grantees>                          <drop behavior>
                           | <REVOKE>                        <role revoked many> <FROM> <grantees> <GRANTED> <BY> <grantor> <drop behavior>
                           | <REVOKE> <ADMIN> <OPTION> <FOR> <role revoked many> <FROM> <grantees>                          <drop behavior>
                           | <REVOKE> <ADMIN> <OPTION> <FOR> <role revoked many> <FROM> <grantees> <GRANTED> <BY> <grantor> <drop behavior>
 
-<role revoked> ::= <role name>
+<role revoked> ::= <_role name>
 
 <module contents many> ::= <module contents>+
 
@@ -3218,15 +3243,15 @@ __DATA__
 	| <module name clause> <language clause> <module authorization clause> <temporary table declarations> <module contents many>
 
 <module authorization clause> ::=
-		<SCHEMA> <schema name>
+		<SCHEMA> <_schema name>
 	|	<AUTHORIZATION> <module authorization identifier>
 	|	<AUTHORIZATION> <module authorization identifier> <FOR> <STATIC> <ONLY>
 	|	<AUTHORIZATION> <module authorization identifier> <FOR> <STATIC> <AND> <DYNAMIC>
-	|	<SCHEMA> <schema name> <AUTHORIZATION> <module authorization identifier>
-	|	<SCHEMA> <schema name> <AUTHORIZATION> <module authorization identifier> <FOR> <STATIC> <ONLY>
-	|	<SCHEMA> <schema name> <AUTHORIZATION> <module authorization identifier> <FOR> <STATIC> <AND> <DYNAMIC>
+	|	<SCHEMA> <_schema name> <AUTHORIZATION> <module authorization identifier>
+	|	<SCHEMA> <_schema name> <AUTHORIZATION> <module authorization identifier> <FOR> <STATIC> <ONLY>
+	|	<SCHEMA> <_schema name> <AUTHORIZATION> <module authorization identifier> <FOR> <STATIC> <AND> <DYNAMIC>
 
-<module authorization identifier> ::= <authorization identifier>
+<module authorization identifier> ::= <_authorization identifier>
 
 <module path specification> ::= <path specification>
 
@@ -3234,11 +3259,11 @@ __DATA__
 
 <module collations> ::= <module collation specification>+
 
-<module collation specification> ::= <COLLATION> <collation name>
-                                   | <COLLATION> <collation name> <FOR> <character set specification list>
+<module collation specification> ::= <COLLATION> <_collation name>
+                                   | <COLLATION> <_collation name> <FOR> <character set specification list>
 
-<character set specification list> ::= <character set specification>
-                                     | <character set specification list> <comma> <character set specification>
+<character set specification list> ::= <_character set specification>
+                                     | <character set specification list> <_comma> <_character set specification>
 
 <module contents> ::=
 		<declare cursor>
@@ -3246,21 +3271,21 @@ __DATA__
 	|	<externally_invoked procedure>
 
 <module name clause> ::=
-	  <MODULE> <SQL_client module name> <module contents many>
-	| <MODULE> <SQL_client module name> <module character set specification> <module contents many>
+	  <MODULE> <_SQL_client module name> <module contents many>
+	| <MODULE> <_SQL_client module name> <module character set specification> <module contents many>
 	| <MODULE> <module character set specification> <module contents many>
 
-<module character set specification> ::= <NAMES> <ARE> <character set specification>
+<module character set specification> ::= <NAMES> <ARE> <_character set specification>
 
-<externally_invoked procedure> ::= <PROCEDURE> <procedure name> <host parameter declaration list> <semicolon> <SQL procedure statement> <semicolon>
+<externally_invoked procedure> ::= <PROCEDURE> <_procedure name> <host parameter declaration list> <_semicolon> <SQL procedure statement> <_semicolon>
 
 <host parameter declarations> ::= <host parameter declaration>
-                                | <host parameter declarations> <comma> <host parameter declaration>
+                                | <host parameter declarations> <_comma> <host parameter declaration>
 
-<host parameter declaration list> ::= <left paren> <host parameter declarations> <right paren>
+<host parameter declaration list> ::= <_left paren> <host parameter declarations> <_right paren>
 
 <host parameter declaration> ::=
-		<host parameter name> <host parameter data type>
+		<_host parameter name> <host parameter data type>
 	|	<status parameter>
 
 <host parameter data type> ::= <data type>
@@ -3400,15 +3425,15 @@ __DATA__
 	|	<get descriptor statement>
 
 <declare cursor> ::=
-	  <DECLARE> <cursor name> <cursor sensitivity>                        <CURSOR> <cursor holdability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor sensitivity>                        <CURSOR> <cursor holdability> <cursor returnability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor sensitivity>                        <CURSOR> <cursor returnability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor returnability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor scrollability>                      <CURSOR> <cursor holdability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor scrollability>                      <CURSOR> <cursor holdability> <cursor returnability> <FOR> <cursor specification>
-	| <DECLARE> <cursor name> <cursor scrollability>                      <CURSOR> <cursor returnability> <FOR> <cursor specification>
+	  <DECLARE> <_cursor name> <cursor sensitivity>                        <CURSOR> <cursor holdability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor sensitivity>                        <CURSOR> <cursor holdability> <cursor returnability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor sensitivity>                        <CURSOR> <cursor returnability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor returnability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor scrollability>                      <CURSOR> <cursor holdability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor scrollability>                      <CURSOR> <cursor holdability> <cursor returnability> <FOR> <cursor specification>
+	| <DECLARE> <_cursor name> <cursor scrollability>                      <CURSOR> <cursor returnability> <FOR> <cursor specification>
 
 
 <cursor sensitivity> ::= <SENSITIVE> | <INSENSITIVE> | <ASENSITIVE>
@@ -3430,11 +3455,11 @@ __DATA__
 
 <order by clause> ::= <ORDER> <BY> <sort specification list>
 
-<open statement> ::= <OPEN> <cursor name>
+<open statement> ::= <OPEN> <_cursor name>
 
-<fetch statement> ::= <FETCH>                            <cursor name> <INTO> <fetch target list>
-                    | <FETCH>                     <FROM> <cursor name> <INTO> <fetch target list>
-                    | <FETCH> <fetch orientation> <FROM> <cursor name> <INTO> <fetch target list>
+<fetch statement> ::= <FETCH>                            <_cursor name> <INTO> <fetch target list>
+                    | <FETCH>                     <FROM> <_cursor name> <INTO> <fetch target list>
+                    | <FETCH> <fetch orientation> <FROM> <_cursor name> <INTO> <fetch target list>
 
 <fetch orientation> ::=
 		<NEXT>
@@ -3445,28 +3470,28 @@ __DATA__
 	|	<RELATIVE> <simple value specification>
 
 <fetch target list> ::= <target specification>
-                      | <fetch target list> <comma> <target specification>
+                      | <fetch target list> <_comma> <target specification>
 
-<close statement> ::= <CLOSE> <cursor name>
+<close statement> ::= <CLOSE> <_cursor name>
 
 <select statement single row> ::= <SELECT>                  <select list> <INTO> <select target list> <table expression>
                                 | <SELECT> <set quantifier> <select list> <INTO> <select target list> <table expression>
 
 <select target list> ::= <target specification>
-                       | <select target list> <comma> <target specification>
+                       | <select target list> <_comma> <target specification>
 
-<delete statement positioned> ::= <DELETE> <FROM> <target table> <WHERE> <CURRENT> <OF> <cursor name>
+<delete statement positioned> ::= <DELETE> <FROM> <target table> <WHERE> <CURRENT> <OF> <_cursor name>
 
 <target table> ::=
-		<table name>
-	|	<ONLY> <left paren> <table name> <right paren>
+		<_table name>
+	|	<ONLY> <_left paren> <_table name> <_right paren>
 
 <delete statement searched> ::= <DELETE> <FROM> <target table>
                               | <DELETE> <FROM> <target table> <WHERE> <search condition>
 
 <insert statement> ::= <INSERT> <INTO> <insertion target> <insert columns and source>
 
-<insertion target> ::= <table name>
+<insertion target> ::= <_table name>
 
 <insert columns and source> ::=
 		<from subquery>
@@ -3474,13 +3499,13 @@ __DATA__
 	|	<from default>
 
 <from subquery> ::=
-	  <left paren> <insert column list> <right paren> <query expression>
-	| <left paren> <insert column list> <right paren> <override clause> <query expression>
+	  <_left paren> <insert column list> <_right paren> <query expression>
+	| <_left paren> <insert column list> <_right paren> <override clause> <query expression>
 	| <override clause> <query expression>
 
 <from constructor> ::=
-	  <left paren> <insert column list> <right paren> <contextually typed table value constructor>
-	| <left paren> <insert column list> <right paren> <override clause> <contextually typed table value constructor>
+	  <_left paren> <insert column list> <_right paren> <contextually typed table value constructor>
+	| <_left paren> <insert column list> <_right paren> <override clause> <contextually typed table value constructor>
 	| <override clause> <contextually typed table value constructor>
 
 <override clause> ::= <OVERRIDING> <USER> <VALUE> | <OVERRIDING> <SYSTEM> <VALUE>
@@ -3493,7 +3518,7 @@ __DATA__
                     | <MERGE> <INTO> <target table>      <merge correlation name> <USING> <table reference> <ON> <search condition> <merge operation specification>
                     | <MERGE> <INTO> <target table> <AS> <merge correlation name> <USING> <table reference> <ON> <search condition> <merge operation specification>
 
-<merge correlation name> ::= <correlation name>
+<merge correlation name> ::= <_correlation name>
 
 <merge operation specification> ::= <merge when clause>+
 
@@ -3506,61 +3531,61 @@ __DATA__
 <merge update specification> ::= <UPDATE> <SET> <set clause list>
 
 <merge insert specification> ::=
-	  <INSERT> <left paren> <insert column list> <right paren> <VALUES> <merge insert value list>
-	| <INSERT> <left paren> <insert column list> <right paren> <override clause> <VALUES> <merge insert value list>
+	  <INSERT> <_left paren> <insert column list> <_right paren> <VALUES> <merge insert value list>
+	| <INSERT> <_left paren> <insert column list> <_right paren> <override clause> <VALUES> <merge insert value list>
 	| <INSERT> <override clause> <VALUES> <merge insert value list>
 
 <merge insert value element many> ::= <merge insert value element>
-                                    | <merge insert value element many> <comma> <merge insert value element>
+                                    | <merge insert value element many> <_comma> <merge insert value element>
 
-<merge insert value list> ::= <left paren> <merge insert value element many> <right paren>
+<merge insert value list> ::= <_left paren> <merge insert value element many> <_right paren>
 
 <merge insert value element> ::= <value expression> | <contextually typed value specification>
 
-<update statement positioned> ::= <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF> <cursor name>
+<update statement positioned> ::= <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF> <_cursor name>
 
 <update statement searched> ::= <UPDATE> <target table> <SET> <set clause list>
                               | <UPDATE> <target table> <SET> <set clause list> <WHERE> <search condition>
 
 <set clause list> ::= <set clause>
-                    | <set clause list> <comma> <set clause>
+                    | <set clause list> <_comma> <set clause>
 
 <set clause> ::=
 		<multiple column assignment>
-	|	<set target> <equals operator> <update source>
+	|	<set target> <_equals operator> <update source>
 
 <set target> ::= <update target> | <mutated set clause>
 
-<multiple column assignment> ::= <set target list> <equals operator> <assigned row>
+<multiple column assignment> ::= <set target list> <_equals operator> <assigned row>
 
 <set target many> ::= <set target>
-                    | <set target many> <comma> <set target>
+                    | <set target many> <_comma> <set target>
 
-<set target list> ::= <left paren> <set target many> <right paren>
+<set target list> ::= <_left paren> <set target many> <_right paren>
 
 <assigned row> ::= <contextually typed row value expression>
 
 <update target> ::=
 		<object column>
-	|	<object column> <left bracket or trigraph> <simple value specification> <right bracket or trigraph>
+	|	<object column> <_left bracket or trigraph> <simple value specification> <_right bracket or trigraph>
 
-<object column> ::= <column name>
+<object column> ::= <_column name>
 
-<mutated set clause> ::= <mutated target> <period> <method name>
+<mutated set clause> ::= <mutated target> <_period> <_method name>
 
 <mutated target> ::= <object column> | <mutated set clause>
 
 <update source> ::= <value expression> | <contextually typed value specification>
 
-<temporary table declaration> ::= <DECLARE> <LOCAL> <TEMPORARY> <TABLE> <table name> <table element list>
-                                | <DECLARE> <LOCAL> <TEMPORARY> <TABLE> <table name> <table element list> <ON> <COMMIT> <table commit action> <ROWS>
+<temporary table declaration> ::= <DECLARE> <LOCAL> <TEMPORARY> <TABLE> <_table name> <table element list>
+                                | <DECLARE> <LOCAL> <TEMPORARY> <TABLE> <_table name> <table element list> <ON> <COMMIT> <table commit action> <ROWS>
 
 <locator reference many> ::= <locator reference>
-                           | <locator reference many> <comma> <locator reference>
+                           | <locator reference many> <_comma> <locator reference>
 
 <free locator statement> ::= <FREE> <LOCATOR> <locator reference many>
 
-<locator reference> ::= <host parameter name> | <embedded variable name>
+<locator reference> ::= <_host parameter name> | <_embedded variable name>
 
 <hold locator statement> ::= <HOLD> <LOCATOR> <locator reference many>
 
@@ -3571,7 +3596,7 @@ __DATA__
 <return value> ::= <value expression> | <NULL>
 
 <transaction mode many> ::= <transaction mode>
-                          | <transaction mode many> <comma> <transaction mode>
+                          | <transaction mode many> <_comma> <transaction mode>
 
 <start transaction statement> ::= <START> <TRANSACTION>
                                 | <START> <TRANSACTION> <transaction mode many>
@@ -3602,8 +3627,8 @@ __DATA__
                                    | <SET> <CONSTRAINTS> <constraint name list> <IMMEDIATE>
                                    | <SET> <CONSTRAINTS> <ALL> <IMMEDIATE>
 
-<constraint name list> ::= <constraint name>
-                         | <constraint name list> <comma> <constraint name>
+<constraint name list> ::= <_constraint name>
+                         | <constraint name list> <_comma> <_constraint name>
 
 <savepoint statement> ::= <SAVEPOINT> <savepoint specifier>
 
@@ -3654,7 +3679,7 @@ __DATA__
 <set session characteristics statement> ::= <SET> <SESSION> <CHARACTERISTICS> <AS> <session characteristic list>
 
 <session characteristic list> ::= <session characteristic>
-                                | <session characteristic list> <comma> <session characteristic>
+                                | <session characteristic list> <_comma> <session characteristic>
 
 <session characteristic> ::= <transaction characteristics>
 
@@ -3712,19 +3737,19 @@ __DATA__
                              | <GET> <SQL> <DESCRIPTOR> <descriptor name> <get descriptor information>
 
 <get header information many> ::= <get header information>
-                                | <get header information many> <comma> <get header information>
+                                | <get header information many> <_comma> <get header information>
 
 <get item information many> ::= <get item information>
-                              | <get item information many> <comma> <get item information>
+                              | <get item information many> <_comma> <get item information>
 <get descriptor information> ::=
 		<get header information many>
 	|	<VALUE> <item number> <get item information many>
 
-<get header information> ::= <simple target specification 1> <equals operator> <header item name>
+<get header information> ::= <simple target specification 1> <_equals operator> <header item name>
 
 <header item name> ::= <COUNT> | <KEY_TYPE> | <DYNAMIC_FUNCTION> | <DYNAMIC_FUNCTION_CODE> | <TOP_LEVEL_COUNT>
 
-<get item information> ::= <simple target specification 2> <equals operator> <descriptor item name>
+<get item information> ::= <simple target specification 2> <_equals operator> <descriptor item name>
 
 <item number> ::= <simple value specification>
 
@@ -3775,18 +3800,18 @@ __DATA__
                              | <SET> <SQL> <DESCRIPTOR> <descriptor name> <set descriptor information>
 
 <set header information many> ::= <set header information>
-                                | <set header information many> <comma> <set header information>
+                                | <set header information many> <_comma> <set header information>
 
 <set item information many> ::= <set item information>
-                              | <set item information many> <comma> <set item information>
+                              | <set item information many> <_comma> <set item information>
 
 <set descriptor information> ::=
 		<set header information many>
 	|	<VALUE> <item number> <set item information many>
 
-<set header information> ::= <header item name> <equals operator> <simple value specification 1>
+<set header information> ::= <header item name> <_equals operator> <simple value specification 1>
 
-<set item information> ::= <descriptor item name> <equals operator> <simple value specification 2>
+<set item information> ::= <descriptor item name> <_equals operator> <simple value specification 2>
 
 <simple value specification 1> ::= <simple value specification>
 
@@ -3853,7 +3878,7 @@ __DATA__
 <input using clause> ::= <using arguments> | <using input descriptor>
 
 <using argument many> ::= <using argument>
-                        | <using argument many> <comma> <using argument>
+                        | <using argument many> <_comma> <using argument>
 
 <using arguments> ::= <USING> <using argument many>
 
@@ -3864,7 +3889,7 @@ __DATA__
 <output using clause> ::= <into arguments> | <into descriptor>
 
 <into argument many> ::= <into argument>
-                       | <into argument many> <comma> <into argument>
+                       | <into argument many> <_comma> <into argument>
 
 <into arguments> ::= <INTO> <into argument many>
 
@@ -3884,22 +3909,22 @@ __DATA__
 
 <execute immediate statement> ::= <EXECUTE> <IMMEDIATE> <SQL statement variable>
 
-<dynamic declare cursor> ::= <DECLARE> <cursor name> <CURSOR> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <CURSOR> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <CURSOR> <cursor holdability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor sensitivity> <CURSOR> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor scrollability> <CURSOR> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor scrollability> <CURSOR> <cursor holdability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor scrollability> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <cursor scrollability> <CURSOR> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <CURSOR> <cursor holdability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
-	| <DECLARE> <cursor name> <CURSOR> <cursor returnability> <FOR> <statement name>
+<dynamic declare cursor> ::= <DECLARE> <_cursor name> <CURSOR> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <CURSOR> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <cursor scrollability> <CURSOR> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <CURSOR> <cursor holdability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor sensitivity> <CURSOR> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor scrollability> <CURSOR> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor scrollability> <CURSOR> <cursor holdability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor scrollability> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <cursor scrollability> <CURSOR> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <CURSOR> <cursor holdability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <CURSOR> <cursor holdability> <cursor returnability> <FOR> <statement name>
+	| <DECLARE> <_cursor name> <CURSOR> <cursor returnability> <FOR> <statement name>
 
 <allocate cursor statement> ::= <ALLOCATE> <extended cursor name> <cursor intent>
 
@@ -3939,15 +3964,15 @@ __DATA__
 
 <dynamic update statement positioned> ::= <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF> <dynamic cursor name>
 
-<preparable dynamic delete statement positioned> ::= <DELETE>                       <WHERE> <CURRENT> <OF>                <cursor name>
-                                                   | <DELETE>                       <WHERE> <CURRENT> <OF> <scope option> <cursor name>
-                                                   | <DELETE> <FROM> <target table> <WHERE> <CURRENT> <OF>                <cursor name>
-                                                   | <DELETE> <FROM> <target table> <WHERE> <CURRENT> <OF> <scope option> <cursor name>
+<preparable dynamic delete statement positioned> ::= <DELETE>                       <WHERE> <CURRENT> <OF>                <_cursor name>
+                                                   | <DELETE>                       <WHERE> <CURRENT> <OF> <scope option> <_cursor name>
+                                                   | <DELETE> <FROM> <target table> <WHERE> <CURRENT> <OF>                <_cursor name>
+                                                   | <DELETE> <FROM> <target table> <WHERE> <CURRENT> <OF> <scope option> <_cursor name>
 
-<preparable dynamic update statement positioned> ::= <UPDATE>                <SET> <set clause list> <WHERE> <CURRENT> <OF>                <cursor name>
-                                                   | <UPDATE>                <SET> <set clause list> <WHERE> <CURRENT> <OF> <scope option> <cursor name>
-                                                   | <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF>                <cursor name>
-                                                   | <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF> <scope option> <cursor name>
+<preparable dynamic update statement positioned> ::= <UPDATE>                <SET> <set clause list> <WHERE> <CURRENT> <OF>                <_cursor name>
+                                                   | <UPDATE>                <SET> <set clause list> <WHERE> <CURRENT> <OF> <scope option> <_cursor name>
+                                                   | <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF>                <_cursor name>
+                                                   | <UPDATE> <target table> <SET> <set clause list> <WHERE> <CURRENT> <OF> <scope option> <_cursor name>
 
 <embedded SQL host program> ::=	<embedded SQL C program>
 
@@ -3965,22 +3990,22 @@ __DATA__
 	|	<embedded exception declaration>
 	|	<SQL procedure statement>
 
-<ampersand AND SQL AND left paren> ::= <ampersand> <SQL> <left paren>
+<ampersand AND SQL AND left paren> ::= <_ampersand> <SQL> <_left paren>
 
 <SQL prefix> ::= <EXEC> <SQL> | <ampersand AND SQL AND left paren>
 
-<SQL terminator> ::= <END_EXEC> | <semicolon> | <right paren>
+<SQL terminator> ::= <END_EXEC> | <_semicolon> | <_right paren>
 
 <embedded authorization declaration> ::= <DECLARE> <embedded authorization clause>
 
 <embedded authorization clause> ::=
-		<SCHEMA> <schema name>
+		<SCHEMA> <_schema name>
 	|	<AUTHORIZATION> <embedded authorization identifier>
 	|	<AUTHORIZATION> <embedded authorization identifier> <FOR> <STATIC> <ONLY>
 	|	<AUTHORIZATION> <embedded authorization identifier> <FOR> <STATIC> <AND> <DYNAMIC>
-	|	<SCHEMA> <schema name> <AUTHORIZATION> <embedded authorization identifier>
-	|	<SCHEMA> <schema name> <AUTHORIZATION> <embedded authorization identifier> <FOR> <STATIC> <ONLY>
-	|	<SCHEMA> <schema name> <AUTHORIZATION> <embedded authorization identifier> <FOR> <STATIC> <AND> <DYNAMIC>
+	|	<SCHEMA> <_schema name> <AUTHORIZATION> <embedded authorization identifier>
+	|	<SCHEMA> <_schema name> <AUTHORIZATION> <embedded authorization identifier> <FOR> <STATIC> <ONLY>
+	|	<SCHEMA> <_schema name> <AUTHORIZATION> <embedded authorization identifier> <FOR> <STATIC> <AND> <DYNAMIC>
 
 <embedded authorization identifier> ::= <module authorization identifier>
 
@@ -3999,7 +4024,7 @@ __DATA__
 	| <embedded SQL begin declare> <host variable definition many> <embedded SQL end declare>
 	| <embedded SQL MUMPS declare>
 
-<embedded character set declaration> ::= <SQL> <NAMES> <ARE> <character set specification>
+<embedded character set declaration> ::= <SQL> <NAMES> <ARE> <_character set specification>
 
 <embedded SQL begin declare> ::= <SQL prefix> <BEGIN> <DECLARE> <SECTION>
                                | <SQL prefix> <BEGIN> <DECLARE> <SECTION> <SQL terminator>
@@ -4014,9 +4039,9 @@ __DATA__
 
 <host variable definition> ::= <C variable definition>
 
-<embedded variable name> ::= <colon> <host identifier>
+<_embedded variable name> ~ <__colon> <_host identifier>
 
-<host identifier> ::= <C host identifier>
+<_host identifier> ~ <__C host identifier>
 
 <embedded exception declaration> ::= <WHENEVER> <condition> <condition action>
 
@@ -4024,8 +4049,8 @@ __DATA__
 
 <SQL condition> ::= <major category>
 	|	<SQLSTATE> '(' <SQLSTATE class value> ')'
-	|	<SQLSTATE> '(' <SQLSTATE class value> <comma> <SQLSTATE subclass value> ')'
-	|	<CONSTRAINT> <constraint name>
+	|	<SQLSTATE> '(' <SQLSTATE class value> <_comma> <SQLSTATE subclass value> ')'
+	|	<CONSTRAINT> <_constraint name>
 
 <major category> ::= <SQLEXCEPTION> | <SQLWARNING> | <NOT> <FOUND>
 
@@ -4033,7 +4058,7 @@ __DATA__
 
 <SQLSTATE subclass value> ::= <SQLSTATE char><SQLSTATE char><SQLSTATE char>
 
-<SQLSTATE char> ::= <simple Latin upper case letter> | <digit>
+<SQLSTATE char> ::= <_simple Latin upper case letter> | <_digit>
 
 <condition action> ::= <CONTINUE> | <go to>
 
@@ -4046,20 +4071,20 @@ __DATA__
 #
 <goto target> ::=
 		<host label identifier>
-	|	<unsigned integer>
+	|	<_unsigned integer>
 
 #
 # We assume the host label identifier follows C convention
 #
 
-<host label identifier> ::= <C host identifier>
+<host label identifier> ::= <_C host identifier>
 
 <embedded SQL C program> ::= <EXEC> <SQL>
 
-<C variable definition> ::= <C variable specification> <semicolon>
-	| <C storage class> <C variable specification> <semicolon>
-	| <C storage class> <C class modifier> <C variable specification> <semicolon>
-	| <C class modifier> <C variable specification> <semicolon>
+<C variable definition> ::= <C variable specification> <_semicolon>
+	| <C storage class> <C variable specification> <_semicolon>
+	| <C storage class> <C class modifier> <C variable specification> <_semicolon>
+	| <C class modifier> <C variable specification> <_semicolon>
 
 <C variable specification> ::= <C numeric variable> | <C character variable> | <C derived variable>
 
@@ -4067,37 +4092,38 @@ __DATA__
 
 <C class modifier> ::= 'const' | 'volatile'
 
-<C host identifier AND MAYBE C initial value> ::= <C host identifier>
-                                                | <C host identifier> <C initial value>
+<C host identifier AND MAYBE C initial value> ::= <_C host identifier>
+                                                | <_C host identifier> <C initial value>
 
 <C host identifier AND MAYBE C initial value list> ::= <C host identifier AND MAYBE C initial value>
-                                                     | <C host identifier AND MAYBE C initial value> <comma> <C host identifier AND MAYBE C initial value>
+                                                     | <C host identifier AND MAYBE C initial value> <_comma> <C host identifier AND MAYBE C initial value>
 <C numeric variable> ::= 'long' 'long' <C host identifier AND MAYBE C initial value list>
                        | 'long' <C host identifier AND MAYBE C initial value list>
                        | 'short' <C host identifier AND MAYBE C initial value list>
                        | 'float' <C host identifier AND MAYBE C initial value list>
                        | 'double' <C host identifier AND MAYBE C initial value list>
 
-<C host identifier AND C array specification AND MAYBE C initial value> ::= <C host identifier> <C array specification>
-                                                                          | <C host identifier> <C array specification> <C initial value>
+<C host identifier AND C array specification AND MAYBE C initial value> ::= <_C host identifier> <C array specification>
+                                                                          | <_C host identifier> <C array specification> <C initial value>
 
 <C host identifier AND C array specification AND MAYBE C initial value list> ::= <C host identifier AND C array specification AND MAYBE C initial value>
-                                                                               | <C host identifier AND C array specification AND MAYBE C initial value list> <comma> <C host identifier AND C array specification AND MAYBE C initial value>
+                                                                               | <C host identifier AND C array specification AND MAYBE C initial value list> <_comma> <C host identifier AND C array specification AND MAYBE C initial value>
 
 <C character variable> ::= <C character type>                                                      <C host identifier AND C array specification AND MAYBE C initial value list>
-                         | <C character type> <CHARACTER> <SET> <character set specification>      <C host identifier AND C array specification AND MAYBE C initial value list>
-                         | <C character type> <CHARACTER> <SET> <IS> <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                         | <C character type> <CHARACTER> <SET> <_character set specification>      <C host identifier AND C array specification AND MAYBE C initial value list>
+                         | <C character type> <CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
 
 <C character type> ::= 'char' | 'unsigned' 'char' | 'unsigned' 'short'
 
-<C array specification> ::= <left bracket> <length> <right bracket>
+<C array specification> ::= <_left bracket> <length> <_right bracket>
 
 <C L>          ~ [a-zA-Z_]
 <C A>          ~ [a-zA-Z_0-9]
 <C A_any>      ~ <C A>*
 <C IDENTIFIER>          ~ <C L> <C A_any>
 
-<C host identifier> ~ <C IDENTIFIER>
+<__C host identifier> ~ <C IDENTIFIER>
+<_C host identifier> ~ <__C host identifier>
 
 <C derived variable> ::=
 		<C VARCHAR variable>
@@ -4115,32 +4141,32 @@ __DATA__
 	|	<C REF variable>
 
 <C VARCHAR variable> ::= <VARCHAR>                                                      <C host identifier AND C array specification AND MAYBE C initial value list>
-                       | <VARCHAR> <CHARACTER> <SET>      <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
-                       | <VARCHAR> <CHARACTER> <SET> <IS> <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                       | <VARCHAR> <CHARACTER> <SET>      <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                       | <VARCHAR> <CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
 
 <C NCHAR variable> ::= <NCHAR>                                                      <C host identifier AND C array specification AND MAYBE C initial value list>
-                     | <NCHAR> <CHARACTER> <SET>      <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
-                     | <NCHAR> <CHARACTER> <SET> <IS> <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                     | <NCHAR> <CHARACTER> <SET>      <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                     | <NCHAR> <CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
 
 <C NCHAR VARYING variable> ::= <NCHAR> <VARYING>                                                      <C host identifier AND C array specification AND MAYBE C initial value list>
-                             | <NCHAR> <VARYING> <CHARACTER> <SET>      <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
-                             | <NCHAR> <VARYING> <CHARACTER> <SET> <IS> <character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                             | <NCHAR> <VARYING> <CHARACTER> <SET>      <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
+                             | <NCHAR> <VARYING> <CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND C array specification AND MAYBE C initial value list>
 
-<C CLOB variable> ::= <SQL> <TYPE> <IS> <CLOB> <left paren> <large object length> <right paren>	                                                     <C host identifier AND MAYBE C initial value list>
-                    | <SQL> <TYPE> <IS> <CLOB> <left paren> <large object length> <right paren>	<CHARACTER> <SET>      <character set specification> <C host identifier AND MAYBE C initial value list>
-                    | <SQL> <TYPE> <IS> <CLOB> <left paren> <large object length> <right paren>	<CHARACTER> <SET> <IS> <character set specification> <C host identifier AND MAYBE C initial value list>
+<C CLOB variable> ::= <SQL> <TYPE> <IS> <CLOB> <_left paren> <large object length> <_right paren>	                                                     <C host identifier AND MAYBE C initial value list>
+                    | <SQL> <TYPE> <IS> <CLOB> <_left paren> <large object length> <_right paren>	<CHARACTER> <SET>      <_character set specification> <C host identifier AND MAYBE C initial value list>
+                    | <SQL> <TYPE> <IS> <CLOB> <_left paren> <large object length> <_right paren>	<CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND MAYBE C initial value list>
 
-<C NCLOB variable> ::= <SQL> <TYPE> <IS> <NCLOB> <left paren> <large object length> <right paren>	                                                     <C host identifier AND MAYBE C initial value list>
-                     | <SQL> <TYPE> <IS> <NCLOB> <left paren> <large object length> <right paren>	<CHARACTER> <SET>      <character set specification> <C host identifier AND MAYBE C initial value list>
-                     | <SQL> <TYPE> <IS> <NCLOB> <left paren> <large object length> <right paren>	<CHARACTER> <SET> <IS> <character set specification> <C host identifier AND MAYBE C initial value list>
+<C NCLOB variable> ::= <SQL> <TYPE> <IS> <NCLOB> <_left paren> <large object length> <_right paren>	                                                     <C host identifier AND MAYBE C initial value list>
+                     | <SQL> <TYPE> <IS> <NCLOB> <_left paren> <large object length> <_right paren>	<CHARACTER> <SET>      <_character set specification> <C host identifier AND MAYBE C initial value list>
+                     | <SQL> <TYPE> <IS> <NCLOB> <_left paren> <large object length> <_right paren>	<CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND MAYBE C initial value list>
 
 <C user_defined type variable> ::= <SQL> <TYPE> <IS> <path_resolved user_defined type name> <AS> <predefined type>	                                                     <C host identifier AND MAYBE C initial value list>
-                                 | <SQL> <TYPE> <IS> <path_resolved user_defined type name> <AS> <predefined type>	<CHARACTER> <SET>      <character set specification> <C host identifier AND MAYBE C initial value list>
-                                 | <SQL> <TYPE> <IS> <path_resolved user_defined type name> <AS> <predefined type>	<CHARACTER> <SET> <IS> <character set specification> <C host identifier AND MAYBE C initial value list>
+                                 | <SQL> <TYPE> <IS> <path_resolved user_defined type name> <AS> <predefined type>	<CHARACTER> <SET>      <_character set specification> <C host identifier AND MAYBE C initial value list>
+                                 | <SQL> <TYPE> <IS> <path_resolved user_defined type name> <AS> <predefined type>	<CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND MAYBE C initial value list>
 
-<C BLOB variable> ::= <SQL> <TYPE> <IS> <BLOB> <left paren> <large object length> <right paren>	                                                     <C host identifier AND MAYBE C initial value list>
-                    | <SQL> <TYPE> <IS> <BLOB> <left paren> <large object length> <right paren>	<CHARACTER> <SET>      <character set specification> <C host identifier AND MAYBE C initial value list>
-                    | <SQL> <TYPE> <IS> <BLOB> <left paren> <large object length> <right paren>	<CHARACTER> <SET> <IS> <character set specification> <C host identifier AND MAYBE C initial value list>
+<C BLOB variable> ::= <SQL> <TYPE> <IS> <BLOB> <_left paren> <large object length> <_right paren>	                                                     <C host identifier AND MAYBE C initial value list>
+                    | <SQL> <TYPE> <IS> <BLOB> <_left paren> <large object length> <_right paren>	<CHARACTER> <SET>      <_character set specification> <C host identifier AND MAYBE C initial value list>
+                    | <SQL> <TYPE> <IS> <BLOB> <_left paren> <large object length> <_right paren>	<CHARACTER> <SET> <IS> <_character set specification> <C host identifier AND MAYBE C initial value list>
 
 <C CLOB locator variable> ::= <SQL> <TYPE> <IS> <CLOB> <AS> <LOCATOR> <C host identifier AND MAYBE C initial value list>
 
@@ -4154,11 +4180,11 @@ __DATA__
 
 <C REF variable> ::= <SQL> <TYPE> <IS> <reference type>
 
-<character representations> ::= <character representation>+
+<character representations> ::= <_character representation>+
 
-<C initial value> ::= <equals operator> <character representations>
+<C initial value> ::= <_equals operator> <character representations>
 
-<direct SQL statement> ::= <directly executable statement> <semicolon>
+<direct SQL statement> ::= <directly executable statement> <_semicolon>
 
 #
 # <direct implementation_defined statement> is dropped
@@ -4186,9 +4212,9 @@ __DATA__
 <SQL diagnostics information> ::= <statement information> | <condition information>
 
 <statement information> ::= <statement information item>
-                          | <statement information> <comma> <statement information item>
+                          | <statement information> <_comma> <statement information item>
 
-<statement information item> ::= <simple target specification> <equals operator> <statement information item name>
+<statement information item> ::= <simple target specification> <_equals operator> <statement information item name>
 
 <statement information item name> ::=
 		<NUMBER>
@@ -4203,13 +4229,13 @@ __DATA__
 	|	<TRANSACTION_ACTIVE>
 
 <condition information items> ::= <condition information item>
-                                | <condition information items> <comma> <condition information item>
+                                | <condition information items> <_comma> <condition information item>
 
 <condition information> ::=
 		<EXCEPTION> <condition number> <condition information items>
 	|	<CONDITION> <condition number> <condition information items>
 
-<condition information item> ::= <simple target specification> <equals operator> <condition information item name>
+<condition information item> ::= <simple target specification> <_equals operator> <condition information item name>
 
 <condition information item name> ::=
 		<CATALOG_NAME>
@@ -4361,7 +4387,8 @@ __DATA__
 <CURSOR_NAME> ~ [Cc][Uu][Rr][Ss][Oo][Rr]'_'[Nn][Aa][Mm][Ee]
 <CYCLE> ~ [Cc][Yy][Cc][Ll][Ee]
 <DATA> ~ [Dd][Aa][Tt][Aa]
-<DATE> ~ [Dd][Aa][Tt][Ee]
+<__DATE> ~ [Dd][Aa][Tt][Ee]
+<DATE> ~ <__DATE>
 <DATETIME_INTERVAL_CODE> ~ [Dd][Aa][Tt][Ee][Tt][Ii][Mm][Ee]'_'[Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]'_'[Cc][Oo][Dd][Ee]
 <DATETIME_INTERVAL_PRECISION> ~ [Dd][Aa][Tt][Ee][Tt][Ii][Mm][Ee]'_'[Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]'_'[Pp][Rr][Ee][Cc][Ii][Ss][Ii][Oo][Nn]
 <DAY> ~ [Dd][Aa][Yy]
@@ -4395,14 +4422,15 @@ __DATA__
 <DYNAMIC> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]
 <DYNAMIC_FUNCTION> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
 <DYNAMIC_FUNCTION_CODE> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]'_'[Cc][Oo][Dd][Ee]
-<E> ~ [Ee]
+<__E> ~ [Ee]
 <EACH> ~ [Ee][Aa][Cc][Hh]
 <ELEMENT> ~ [Ee][Ll][Ee][Mm][Ee][Nn][Tt]
 <ELSE> ~ [Ee][Ll][Ss][Ee]
 <END> ~ [Ee][Nn][Dd]
 <END_EXEC> ~ [Ee][Nn][Dd]'-'[Ee][Xx][Ee][Cc]
 <EQUALS> ~ [Ee][Qq][Uu][Aa][Ll][Ss]
-<ESCAPE> ~ [Ee][Ss][Cc][Aa][Pp][Ee]
+<__ESCAPE> ~ [Ee][Ss][Cc][Aa][Pp][Ee]
+<ESCAPE> ~ <__ESCAPE>
 <EVERY> ~ [Ee][Vv][Ee][Rr][Yy]
 <EXCEPT> ~ [Ee][Xx][Cc][Ee][Pp][Tt]
 <EXCEPTION> ~ [Ee][Xx][Cc][Ee][Pp][Tt][Ii][Oo][Nn]
@@ -4414,7 +4442,8 @@ __DATA__
 <EXP> ~ [Ee][Xx][Pp]
 <EXTERNAL> ~ [Ee][Xx][Tt][Ee][Rr][Nn][Aa][Ll]
 <EXTRACT> ~ [Ee][Xx][Tt][Rr][Aa][Cc][Tt]
-<FALSE> ~ [Ff][Aa][Ll][Ss][Ee]
+<__FALSE> ~ [Ff][Aa][Ll][Ss][Ee]
+<FALSE> ~ <__FALSE>
 <FETCH> ~ [Ff][Ee][Tt][Cc][Hh]
 <FILTER> ~ [Ff][Ii][Ll][Tt][Ee][Rr]
 <FINAL> ~ [Ff][Ii][Nn][Aa][Ll]
@@ -4433,7 +4462,8 @@ __DATA__
 <GENERAL> ~ [Gg][Ee][Nn][Ee][Rr][Aa][Ll]
 <GENERATED> ~ [Gg][Ee][Nn][Ee][Rr][Aa][Tt][Ee][Dd]
 <GET> ~ [Gg][Ee][Tt]
-<GLOBAL> ~ [Gg][Ll][Oo][Bb][Aa][Ll]
+<__GLOBAL> ~ [Gg][Ll][Oo][Bb][Aa][Ll]
+<GLOBAL> ~ <__GLOBAL>
 <GO> ~ [Gg][Oo]
 <GOTO> ~ [Gg][Oo][Tt][Oo]
 <GRANT> ~ [Gg][Rr][Aa][Nn][Tt]
@@ -4463,7 +4493,8 @@ __DATA__
 <INTEGER> ~ [Ii][Nn][Tt][Ee][Gg][Ee][Rr]
 <INTERSECT> ~ [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
 <INTERSECTION> ~ [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt][Ii][Oo][Nn]
-<INTERVAL> ~ [Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]
+<__INTERVAL> ~ [Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]
+<INTERVAL> ~ <__INTERVAL>
 <INTO> ~ [Ii][Nn][Tt][Oo]
 <INVOKER> ~ [Ii][Nn][Vv][Oo][Kk][Ee][Rr]
 <IS> ~ [Ii][Ss]
@@ -4482,7 +4513,8 @@ __DATA__
 <LEVEL> ~ [Ll][Ee][Vv][Ee][Ll]
 <LIKE> ~ [Ll][Ii][Kk][Ee]
 <LN> ~ [Ll][Nn]
-<LOCAL> ~ [Ll][Oo][Cc][Aa][Ll]
+<__LOCAL> ~ [Ll][Oo][Cc][Aa][Ll]
+<LOCAL> ~ <__LOCAL>
 <LOCALTIME> ~ [Ll][Oo][Cc][Aa][Ll][Tt][Ii][Mm][Ee]
 <LOCALTIMESTAMP> ~ [Ll][Oo][Cc][Aa][Ll][Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
 <LOCATOR> ~ [Ll][Oo][Cc][Aa][Tt][Oo][Rr]
@@ -4503,11 +4535,12 @@ __DATA__
 <MINVALUE> ~ [Mm][Ii][Nn][Vv][Aa][Ll][Uu][Ee]
 <MOD> ~ [Mm][Oo][Dd]
 <MODIFIES> ~ [Mm][Oo][Dd][Ii][Ff][Ii][Ee][Ss]
-<MODULE> ~ [Mm][Oo][Dd][Uu][Ll][Ee]
+<__MODULE> ~ [Mm][Oo][Dd][Uu][Ll][Ee]
+<MODULE> ~ <__MODULE>
 <MONTH> ~ [Mm][Oo][Nn][Tt][Hh]
 <MORE> ~ [Mm][Oo][Rr][Ee]
 <MULTISET> ~ [Mm][Uu][Ll][Tt][Ii][Ss][Ee][Tt]
-<N> ~ [Nn]
+<__N> ~ [Nn]
 <NAME> ~ [Nn][Aa][Mm][Ee]
 <NAMES> ~ [Nn][Aa][Mm][Ee][Ss]
 <NATIONAL> ~ [Nn][Aa][Tt][Ii][Oo][Nn][Aa][Ll]
@@ -4678,8 +4711,10 @@ __DATA__
 <TEMPORARY> ~ [Tt][Ee][Mm][Pp][Oo][Rr][Aa][Rr][Yy]
 <THEN> ~ [Tt][Hh][Ee][Nn]
 <TIES> ~ [Tt][Ii][Ee][Ss]
-<TIME> ~ [Tt][Ii][Mm][Ee]
-<TIMESTAMP> ~ [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
+<__TIME> ~ [Tt][Ii][Mm][Ee]
+<TIME> ~ <__TIME>
+<__TIMESTAMP> ~ [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
+<TIMESTAMP> ~ <__TIMESTAMP>
 <TIMEZONE_HOUR> ~ [Tt][Ii][Mm][Ee][Zz][Oo][Nn][Ee]'_'[Hh][Oo][Uu][Rr]
 <TIMEZONE_MINUTE> ~ [Tt][Ii][Mm][Ee][Zz][Oo][Nn][Ee]'_'[Mm][Ii][Nn][Uu][Tt][Ee]
 <TO> ~ [Tt][Oo]
@@ -4699,15 +4734,18 @@ __DATA__
 <TRIGGER_NAME> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
 <TRIGGER_SCHEMA> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
 <TRIM> ~ [Tt][Rr][Ii][Mm]
-<TRUE> ~ [Tt][Rr][Uu][Ee]
+<__TRUE> ~ [Tt][Rr][Uu][Ee]
+<TRUE> ~ <__TRUE>
 <TYPE> ~ [Tt][Yy][Pp][Ee]
-<U> ~ [Uu]
+<__U> ~ [Uu]
+<__UESCAPE> ~ [Uu][Ee][Ss][Cc][Aa][Pp][Ee]
 <UNBOUNDED> ~ [Uu][Nn][Bb][Oo][Uu][Nn][Dd][Ee][Dd]
 <UNCOMMITTED> ~ [Uu][Nn][Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
 <UNDER> ~ [Uu][Nn][Dd][Ee][Rr]
 <UNION> ~ [Uu][Nn][Ii][Oo][Nn]
 <UNIQUE> ~ [Uu][Nn][Ii][Qq][Uu][Ee]
-<UNKNOWN> ~ [Uu][Nn][Kk][Nn][Oo][Ww][Nn]
+<__UNKNOWN> ~ [Uu][Nn][Kk][Nn][Oo][Ww][Nn]
+<UNKNOWN> ~ <__UNKNOWN>
 <UNNAMED> ~ [Uu][Nn][Nn][Aa][Mm][Ee][Dd]
 <UNNEST> ~ [Uu][Nn][Nn][Ee][Ss][Tt]
 <UPDATE> ~ [Uu][Pp][Dd][Aa][Tt][Ee]
@@ -4736,7 +4774,7 @@ __DATA__
 <WITHOUT> ~ [Ww][Ii][Tt][Hh][Oo][Uu][Tt]
 <WORK> ~ [Ww][Oo][Rr][Kk]
 <WRITE> ~ [Ww][Rr][Ii][Tt][Ee]
-<X> ~ [Xx]
+<__X> ~ [Xx]
 <YEAR> ~ [Yy][Ee][Aa][Rr]
 <ZONE> ~ [Zz][Oo][Nn][Ee]
 
