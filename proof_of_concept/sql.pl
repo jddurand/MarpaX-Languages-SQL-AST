@@ -5,12 +5,31 @@ use Marpa::R2;
 
 my $grammar_source = do {local $/; <DATA>};
 my $input = <<INPUT;
-CREATE SCHEMA AUTHORIZATION oe
-   CREATE TABLE new_product 
-      (color VARCHAR(10)  PRIMARY KEY, quantity NUMBER) 
-   CREATE VIEW new_product_view 
-      AS SELECT color, quantity FROM new_product WHERE color = 'RED' 
-   GRANT select ON new_product_view TO hr
+CREATE SCHEMA PERS
+
+     CREATE TABLE ORG (DEPTNUMB  SMALLINT NOT NULL,
+                        DEPTNAME VARCHAR(14),
+                        MANAGER  SMALLINT,
+                        DIVISION VARCHAR(10),
+                        LOCATION VARCHAR(13),
+                        CONSTRAINT PKEYDNO
+                          PRIMARY KEY (DEPTNUMB),
+                        CONSTRAINT FKEYMGR
+                          FOREIGN KEY (MANAGER)
+                          REFERENCES STAFF (ID) )
+
+     CREATE TABLE STAFF (ID        SMALLINT NOT NULL,
+                         NAME     VARCHAR(9),
+                         DEPT     SMALLINT,
+                         JOB      VARCHAR(5),
+                         YEARS    SMALLINT,
+                         SALARY   DECIMAL(7,2),
+                         COMM     DECIMAL(7,2),
+                         CONSTRAINT PKEYID
+                           PRIMARY KEY (ID),
+                         CONSTRAINT FKEYDNO
+                           FOREIGN KEY (DEPT)
+                           REFERENCES ORG (DEPTNUMB) ) 
 INPUT
 my $grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_source } );
 my $re = Marpa::R2::Scanless::R->new( { grammar => $grammar, trace_terminals => 1 } );
@@ -190,7 +209,7 @@ __DATA__
 <_comment> ~ <_simple comment> | <_bracketed comment>
 
 #
-# <_comment character> seems wrong to me: <__nonquote character> | <_quote character> will eat
+# <__comment character> seems wrong to me: <__nonquote character> | <_quote character> will eat
 # everything
 #
 <_not_newline> ~ [^\N{U+000A}\N{U+000D}]
@@ -207,11 +226,11 @@ __DATA__
 
 <_bracketed comment terminator> ~ <__asterisk> <__solidus>
 
-<_bracketed comment contents unit> ~ <_comment character> | <__separator>
+<_bracketed comment contents unit> ~ <__comment character> | <__separator>
 
 <_bracketed comment contents> ~ <_bracketed comment contents unit>*
 
-<_comment character> ~ <__nonquote character> | <__quote>
+<__comment character> ~ <__nonquote character> | <__quote>
 #
 # NOTE 93 — newline is typically represented by U+000A (“Line Feed”) and/or U+000D (“Carriage Return”); however,
 # this representation is not required by ISO/IEC 9075.
