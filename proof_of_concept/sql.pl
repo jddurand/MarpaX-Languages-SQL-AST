@@ -29,7 +29,7 @@ CREATE SCHEMA PERS
                            PRIMARY KEY (ID),
                          CONSTRAINT FKEYDNO
                            FOREIGN KEY (DEPT)
-                           REFERENCES ORG (DEPTNUMB) ) 
+			 REFERENCES ORG (DEPTNUMB) )
 INPUT
 my $grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_source } );
 my $re = Marpa::R2::Scanless::R->new( { grammar => $grammar, trace_terminals => 1 } );
@@ -37,11 +37,21 @@ eval {$re->read(\$input)} || die "Parse error: $@\n\nContext:\n" . $re->show_pro
 
 __DATA__
 #
+# Defaults
+#
+#:default ::= action => [values] bless => ::lhs
+#lexeme default = action => [start,length,value]
+
+#
 # References: http://savage.net.au/SQL/sql-2003-1.bnf, http://savage.net.au/SQL/sql-2003-2.bnf
 #
 
 :start ::= <SQL start>
 :discard ~ <__separator>
+#
+# For the empty statements, or statements ending with ';' while this is not in the grammar
+#
+:discard ~ <__semicolon>
 
 <SQL start> ::= <SQL executable statement>
               | <direct SQL statement>
@@ -102,7 +112,8 @@ __DATA__
 <__colon> ~ ':'
 <_colon> ~ <__colon>
 
-<_semicolon> ~ ';'
+<__semicolon> ~ ';'
+<_semicolon> ~ <__semicolon>
 
 <__less than operator> ~ '<'
 <_less than operator> ~ <__less than operator>
