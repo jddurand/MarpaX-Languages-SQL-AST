@@ -268,7 +268,8 @@ __DATA__
 <__nonquote character> ~ [^']
 <_nonquote character> ~ <__nonquote character>
 
-<_quote symbol> ~ <__quote><__quote>
+<__quote symbol> ~ <__quote><__quote>
+<_quote symbol> ~ <__quote symbol>
 
 <__national character string literal> ~ <__N> <__quote> <__character representation any> <__quote>
                                       | <__national character string literal> <__separator> <__quote> <__character representation any> <__quote>
@@ -1807,8 +1808,9 @@ __DATA__
 # <_escape character> ::= <character value expression>
 # and in reality this is always in the form 'X'
 #
-<__any character> ~ [.]
-<__escape character> ~ <__quote><__any character><__quote>
+<__any character but quote> ~ [^']
+<__escape character> ~ <__quote><__any character but quote><__quote>
+                     | <__quote><__quote symbol><__quote>
 <_escape character> ~ <__escape character>
 
 <octet like predicate> ::= <row value predicand> <octet like predicate part 2>
