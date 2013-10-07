@@ -132,7 +132,7 @@ lexeme default = action => [start,length,value]
 # References: http://savage.net.au/SQL/sql-2003-1.bnf, http://savage.net.au/SQL/sql-2003-2.bnf
 #
 
-:start ::= <sqlStart>
+:start ::= <sqlStartSequence>
 :discard ~ <__separator>
 #
 # For the empty statements, or statements ending with ';' while this is not in the grammar
@@ -147,6 +147,7 @@ lexeme default = action => [start,length,value]
               | <embeddedSqlHostProgram>
               | <embeddedSqlStatement>
               | <sqlClientModuleDefinition>
+              | <sqlStart> <_semicolon>
 
 # -----------------------------------------------------------------------------------
 # Lexemes are always: <CONSTANT> or <_something>
