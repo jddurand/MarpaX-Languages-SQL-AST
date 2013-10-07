@@ -9,8 +9,8 @@ BEGIN {
 
 my $sqlSourceCode = do { local $/; <DATA> };
 my $sqlAst = MarpaX::Languages::SQL::AST->new();
-my $valuep = $sqlAst->parse(\$sqlSourceCode);
-ok(defined($valuep), 'Output from parse() is ok');
+my $valuep = $sqlAst->parse(\$sqlSourceCode)->value();
+ok(defined($valuep), 'Output from parse()->value() is ok');
 
 __DATA__
 CREATE SCHEMA PERS

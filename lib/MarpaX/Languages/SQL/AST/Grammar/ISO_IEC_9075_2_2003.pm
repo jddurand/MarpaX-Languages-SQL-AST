@@ -2,6 +2,7 @@ use strict;
 use warnings FATAL => 'all';
 
 package MarpaX::Languages::SQL::AST::Grammar::ISO_IEC_9075_2_2003;
+use MarpaX::Languages::SQL::AST::Grammar::ISO_IEC_9075_2_2003::Actions;
 use Carp qw/croak/;
 
 # ABSTRACT: SQL 2003 grammar written in Marpa BNF
@@ -132,14 +133,14 @@ lexeme default = action => [start,length,value]
 # References: http://savage.net.au/SQL/sql-2003-1.bnf, http://savage.net.au/SQL/sql-2003-2.bnf
 #
 
-:start ::= <sqlStartSequence>
+:start ::= <sqlStart>
 :discard ~ <__separator>
 #
 # For the empty statements, or statements ending with ';' while this is not in the grammar
 #
 #:discard ~ <__semicolon>
 
-<sqlStartSequence>  ::= <sqlStart>+
+#<sqlStartSequence>  ::= <sqlStart>+
 
 <sqlStart>  ::= <preparableStatement>
               | <directSqlStatement>
@@ -147,7 +148,6 @@ lexeme default = action => [start,length,value]
               | <embeddedSqlHostProgram>
               | <embeddedSqlStatement>
               | <sqlClientModuleDefinition>
-              | <sqlStart> <_semicolon>
 
 # -----------------------------------------------------------------------------------
 # Lexemes are always: <CONSTANT> or <_something>
