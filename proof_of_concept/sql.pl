@@ -2,29 +2,12 @@
 use strict;
 use diagnostics;
 use Marpa::R2;
+use Data::Dumper;
 
 my $grammar_source = do {local $/; <DATA>};
-#my %new = ();
-#while ($grammar_source =~ m/<([A-Za-z0-9][\w \-]+)>/sxmg) {
-#    if (uc($1) eq $1) {
-#	next;
-#    }
-#
-#    my ($pos_grammar_source, $match) = (pos($grammar_source), $1);
-#    my @new = ();
-#    foreach (split(/[ _\-]/, $match)) {
-#	if (! @new) {
-#	    push(@new, lc($_));
-#	} else {
-#	    push(@new, ucfirst(lc($_)));
-#	}
-#    }
-#    $new{$match} = join('', @new);
+#while ($grammar_source =~ m/^((<[A-Z_0-9]+>)\s+~(.*))/xmg) {
+#    print ":lexeme ~ $2 priority => 1\n$1\n";
 #}
-#my $allmatchre = join('|', map {quotemeta($_)} keys %new);
-#pos($grammar_source) = undef;
-#$grammar_source =~ s/<($allmatchre)>/"<$new{$1}>"/sxmge;
-#print $grammar_source;
 #exit;
 my $input = <<INPUT;
 CREATE SCHEMA PERS
@@ -56,11 +39,15 @@ INPUT
 my $grammar = Marpa::R2::Scanless::G->new( { source => \$grammar_source, bless_package => 'MarpaX::Languages::SQL::AST' } );
 my $re = Marpa::R2::Scanless::R->new( { grammar => $grammar, trace_terminals => 1 } );
 eval {$re->read(\$input)} || die "Parse error: $@\n\nContext:\n" . $re->show_progress();
-#while (defined(my $valueref = $re->value())) {
-#    print "Value\n";
-#}
-#use Data::Dumper;
-#print Dumper($valueref);
+my $nvalue = 0;
+while (defined(my $valueref = $re->value())) {
+    ++$nvalue;
+    open(VALUE, '>', "/tmp/value$nvalue");
+    print VALUE Dumper($valueref);
+    close(VALUE);
+}
+print "==> $nvalue parse tree values\n";
+
 __DATA__
 #
 # Defaults
@@ -79,9 +66,8 @@ lexeme default = action => [start,length,value]
 #
 :discard ~ <__semicolon>
 
-<sqlStart> ::= <sqlExecutableStatement>
+<sqlStart>  ::= <preparableStatement>
               | <directSqlStatement>
-              | <preparableStatement>
               | <embeddedSqlDeclareSection>
               | <embeddedSqlHostProgram>
               | <embeddedSqlStatement>
@@ -4329,510 +4315,999 @@ lexeme default = action => [start,length,value]
 #
 # Case-insensitive versions of keywords
 #
+:lexeme ~ <A> priority => 1
 <A> ~ [Aa]
+:lexeme ~ <ABS> priority => 1
 <ABS> ~ [Aa][Bb][Ss]
+:lexeme ~ <ABSOLUTE> priority => 1
 <ABSOLUTE> ~ [Aa][Bb][Ss][Oo][Ll][Uu][Tt][Ee]
+:lexeme ~ <ACTION> priority => 1
 <ACTION> ~ [Aa][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <ADD> priority => 1
 <ADD> ~ [Aa][Dd][Dd]
+:lexeme ~ <ADMIN> priority => 1
 <ADMIN> ~ [Aa][Dd][Mm][Ii][Nn]
+:lexeme ~ <AFTER> priority => 1
 <AFTER> ~ [Aa][Ff][Tt][Ee][Rr]
+:lexeme ~ <ALL> priority => 1
 <ALL> ~ [Aa][Ll][Ll]
+:lexeme ~ <ALLOCATE> priority => 1
 <ALLOCATE> ~ [Aa][Ll][Ll][Oo][Cc][Aa][Tt][Ee]
+:lexeme ~ <ALTER> priority => 1
 <ALTER> ~ [Aa][Ll][Tt][Ee][Rr]
+:lexeme ~ <ALWAYS> priority => 1
 <ALWAYS> ~ [Aa][Ll][Ww][Aa][Yy][Ss]
+:lexeme ~ <AND> priority => 1
 <AND> ~ [Aa][Nn][Dd]
+:lexeme ~ <ANY> priority => 1
 <ANY> ~ [Aa][Nn][Yy]
+:lexeme ~ <ARE> priority => 1
 <ARE> ~ [Aa][Rr][Ee]
+:lexeme ~ <ARRAY> priority => 1
 <ARRAY> ~ [Aa][Rr][Rr][Aa][Yy]
+:lexeme ~ <AS> priority => 1
 <AS> ~ [Aa][Ss]
+:lexeme ~ <ASC> priority => 1
 <ASC> ~ [Aa][Ss][Cc]
+:lexeme ~ <ASENSITIVE> priority => 1
 <ASENSITIVE> ~ [Aa][Ss][Ee][Nn][Ss][Ii][Tt][Ii][Vv][Ee]
+:lexeme ~ <ASSERTION> priority => 1
 <ASSERTION> ~ [Aa][Ss][Ss][Ee][Rr][Tt][Ii][Oo][Nn]
+:lexeme ~ <ASSIGNMENT> priority => 1
 <ASSIGNMENT> ~ [Aa][Ss][Ss][Ii][Gg][Nn][Mm][Ee][Nn][Tt]
+:lexeme ~ <ASYMMETRIC> priority => 1
 <ASYMMETRIC> ~ [Aa][Ss][Yy][Mm][Mm][Ee][Tt][Rr][Ii][Cc]
+:lexeme ~ <AT> priority => 1
 <AT> ~ [Aa][Tt]
+:lexeme ~ <ATOMIC> priority => 1
 <ATOMIC> ~ [Aa][Tt][Oo][Mm][Ii][Cc]
+:lexeme ~ <ATTRIBUTE> priority => 1
 <ATTRIBUTE> ~ [Aa][Tt][Tt][Rr][Ii][Bb][Uu][Tt][Ee]
+:lexeme ~ <ATTRIBUTES> priority => 1
 <ATTRIBUTES> ~ [Aa][Tt][Tt][Rr][Ii][Bb][Uu][Tt][Ee][Ss]
+:lexeme ~ <AUTHORIZATION> priority => 1
 <AUTHORIZATION> ~ [Aa][Uu][Tt][Hh][Oo][Rr][Ii][Zz][Aa][Tt][Ii][Oo][Nn]
+:lexeme ~ <AVG> priority => 1
 <AVG> ~ [Aa][Vv][Gg]
+:lexeme ~ <BEFORE> priority => 1
 <BEFORE> ~ [Bb][Ee][Ff][Oo][Rr][Ee]
+:lexeme ~ <BEGIN> priority => 1
 <BEGIN> ~ [Bb][Ee][Gg][Ii][Nn]
+:lexeme ~ <BERNOULLI> priority => 1
 <BERNOULLI> ~ [Bb][Ee][Rr][Nn][Oo][Uu][Ll][Ll][Ii]
+:lexeme ~ <BETWEEN> priority => 1
 <BETWEEN> ~ [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
+:lexeme ~ <BIGINT> priority => 1
 <BIGINT> ~ [Bb][Ii][Gg][Ii][Nn][Tt]
+:lexeme ~ <BINARY> priority => 1
 <BINARY> ~ [Bb][Ii][Nn][Aa][Rr][Yy]
+:lexeme ~ <BLOB> priority => 1
 <BLOB> ~ [Bb][Ll][Oo][Bb]
+:lexeme ~ <BOOLEAN> priority => 1
 <BOOLEAN> ~ [Bb][Oo][Oo][Ll][Ee][Aa][Nn]
+:lexeme ~ <BOTH> priority => 1
 <BOTH> ~ [Bb][Oo][Tt][Hh]
+:lexeme ~ <BREADTH> priority => 1
 <BREADTH> ~ [Bb][Rr][Ee][Aa][Dd][Tt][Hh]
+:lexeme ~ <BY> priority => 1
 <BY> ~ [Bb][Yy]
+:lexeme ~ <C> priority => 1
 <C> ~ [Cc]
+:lexeme ~ <CALL> priority => 1
 <CALL> ~ [Cc][Aa][Ll][Ll]
+:lexeme ~ <CALLED> priority => 1
 <CALLED> ~ [Cc][Aa][Ll][Ll][Ee][Dd]
+:lexeme ~ <CARDINALITY> priority => 1
 <CARDINALITY> ~ [Cc][Aa][Rr][Dd][Ii][Nn][Aa][Ll][Ii][Tt][Yy]
+:lexeme ~ <CASCADE> priority => 1
 <CASCADE> ~ [Cc][Aa][Ss][Cc][Aa][Dd][Ee]
+:lexeme ~ <CASCADED> priority => 1
 <CASCADED> ~ [Cc][Aa][Ss][Cc][Aa][Dd][Ee][Dd]
+:lexeme ~ <CASE> priority => 1
 <CASE> ~ [Cc][Aa][Ss][Ee]
+:lexeme ~ <CAST> priority => 1
 <CAST> ~ [Cc][Aa][Ss][Tt]
+:lexeme ~ <CATALOG> priority => 1
 <CATALOG> ~ [Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <CATALOG_NAME> priority => 1
 <CATALOG_NAME> ~ [Cc][Aa][Tt][Aa][Ll][Oo][Gg]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <CEIL> priority => 1
 <CEIL> ~ [Cc][Ee][Ii][Ll]
+:lexeme ~ <CEILING> priority => 1
 <CEILING> ~ [Cc][Ee][Ii][Ll][Ii][Nn][Gg]
+:lexeme ~ <CHAIN> priority => 1
 <CHAIN> ~ [Cc][Hh][Aa][Ii][Nn]
+:lexeme ~ <CHAR> priority => 1
 <CHAR> ~ [Cc][Hh][Aa][Rr]
+:lexeme ~ <CHARACTER> priority => 1
 <CHARACTER> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]
+:lexeme ~ <CHARACTERISTICS> priority => 1
 <CHARACTERISTICS> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr][Ii][Ss][Tt][Ii][Cc][Ss]
+:lexeme ~ <CHARACTERS> priority => 1
 <CHARACTERS> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr][Ss]
+:lexeme ~ <CHARACTER_LENGTH> priority => 1
 <CHARACTER_LENGTH> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <CHARACTER_SET_CATALOG> priority => 1
 <CHARACTER_SET_CATALOG> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ss][Ee][Tt]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <CHARACTER_SET_NAME> priority => 1
 <CHARACTER_SET_NAME> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ss][Ee][Tt]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <CHARACTER_SET_SCHEMA> priority => 1
 <CHARACTER_SET_SCHEMA> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ss][Ee][Tt]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <CHAR_LENGTH> priority => 1
 <CHAR_LENGTH> ~ [Cc][Hh][Aa][Rr]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <CHECK> priority => 1
 <CHECK> ~ [Cc][Hh][Ee][Cc][Kk]
+:lexeme ~ <CHECKED> priority => 1
 <CHECKED> ~ [Cc][Hh][Ee][Cc][Kk][Ee][Dd]
+:lexeme ~ <CLASS_ORIGIN> priority => 1
 <CLASS_ORIGIN> ~ [Cc][Ll][Aa][Ss][Ss]'_'[Oo][Rr][Ii][Gg][Ii][Nn]
+:lexeme ~ <CLOB> priority => 1
 <CLOB> ~ [Cc][Ll][Oo][Bb]
+:lexeme ~ <CLOSE> priority => 1
 <CLOSE> ~ [Cc][Ll][Oo][Ss][Ee]
+:lexeme ~ <COALESCE> priority => 1
 <COALESCE> ~ [Cc][Oo][Aa][Ll][Ee][Ss][Cc][Ee]
+:lexeme ~ <CODE_UNITS> priority => 1
 <CODE_UNITS> ~ [Cc][Oo][Dd][Ee]'_'[Uu][Nn][Ii][Tt][Ss]
+:lexeme ~ <COLLATE> priority => 1
 <COLLATE> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ee]
+:lexeme ~ <COLLATION> priority => 1
 <COLLATION> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]
+:lexeme ~ <COLLATION_CATALOG> priority => 1
 <COLLATION_CATALOG> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <COLLATION_NAME> priority => 1
 <COLLATION_NAME> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <COLLATION_SCHEMA> priority => 1
 <COLLATION_SCHEMA> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <COLLECT> priority => 1
 <COLLECT> ~ [Cc][Oo][Ll][Ll][Ee][Cc][Tt]
+:lexeme ~ <COLUMN> priority => 1
 <COLUMN> ~ [Cc][Oo][Ll][Uu][Mm][Nn]
+:lexeme ~ <COLUMN_NAME> priority => 1
 <COLUMN_NAME> ~ [Cc][Oo][Ll][Uu][Mm][Nn]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <COMMAND_FUNCTION> priority => 1
 <COMMAND_FUNCTION> ~ [Cc][Oo][Mm][Mm][Aa][Nn][Dd]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <COMMAND_FUNCTION_CODE> priority => 1
 <COMMAND_FUNCTION_CODE> ~ [Cc][Oo][Mm][Mm][Aa][Nn][Dd]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]'_'[Cc][Oo][Dd][Ee]
+:lexeme ~ <COMMIT> priority => 1
 <COMMIT> ~ [Cc][Oo][Mm][Mm][Ii][Tt]
+:lexeme ~ <COMMITTED> priority => 1
 <COMMITTED> ~ [Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
+:lexeme ~ <CONDITION> priority => 1
 <CONDITION> ~ [Cc][Oo][Nn][Dd][Ii][Tt][Ii][Oo][Nn]
+:lexeme ~ <CONDITION_NUMBER> priority => 1
 <CONDITION_NUMBER> ~ [Cc][Oo][Nn][Dd][Ii][Tt][Ii][Oo][Nn]'_'[Nn][Uu][Mm][Bb][Ee][Rr]
+:lexeme ~ <CONNECT> priority => 1
 <CONNECT> ~ [Cc][Oo][Nn][Nn][Ee][Cc][Tt]
+:lexeme ~ <CONNECTION> priority => 1
 <CONNECTION> ~ [Cc][Oo][Nn][Nn][Ee][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <CONNECTION_NAME> priority => 1
 <CONNECTION_NAME> ~ [Cc][Oo][Nn][Nn][Ee][Cc][Tt][Ii][Oo][Nn]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <CONSTRAINT> priority => 1
 <CONSTRAINT> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]
+:lexeme ~ <CONSTRAINTS> priority => 1
 <CONSTRAINTS> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt][Ss]
+:lexeme ~ <CONSTRAINT_CATALOG> priority => 1
 <CONSTRAINT_CATALOG> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <CONSTRAINT_NAME> priority => 1
 <CONSTRAINT_NAME> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <CONSTRAINT_SCHEMA> priority => 1
 <CONSTRAINT_SCHEMA> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <CONSTRUCTOR> priority => 1
 <CONSTRUCTOR> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Uu][Cc][Tt][Oo][Rr]
+:lexeme ~ <CONTAINS> priority => 1
 <CONTAINS> ~ [Cc][Oo][Nn][Tt][Aa][Ii][Nn][Ss]
+:lexeme ~ <CONTINUE> priority => 1
 <CONTINUE> ~ [Cc][Oo][Nn][Tt][Ii][Nn][Uu][Ee]
+:lexeme ~ <CONVERT> priority => 1
 <CONVERT> ~ [Cc][Oo][Nn][Vv][Ee][Rr][Tt]
+:lexeme ~ <CORR> priority => 1
 <CORR> ~ [Cc][Oo][Rr][Rr]
+:lexeme ~ <CORRESPONDING> priority => 1
 <CORRESPONDING> ~ [Cc][Oo][Rr][Rr][Ee][Ss][Pp][Oo][Nn][Dd][Ii][Nn][Gg]
+:lexeme ~ <COUNT> priority => 1
 <COUNT> ~ [Cc][Oo][Uu][Nn][Tt]
+:lexeme ~ <COVAR_POP> priority => 1
 <COVAR_POP> ~ [Cc][Oo][Vv][Aa][Rr]'_'[Pp][Oo][Pp]
+:lexeme ~ <COVAR_SAMP> priority => 1
 <COVAR_SAMP> ~ [Cc][Oo][Vv][Aa][Rr]'_'[Ss][Aa][Mm][Pp]
+:lexeme ~ <CREATE> priority => 1
 <CREATE> ~ [Cc][Rr][Ee][Aa][Tt][Ee]
+:lexeme ~ <CROSS> priority => 1
 <CROSS> ~ [Cc][Rr][Oo][Ss][Ss]
+:lexeme ~ <CUBE> priority => 1
 <CUBE> ~ [Cc][Uu][Bb][Ee]
+:lexeme ~ <CUME_DIST> priority => 1
 <CUME_DIST> ~ [Cc][Uu][Mm][Ee]'_'[Dd][Ii][Ss][Tt]
+:lexeme ~ <CURRENT> priority => 1
 <CURRENT> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]
+:lexeme ~ <CURRENT_COLLATION> priority => 1
 <CURRENT_COLLATION> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]
+:lexeme ~ <CURRENT_DATE> priority => 1
 <CURRENT_DATE> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Dd][Aa][Tt][Ee]
+:lexeme ~ <CURRENT_DEFAULT_TRANSFORM_GROUP> priority => 1
 <CURRENT_DEFAULT_TRANSFORM_GROUP> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Dd][Ee][Ff][Aa][Uu][Ll][Tt]'_'[Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm]'_'[Gg][Rr][Oo][Uu][Pp]
+:lexeme ~ <CURRENT_PATH> priority => 1
 <CURRENT_PATH> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Pp][Aa][Tt][Hh]
+:lexeme ~ <CURRENT_ROLE> priority => 1
 <CURRENT_ROLE> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Rr][Oo][Ll][Ee]
+:lexeme ~ <CURRENT_TIME> priority => 1
 <CURRENT_TIME> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Tt][Ii][Mm][Ee]
+:lexeme ~ <CURRENT_TIMESTAMP> priority => 1
 <CURRENT_TIMESTAMP> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
+:lexeme ~ <CURRENT_TRANSFORM_GROUP_FOR_TYPE> priority => 1
 <CURRENT_TRANSFORM_GROUP_FOR_TYPE> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm]'_'[Gg][Rr][Oo][Uu][Pp]'_'[Ff][Oo][Rr]'_'[Tt][Yy][Pp][Ee]
+:lexeme ~ <CURRENT_USER> priority => 1
 <CURRENT_USER> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Uu][Ss][Ee][Rr]
+:lexeme ~ <CURSOR> priority => 1
 <CURSOR> ~ [Cc][Uu][Rr][Ss][Oo][Rr]
+:lexeme ~ <CURSOR_NAME> priority => 1
 <CURSOR_NAME> ~ [Cc][Uu][Rr][Ss][Oo][Rr]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <CYCLE> priority => 1
 <CYCLE> ~ [Cc][Yy][Cc][Ll][Ee]
+:lexeme ~ <DATA> priority => 1
 <DATA> ~ [Dd][Aa][Tt][Aa]
 <__DATE> ~ [Dd][Aa][Tt][Ee]
+:lexeme ~ <DATE> priority => 1
 <DATE> ~ <__DATE>
+:lexeme ~ <DATETIME_INTERVAL_CODE> priority => 1
 <DATETIME_INTERVAL_CODE> ~ [Dd][Aa][Tt][Ee][Tt][Ii][Mm][Ee]'_'[Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]'_'[Cc][Oo][Dd][Ee]
+:lexeme ~ <DATETIME_INTERVAL_PRECISION> priority => 1
 <DATETIME_INTERVAL_PRECISION> ~ [Dd][Aa][Tt][Ee][Tt][Ii][Mm][Ee]'_'[Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]'_'[Pp][Rr][Ee][Cc][Ii][Ss][Ii][Oo][Nn]
+:lexeme ~ <DAY> priority => 1
 <DAY> ~ [Dd][Aa][Yy]
+:lexeme ~ <DEALLOCATE> priority => 1
 <DEALLOCATE> ~ [Dd][Ee][Aa][Ll][Ll][Oo][Cc][Aa][Tt][Ee]
+:lexeme ~ <DEC> priority => 1
 <DEC> ~ [Dd][Ee][Cc]
+:lexeme ~ <DECIMAL> priority => 1
 <DECIMAL> ~ [Dd][Ee][Cc][Ii][Mm][Aa][Ll]
+:lexeme ~ <DECLARE> priority => 1
 <DECLARE> ~ [Dd][Ee][Cc][Ll][Aa][Rr][Ee]
+:lexeme ~ <DEFAULT> priority => 1
 <DEFAULT> ~ [Dd][Ee][Ff][Aa][Uu][Ll][Tt]
+:lexeme ~ <DEFAULTS> priority => 1
 <DEFAULTS> ~ [Dd][Ee][Ff][Aa][Uu][Ll][Tt][Ss]
+:lexeme ~ <DEFERRABLE> priority => 1
 <DEFERRABLE> ~ [Dd][Ee][Ff][Ee][Rr][Rr][Aa][Bb][Ll][Ee]
+:lexeme ~ <DEFERRED> priority => 1
 <DEFERRED> ~ [Dd][Ee][Ff][Ee][Rr][Rr][Ee][Dd]
+:lexeme ~ <DEFINED> priority => 1
 <DEFINED> ~ [Dd][Ee][Ff][Ii][Nn][Ee][Dd]
+:lexeme ~ <DEFINER> priority => 1
 <DEFINER> ~ [Dd][Ee][Ff][Ii][Nn][Ee][Rr]
+:lexeme ~ <DEGREE> priority => 1
 <DEGREE> ~ [Dd][Ee][Gg][Rr][Ee][Ee]
+:lexeme ~ <DELETE> priority => 1
 <DELETE> ~ [Dd][Ee][Ll][Ee][Tt][Ee]
+:lexeme ~ <DENSE_RANK> priority => 1
 <DENSE_RANK> ~ [Dd][Ee][Nn][Ss][Ee]'_'[Rr][Aa][Nn][Kk]
+:lexeme ~ <DEPTH> priority => 1
 <DEPTH> ~ [Dd][Ee][Pp][Tt][Hh]
+:lexeme ~ <DEREF> priority => 1
 <DEREF> ~ [Dd][Ee][Rr][Ee][Ff]
+:lexeme ~ <DERIVED> priority => 1
 <DERIVED> ~ [Dd][Ee][Rr][Ii][Vv][Ee][Dd]
+:lexeme ~ <DESC> priority => 1
 <DESC> ~ [Dd][Ee][Ss][Cc]
+:lexeme ~ <DESCRIBE> priority => 1
 <DESCRIBE> ~ [Dd][Ee][Ss][Cc][Rr][Ii][Bb][Ee]
+:lexeme ~ <DESCRIPTOR> priority => 1
 <DESCRIPTOR> ~ [Dd][Ee][Ss][Cc][Rr][Ii][Pp][Tt][Oo][Rr]
+:lexeme ~ <DETERMINISTIC> priority => 1
 <DETERMINISTIC> ~ [Dd][Ee][Tt][Ee][Rr][Mm][Ii][Nn][Ii][Ss][Tt][Ii][Cc]
+:lexeme ~ <DIAGNOSTICS> priority => 1
 <DIAGNOSTICS> ~ [Dd][Ii][Aa][Gg][Nn][Oo][Ss][Tt][Ii][Cc][Ss]
+:lexeme ~ <DISCONNECT> priority => 1
 <DISCONNECT> ~ [Dd][Ii][Ss][Cc][Oo][Nn][Nn][Ee][Cc][Tt]
+:lexeme ~ <DISPATCH> priority => 1
 <DISPATCH> ~ [Dd][Ii][Ss][Pp][Aa][Tt][Cc][Hh]
+:lexeme ~ <DISTINCT> priority => 1
 <DISTINCT> ~ [Dd][Ii][Ss][Tt][Ii][Nn][Cc][Tt]
+:lexeme ~ <DOMAIN> priority => 1
 <DOMAIN> ~ [Dd][Oo][Mm][Aa][Ii][Nn]
+:lexeme ~ <DOUBLE> priority => 1
 <DOUBLE> ~ [Dd][Oo][Uu][Bb][Ll][Ee]
+:lexeme ~ <DROP> priority => 1
 <DROP> ~ [Dd][Rr][Oo][Pp]
+:lexeme ~ <DYNAMIC> priority => 1
 <DYNAMIC> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]
+:lexeme ~ <DYNAMIC_FUNCTION> priority => 1
 <DYNAMIC_FUNCTION> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <DYNAMIC_FUNCTION_CODE> priority => 1
 <DYNAMIC_FUNCTION_CODE> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]'_'[Cc][Oo][Dd][Ee]
 <__E> ~ [Ee]
+:lexeme ~ <EACH> priority => 1
 <EACH> ~ [Ee][Aa][Cc][Hh]
+:lexeme ~ <ELEMENT> priority => 1
 <ELEMENT> ~ [Ee][Ll][Ee][Mm][Ee][Nn][Tt]
+:lexeme ~ <ELSE> priority => 1
 <ELSE> ~ [Ee][Ll][Ss][Ee]
+:lexeme ~ <END> priority => 1
 <END> ~ [Ee][Nn][Dd]
+:lexeme ~ <END_EXEC> priority => 1
 <END_EXEC> ~ [Ee][Nn][Dd]'-'[Ee][Xx][Ee][Cc]
+:lexeme ~ <EQUALS> priority => 1
 <EQUALS> ~ [Ee][Qq][Uu][Aa][Ll][Ss]
 <__ESCAPE> ~ [Ee][Ss][Cc][Aa][Pp][Ee]
+:lexeme ~ <ESCAPE> priority => 1
 <ESCAPE> ~ <__ESCAPE>
+:lexeme ~ <EVERY> priority => 1
 <EVERY> ~ [Ee][Vv][Ee][Rr][Yy]
+:lexeme ~ <EXCEPT> priority => 1
 <EXCEPT> ~ [Ee][Xx][Cc][Ee][Pp][Tt]
+:lexeme ~ <EXCEPTION> priority => 1
 <EXCEPTION> ~ [Ee][Xx][Cc][Ee][Pp][Tt][Ii][Oo][Nn]
+:lexeme ~ <EXCLUDE> priority => 1
 <EXCLUDE> ~ [Ee][Xx][Cc][Ll][Uu][Dd][Ee]
+:lexeme ~ <EXCLUDING> priority => 1
 <EXCLUDING> ~ [Ee][Xx][Cc][Ll][Uu][Dd][Ii][Nn][Gg]
+:lexeme ~ <EXEC> priority => 1
 <EXEC> ~ [Ee][Xx][Ee][Cc]
+:lexeme ~ <EXECUTE> priority => 1
 <EXECUTE> ~ [Ee][Xx][Ee][Cc][Uu][Tt][Ee]
+:lexeme ~ <EXISTS> priority => 1
 <EXISTS> ~ [Ee][Xx][Ii][Ss][Tt][Ss]
+:lexeme ~ <EXP> priority => 1
 <EXP> ~ [Ee][Xx][Pp]
+:lexeme ~ <EXTERNAL> priority => 1
 <EXTERNAL> ~ [Ee][Xx][Tt][Ee][Rr][Nn][Aa][Ll]
+:lexeme ~ <EXTRACT> priority => 1
 <EXTRACT> ~ [Ee][Xx][Tt][Rr][Aa][Cc][Tt]
 <__FALSE> ~ [Ff][Aa][Ll][Ss][Ee]
+:lexeme ~ <FALSE> priority => 1
 <FALSE> ~ <__FALSE>
+:lexeme ~ <FETCH> priority => 1
 <FETCH> ~ [Ff][Ee][Tt][Cc][Hh]
+:lexeme ~ <FILTER> priority => 1
 <FILTER> ~ [Ff][Ii][Ll][Tt][Ee][Rr]
+:lexeme ~ <FINAL> priority => 1
 <FINAL> ~ [Ff][Ii][Nn][Aa][Ll]
+:lexeme ~ <FIRST> priority => 1
 <FIRST> ~ [Ff][Ii][Rr][Ss][Tt]
+:lexeme ~ <FLOAT> priority => 1
 <FLOAT> ~ [Ff][Ll][Oo][Aa][Tt]
+:lexeme ~ <FLOOR> priority => 1
 <FLOOR> ~ [Ff][Ll][Oo][Oo][Rr]
+:lexeme ~ <FOLLOWING> priority => 1
 <FOLLOWING> ~ [Ff][Oo][Ll][Ll][Oo][Ww][Ii][Nn][Gg]
+:lexeme ~ <FOR> priority => 1
 <FOR> ~ [Ff][Oo][Rr]
+:lexeme ~ <FOREIGN> priority => 1
 <FOREIGN> ~ [Ff][Oo][Rr][Ee][Ii][Gg][Nn]
+:lexeme ~ <FOUND> priority => 1
 <FOUND> ~ [Ff][Oo][Uu][Nn][Dd]
+:lexeme ~ <FREE> priority => 1
 <FREE> ~ [Ff][Rr][Ee][Ee]
+:lexeme ~ <FROM> priority => 1
 <FROM> ~ [Ff][Rr][Oo][Mm]
+:lexeme ~ <FULL> priority => 1
 <FULL> ~ [Ff][Uu][Ll][Ll]
+:lexeme ~ <FUNCTION> priority => 1
 <FUNCTION> ~ [Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <FUSION> priority => 1
 <FUSION> ~ [Ff][Uu][Ss][Ii][Oo][Nn]
+:lexeme ~ <GENERAL> priority => 1
 <GENERAL> ~ [Gg][Ee][Nn][Ee][Rr][Aa][Ll]
+:lexeme ~ <GENERATED> priority => 1
 <GENERATED> ~ [Gg][Ee][Nn][Ee][Rr][Aa][Tt][Ee][Dd]
+:lexeme ~ <GET> priority => 1
 <GET> ~ [Gg][Ee][Tt]
 <__GLOBAL> ~ [Gg][Ll][Oo][Bb][Aa][Ll]
+:lexeme ~ <GLOBAL> priority => 1
 <GLOBAL> ~ <__GLOBAL>
+:lexeme ~ <GO> priority => 1
 <GO> ~ [Gg][Oo]
+:lexeme ~ <GOTO> priority => 1
 <GOTO> ~ [Gg][Oo][Tt][Oo]
+:lexeme ~ <GRANT> priority => 1
 <GRANT> ~ [Gg][Rr][Aa][Nn][Tt]
+:lexeme ~ <GRANTED> priority => 1
 <GRANTED> ~ [Gg][Rr][Aa][Nn][Tt][Ee][Dd]
+:lexeme ~ <GROUP> priority => 1
 <GROUP> ~ [Gg][Rr][Oo][Uu][Pp]
+:lexeme ~ <GROUPING> priority => 1
 <GROUPING> ~ [Gg][Rr][Oo][Uu][Pp][Ii][Nn][Gg]
+:lexeme ~ <HAVING> priority => 1
 <HAVING> ~ [Hh][Aa][Vv][Ii][Nn][Gg]
+:lexeme ~ <HIERARCHY> priority => 1
 <HIERARCHY> ~ [Hh][Ii][Ee][Rr][Aa][Rr][Cc][Hh][Yy]
+:lexeme ~ <HOLD> priority => 1
 <HOLD> ~ [Hh][Oo][Ll][Dd]
+:lexeme ~ <HOUR> priority => 1
 <HOUR> ~ [Hh][Oo][Uu][Rr]
+:lexeme ~ <IDENTITY> priority => 1
 <IDENTITY> ~ [Ii][Dd][Ee][Nn][Tt][Ii][Tt][Yy]
+:lexeme ~ <IMMEDIATE> priority => 1
 <IMMEDIATE> ~ [Ii][Mm][Mm][Ee][Dd][Ii][Aa][Tt][Ee]
+:lexeme ~ <IMPLEMENTATION> priority => 1
 <IMPLEMENTATION> ~ [Ii][Mm][Pp][Ll][Ee][Mm][Ee][Nn][Tt][Aa][Tt][Ii][Oo][Nn]
+:lexeme ~ <IN> priority => 1
 <IN> ~ [Ii][Nn]
+:lexeme ~ <INCLUDING> priority => 1
 <INCLUDING> ~ [Ii][Nn][Cc][Ll][Uu][Dd][Ii][Nn][Gg]
+:lexeme ~ <INCREMENT> priority => 1
 <INCREMENT> ~ [Ii][Nn][Cc][Rr][Ee][Mm][Ee][Nn][Tt]
+:lexeme ~ <INDICATOR> priority => 1
 <INDICATOR> ~ [Ii][Nn][Dd][Ii][Cc][Aa][Tt][Oo][Rr]
+:lexeme ~ <INITIALLY> priority => 1
 <INITIALLY> ~ [Ii][Nn][Ii][Tt][Ii][Aa][Ll][Ll][Yy]
+:lexeme ~ <INNER> priority => 1
 <INNER> ~ [Ii][Nn][Nn][Ee][Rr]
+:lexeme ~ <INOUT> priority => 1
 <INOUT> ~ [Ii][Nn][Oo][Uu][Tt]
+:lexeme ~ <INPUT> priority => 1
 <INPUT> ~ [Ii][Nn][Pp][Uu][Tt]
+:lexeme ~ <INSENSITIVE> priority => 1
 <INSENSITIVE> ~ [Ii][Nn][Ss][Ee][Nn][Ss][Ii][Tt][Ii][Vv][Ee]
+:lexeme ~ <INSERT> priority => 1
 <INSERT> ~ [Ii][Nn][Ss][Ee][Rr][Tt]
+:lexeme ~ <INSTANCE> priority => 1
 <INSTANCE> ~ [Ii][Nn][Ss][Tt][Aa][Nn][Cc][Ee]
+:lexeme ~ <INSTANTIABLE> priority => 1
 <INSTANTIABLE> ~ [Ii][Nn][Ss][Tt][Aa][Nn][Tt][Ii][Aa][Bb][Ll][Ee]
+:lexeme ~ <INT> priority => 1
 <INT> ~ [Ii][Nn][Tt]
+:lexeme ~ <INTEGER> priority => 1
 <INTEGER> ~ [Ii][Nn][Tt][Ee][Gg][Ee][Rr]
+:lexeme ~ <INTERSECT> priority => 1
 <INTERSECT> ~ [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
+:lexeme ~ <INTERSECTION> priority => 1
 <INTERSECTION> ~ [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt][Ii][Oo][Nn]
 <__INTERVAL> ~ [Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]
+:lexeme ~ <INTERVAL> priority => 1
 <INTERVAL> ~ <__INTERVAL>
+:lexeme ~ <INTO> priority => 1
 <INTO> ~ [Ii][Nn][Tt][Oo]
+:lexeme ~ <INVOKER> priority => 1
 <INVOKER> ~ [Ii][Nn][Vv][Oo][Kk][Ee][Rr]
+:lexeme ~ <IS> priority => 1
 <IS> ~ [Ii][Ss]
+:lexeme ~ <ISOLATION> priority => 1
 <ISOLATION> ~ [Ii][Ss][Oo][Ll][Aa][Tt][Ii][Oo][Nn]
+:lexeme ~ <JOIN> priority => 1
 <JOIN> ~ [Jj][Oo][Ii][Nn]
+:lexeme ~ <KEY> priority => 1
 <KEY> ~ [Kk][Ee][Yy]
+:lexeme ~ <KEY_MEMBER> priority => 1
 <KEY_MEMBER> ~ [Kk][Ee][Yy]'_'[Mm][Ee][Mm][Bb][Ee][Rr]
+:lexeme ~ <KEY_TYPE> priority => 1
 <KEY_TYPE> ~ [Kk][Ee][Yy]'_'[Tt][Yy][Pp][Ee]
+:lexeme ~ <LANGUAGE> priority => 1
 <LANGUAGE> ~ [Ll][Aa][Nn][Gg][Uu][Aa][Gg][Ee]
+:lexeme ~ <LARGE> priority => 1
 <LARGE> ~ [Ll][Aa][Rr][Gg][Ee]
+:lexeme ~ <LAST> priority => 1
 <LAST> ~ [Ll][Aa][Ss][Tt]
+:lexeme ~ <LATERAL> priority => 1
 <LATERAL> ~ [Ll][Aa][Tt][Ee][Rr][Aa][Ll]
+:lexeme ~ <LEADING> priority => 1
 <LEADING> ~ [Ll][Ee][Aa][Dd][Ii][Nn][Gg]
+:lexeme ~ <LEFT> priority => 1
 <LEFT> ~ [Ll][Ee][Ff][Tt]
+:lexeme ~ <LENGTH> priority => 1
 <LENGTH> ~ [Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <LEVEL> priority => 1
 <LEVEL> ~ [Ll][Ee][Vv][Ee][Ll]
+:lexeme ~ <LIKE> priority => 1
 <LIKE> ~ [Ll][Ii][Kk][Ee]
+:lexeme ~ <LN> priority => 1
 <LN> ~ [Ll][Nn]
 <__LOCAL> ~ [Ll][Oo][Cc][Aa][Ll]
+:lexeme ~ <LOCAL> priority => 1
 <LOCAL> ~ <__LOCAL>
+:lexeme ~ <LOCALTIME> priority => 1
 <LOCALTIME> ~ [Ll][Oo][Cc][Aa][Ll][Tt][Ii][Mm][Ee]
+:lexeme ~ <LOCALTIMESTAMP> priority => 1
 <LOCALTIMESTAMP> ~ [Ll][Oo][Cc][Aa][Ll][Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
+:lexeme ~ <LOCATOR> priority => 1
 <LOCATOR> ~ [Ll][Oo][Cc][Aa][Tt][Oo][Rr]
+:lexeme ~ <LOWER> priority => 1
 <LOWER> ~ [Ll][Oo][Ww][Ee][Rr]
+:lexeme ~ <MAP> priority => 1
 <MAP> ~ [Mm][Aa][Pp]
+:lexeme ~ <MATCH> priority => 1
 <MATCH> ~ [Mm][Aa][Tt][Cc][Hh]
+:lexeme ~ <MATCHED> priority => 1
 <MATCHED> ~ [Mm][Aa][Tt][Cc][Hh][Ee][Dd]
+:lexeme ~ <MAX> priority => 1
 <MAX> ~ [Mm][Aa][Xx]
+:lexeme ~ <MAXVALUE> priority => 1
 <MAXVALUE> ~ [Mm][Aa][Xx][Vv][Aa][Ll][Uu][Ee]
+:lexeme ~ <MEMBER> priority => 1
 <MEMBER> ~ [Mm][Ee][Mm][Bb][Ee][Rr]
+:lexeme ~ <MERGE> priority => 1
 <MERGE> ~ [Mm][Ee][Rr][Gg][Ee]
+:lexeme ~ <MESSAGE_LENGTH> priority => 1
 <MESSAGE_LENGTH> ~ [Mm][Ee][Ss][Ss][Aa][Gg][Ee]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <MESSAGE_OCTET_LENGTH> priority => 1
 <MESSAGE_OCTET_LENGTH> ~ [Mm][Ee][Ss][Ss][Aa][Gg][Ee]'_'[Oo][Cc][Tt][Ee][Tt]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <MESSAGE_TEXT> priority => 1
 <MESSAGE_TEXT> ~ [Mm][Ee][Ss][Ss][Aa][Gg][Ee]'_'[Tt][Ee][Xx][Tt]
+:lexeme ~ <METHOD> priority => 1
 <METHOD> ~ [Mm][Ee][Tt][Hh][Oo][Dd]
+:lexeme ~ <MIN> priority => 1
 <MIN> ~ [Mm][Ii][Nn]
+:lexeme ~ <MINUTE> priority => 1
 <MINUTE> ~ [Mm][Ii][Nn][Uu][Tt][Ee]
+:lexeme ~ <MINVALUE> priority => 1
 <MINVALUE> ~ [Mm][Ii][Nn][Vv][Aa][Ll][Uu][Ee]
+:lexeme ~ <MOD> priority => 1
 <MOD> ~ [Mm][Oo][Dd]
+:lexeme ~ <MODIFIES> priority => 1
 <MODIFIES> ~ [Mm][Oo][Dd][Ii][Ff][Ii][Ee][Ss]
 <__MODULE> ~ [Mm][Oo][Dd][Uu][Ll][Ee]
+:lexeme ~ <MODULE> priority => 1
 <MODULE> ~ <__MODULE>
+:lexeme ~ <MONTH> priority => 1
 <MONTH> ~ [Mm][Oo][Nn][Tt][Hh]
+:lexeme ~ <MORE> priority => 1
 <MORE> ~ [Mm][Oo][Rr][Ee]
+:lexeme ~ <MULTISET> priority => 1
 <MULTISET> ~ [Mm][Uu][Ll][Tt][Ii][Ss][Ee][Tt]
 <__N> ~ [Nn]
+:lexeme ~ <NAME> priority => 1
 <NAME> ~ [Nn][Aa][Mm][Ee]
+:lexeme ~ <NAMES> priority => 1
 <NAMES> ~ [Nn][Aa][Mm][Ee][Ss]
+:lexeme ~ <NATIONAL> priority => 1
 <NATIONAL> ~ [Nn][Aa][Tt][Ii][Oo][Nn][Aa][Ll]
+:lexeme ~ <NATURAL> priority => 1
 <NATURAL> ~ [Nn][Aa][Tt][Uu][Rr][Aa][Ll]
+:lexeme ~ <NCHAR> priority => 1
 <NCHAR> ~ [Nn][Cc][Hh][Aa][Rr]
+:lexeme ~ <NCLOB> priority => 1
 <NCLOB> ~ [Nn][Cc][Ll][Oo][Bb]
+:lexeme ~ <NESTING> priority => 1
 <NESTING> ~ [Nn][Ee][Ss][Tt][Ii][Nn][Gg]
+:lexeme ~ <NEW> priority => 1
 <NEW> ~ [Nn][Ee][Ww]
+:lexeme ~ <NEXT> priority => 1
 <NEXT> ~ [Nn][Ee][Xx][Tt]
+:lexeme ~ <NO> priority => 1
 <NO> ~ [Nn][Oo]
+:lexeme ~ <NONE> priority => 1
 <NONE> ~ [Nn][Oo][Nn][Ee]
+:lexeme ~ <NORMALIZE> priority => 1
 <NORMALIZE> ~ [Nn][Oo][Rr][Mm][Aa][Ll][Ii][Zz][Ee]
+:lexeme ~ <NORMALIZED> priority => 1
 <NORMALIZED> ~ [Nn][Oo][Rr][Mm][Aa][Ll][Ii][Zz][Ee][Dd]
+:lexeme ~ <NOT> priority => 1
 <NOT> ~ [Nn][Oo][Tt]
+:lexeme ~ <NULL> priority => 1
 <NULL> ~ [Nn][Uu][Ll][Ll]
+:lexeme ~ <NULLABLE> priority => 1
 <NULLABLE> ~ [Nn][Uu][Ll][Ll][Aa][Bb][Ll][Ee]
+:lexeme ~ <NULLIF> priority => 1
 <NULLIF> ~ [Nn][Uu][Ll][Ll][Ii][Ff]
+:lexeme ~ <NULLS> priority => 1
 <NULLS> ~ [Nn][Uu][Ll][Ll][Ss]
+:lexeme ~ <NUMBER> priority => 1
 <NUMBER> ~ [Nn][Uu][Mm][Bb][Ee][Rr]
+:lexeme ~ <NUMERIC> priority => 1
 <NUMERIC> ~ [Nn][Uu][Mm][Ee][Rr][Ii][Cc]
+:lexeme ~ <OBJECT> priority => 1
 <OBJECT> ~ [Oo][Bb][Jj][Ee][Cc][Tt]
+:lexeme ~ <OCTETS> priority => 1
 <OCTETS> ~ [Oo][Cc][Tt][Ee][Tt][Ss]
+:lexeme ~ <OCTET_LENGTH> priority => 1
 <OCTET_LENGTH> ~ [Oo][Cc][Tt][Ee][Tt]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <OF> priority => 1
 <OF> ~ [Oo][Ff]
+:lexeme ~ <OLD> priority => 1
 <OLD> ~ [Oo][Ll][Dd]
+:lexeme ~ <ON> priority => 1
 <ON> ~ [Oo][Nn]
+:lexeme ~ <ONLY> priority => 1
 <ONLY> ~ [Oo][Nn][Ll][Yy]
+:lexeme ~ <OPEN> priority => 1
 <OPEN> ~ [Oo][Pp][Ee][Nn]
+:lexeme ~ <OPTION> priority => 1
 <OPTION> ~ [Oo][Pp][Tt][Ii][Oo][Nn]
+:lexeme ~ <OPTIONS> priority => 1
 <OPTIONS> ~ [Oo][Pp][Tt][Ii][Oo][Nn][Ss]
+:lexeme ~ <OR> priority => 1
 <OR> ~ [Oo][Rr]
+:lexeme ~ <ORDER> priority => 1
 <ORDER> ~ [Oo][Rr][Dd][Ee][Rr]
+:lexeme ~ <ORDERING> priority => 1
 <ORDERING> ~ [Oo][Rr][Dd][Ee][Rr][Ii][Nn][Gg]
+:lexeme ~ <ORDINALITY> priority => 1
 <ORDINALITY> ~ [Oo][Rr][Dd][Ii][Nn][Aa][Ll][Ii][Tt][Yy]
+:lexeme ~ <OTHERS> priority => 1
 <OTHERS> ~ [Oo][Tt][Hh][Ee][Rr][Ss]
+:lexeme ~ <OUT> priority => 1
 <OUT> ~ [Oo][Uu][Tt]
+:lexeme ~ <OUTER> priority => 1
 <OUTER> ~ [Oo][Uu][Tt][Ee][Rr]
+:lexeme ~ <OUTPUT> priority => 1
 <OUTPUT> ~ [Oo][Uu][Tt][Pp][Uu][Tt]
+:lexeme ~ <OVER> priority => 1
 <OVER> ~ [Oo][Vv][Ee][Rr]
+:lexeme ~ <OVERLAPS> priority => 1
 <OVERLAPS> ~ [Oo][Vv][Ee][Rr][Ll][Aa][Pp][Ss]
+:lexeme ~ <OVERLAY> priority => 1
 <OVERLAY> ~ [Oo][Vv][Ee][Rr][Ll][Aa][Yy]
+:lexeme ~ <OVERRIDING> priority => 1
 <OVERRIDING> ~ [Oo][Vv][Ee][Rr][Rr][Ii][Dd][Ii][Nn][Gg]
+:lexeme ~ <PAD> priority => 1
 <PAD> ~ [Pp][Aa][Dd]
+:lexeme ~ <PARAMETER> priority => 1
 <PARAMETER> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]
+:lexeme ~ <PARAMETER_MODE> priority => 1
 <PARAMETER_MODE> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Mm][Oo][Dd][Ee]
+:lexeme ~ <PARAMETER_NAME> priority => 1
 <PARAMETER_NAME> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <PARAMETER_ORDINAL_POSITION> priority => 1
 <PARAMETER_ORDINAL_POSITION> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Oo][Rr][Dd][Ii][Nn][Aa][Ll]'_'[Pp][Oo][Ss][Ii][Tt][Ii][Oo][Nn]
+:lexeme ~ <PARAMETER_SPECIFIC_CATALOG> priority => 1
 <PARAMETER_SPECIFIC_CATALOG> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <PARAMETER_SPECIFIC_NAME> priority => 1
 <PARAMETER_SPECIFIC_NAME> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <PARAMETER_SPECIFIC_SCHEMA> priority => 1
 <PARAMETER_SPECIFIC_SCHEMA> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <PARTIAL> priority => 1
 <PARTIAL> ~ [Pp][Aa][Rr][Tt][Ii][Aa][Ll]
+:lexeme ~ <PARTITION> priority => 1
 <PARTITION> ~ [Pp][Aa][Rr][Tt][Ii][Tt][Ii][Oo][Nn]
+:lexeme ~ <PATH> priority => 1
 <PATH> ~ [Pp][Aa][Tt][Hh]
+:lexeme ~ <PERCENTILE_CONT> priority => 1
 <PERCENTILE_CONT> ~ [Pp][Ee][Rr][Cc][Ee][Nn][Tt][Ii][Ll][Ee]'_'[Cc][Oo][Nn][Tt]
+:lexeme ~ <PERCENTILE_DISC> priority => 1
 <PERCENTILE_DISC> ~ [Pp][Ee][Rr][Cc][Ee][Nn][Tt][Ii][Ll][Ee]'_'[Dd][Ii][Ss][Cc]
+:lexeme ~ <PERCENT_RANK> priority => 1
 <PERCENT_RANK> ~ [Pp][Ee][Rr][Cc][Ee][Nn][Tt]'_'[Rr][Aa][Nn][Kk]
+:lexeme ~ <PLACING> priority => 1
 <PLACING> ~ [Pp][Ll][Aa][Cc][Ii][Nn][Gg]
+:lexeme ~ <POSITION> priority => 1
 <POSITION> ~ [Pp][Oo][Ss][Ii][Tt][Ii][Oo][Nn]
+:lexeme ~ <POWER> priority => 1
 <POWER> ~ [Pp][Oo][Ww][Ee][Rr]
+:lexeme ~ <PRECEDING> priority => 1
 <PRECEDING> ~ [Pp][Rr][Ee][Cc][Ee][Dd][Ii][Nn][Gg]
+:lexeme ~ <PRECISION> priority => 1
 <PRECISION> ~ [Pp][Rr][Ee][Cc][Ii][Ss][Ii][Oo][Nn]
+:lexeme ~ <PREPARE> priority => 1
 <PREPARE> ~ [Pp][Rr][Ee][Pp][Aa][Rr][Ee]
+:lexeme ~ <PRESERVE> priority => 1
 <PRESERVE> ~ [Pp][Rr][Ee][Ss][Ee][Rr][Vv][Ee]
+:lexeme ~ <PRIMARY> priority => 1
 <PRIMARY> ~ [Pp][Rr][Ii][Mm][Aa][Rr][Yy]
+:lexeme ~ <PRIOR> priority => 1
 <PRIOR> ~ [Pp][Rr][Ii][Oo][Rr]
+:lexeme ~ <PRIVILEGES> priority => 1
 <PRIVILEGES> ~ [Pp][Rr][Ii][Vv][Ii][Ll][Ee][Gg][Ee][Ss]
+:lexeme ~ <PROCEDURE> priority => 1
 <PROCEDURE> ~ [Pp][Rr][Oo][Cc][Ee][Dd][Uu][Rr][Ee]
+:lexeme ~ <PUBLIC> priority => 1
 <PUBLIC> ~ [Pp][Uu][Bb][Ll][Ii][Cc]
+:lexeme ~ <RANGE> priority => 1
 <RANGE> ~ [Rr][Aa][Nn][Gg][Ee]
+:lexeme ~ <RANK> priority => 1
 <RANK> ~ [Rr][Aa][Nn][Kk]
+:lexeme ~ <READ> priority => 1
 <READ> ~ [Rr][Ee][Aa][Dd]
+:lexeme ~ <READS> priority => 1
 <READS> ~ [Rr][Ee][Aa][Dd][Ss]
+:lexeme ~ <REAL> priority => 1
 <REAL> ~ [Rr][Ee][Aa][Ll]
+:lexeme ~ <RECURSIVE> priority => 1
 <RECURSIVE> ~ [Rr][Ee][Cc][Uu][Rr][Ss][Ii][Vv][Ee]
+:lexeme ~ <REF> priority => 1
 <REF> ~ [Rr][Ee][Ff]
+:lexeme ~ <REFERENCES> priority => 1
 <REFERENCES> ~ [Rr][Ee][Ff][Ee][Rr][Ee][Nn][Cc][Ee][Ss]
+:lexeme ~ <REFERENCING> priority => 1
 <REFERENCING> ~ [Rr][Ee][Ff][Ee][Rr][Ee][Nn][Cc][Ii][Nn][Gg]
+:lexeme ~ <REGR_AVGX> priority => 1
 <REGR_AVGX> ~ [Rr][Ee][Gg][Rr]'_'[Aa][Vv][Gg][Xx]
+:lexeme ~ <REGR_AVGY> priority => 1
 <REGR_AVGY> ~ [Rr][Ee][Gg][Rr]'_'[Aa][Vv][Gg][Yy]
+:lexeme ~ <REGR_COUNT> priority => 1
 <REGR_COUNT> ~ [Rr][Ee][Gg][Rr]'_'[Cc][Oo][Uu][Nn][Tt]
+:lexeme ~ <REGR_INTERCEPT> priority => 1
 <REGR_INTERCEPT> ~ [Rr][Ee][Gg][Rr]'_'[Ii][Nn][Tt][Ee][Rr][Cc][Ee][Pp][Tt]
+:lexeme ~ <REGR_R2> priority => 1
 <REGR_R2> ~ [Rr][Ee][Gg][Rr]'_'[Rr]'2'
+:lexeme ~ <REGR_SLOPE> priority => 1
 <REGR_SLOPE> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Ll][Oo][Pp][Ee]
+:lexeme ~ <REGR_SXX> priority => 1
 <REGR_SXX> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Xx][Xx]
+:lexeme ~ <REGR_SXY> priority => 1
 <REGR_SXY> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Xx][Yy]
+:lexeme ~ <REGR_SYY> priority => 1
 <REGR_SYY> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Yy][Yy]
+:lexeme ~ <RELATIVE> priority => 1
 <RELATIVE> ~ [Rr][Ee][Ll][Aa][Tt][Ii][Vv][Ee]
+:lexeme ~ <RELEASE> priority => 1
 <RELEASE> ~ [Rr][Ee][Ll][Ee][Aa][Ss][Ee]
+:lexeme ~ <REPEATABLE> priority => 1
 <REPEATABLE> ~ [Rr][Ee][Pp][Ee][Aa][Tt][Aa][Bb][Ll][Ee]
+:lexeme ~ <RESTART> priority => 1
 <RESTART> ~ [Rr][Ee][Ss][Tt][Aa][Rr][Tt]
+:lexeme ~ <RESTRICT> priority => 1
 <RESTRICT> ~ [Rr][Ee][Ss][Tt][Rr][Ii][Cc][Tt]
+:lexeme ~ <RESULT> priority => 1
 <RESULT> ~ [Rr][Ee][Ss][Uu][Ll][Tt]
+:lexeme ~ <RETURN> priority => 1
 <RETURN> ~ [Rr][Ee][Tt][Uu][Rr][Nn]
+:lexeme ~ <RETURNED_CARDINALITY> priority => 1
 <RETURNED_CARDINALITY> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Cc][Aa][Rr][Dd][Ii][Nn][Aa][Ll][Ii][Tt][Yy]
+:lexeme ~ <RETURNED_LENGTH> priority => 1
 <RETURNED_LENGTH> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <RETURNED_OCTET_LENGTH> priority => 1
 <RETURNED_OCTET_LENGTH> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Oo][Cc][Tt][Ee][Tt]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
+:lexeme ~ <RETURNED_SQLSTATE> priority => 1
 <RETURNED_SQLSTATE> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Ss][Qq][Ll][Ss][Tt][Aa][Tt][Ee]
+:lexeme ~ <RETURNS> priority => 1
 <RETURNS> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ss]
+:lexeme ~ <REVOKE> priority => 1
 <REVOKE> ~ [Rr][Ee][Vv][Oo][Kk][Ee]
+:lexeme ~ <RIGHT> priority => 1
 <RIGHT> ~ [Rr][Ii][Gg][Hh][Tt]
+:lexeme ~ <ROLE> priority => 1
 <ROLE> ~ [Rr][Oo][Ll][Ee]
+:lexeme ~ <ROLLBACK> priority => 1
 <ROLLBACK> ~ [Rr][Oo][Ll][Ll][Bb][Aa][Cc][Kk]
+:lexeme ~ <ROLLUP> priority => 1
 <ROLLUP> ~ [Rr][Oo][Ll][Ll][Uu][Pp]
+:lexeme ~ <ROUTINE> priority => 1
 <ROUTINE> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]
+:lexeme ~ <ROUTINE_CATALOG> priority => 1
 <ROUTINE_CATALOG> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <ROUTINE_NAME> priority => 1
 <ROUTINE_NAME> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <ROUTINE_SCHEMA> priority => 1
 <ROUTINE_SCHEMA> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <ROW> priority => 1
 <ROW> ~ [Rr][Oo][Ww]
+:lexeme ~ <ROWS> priority => 1
 <ROWS> ~ [Rr][Oo][Ww][Ss]
+:lexeme ~ <ROW_COUNT> priority => 1
 <ROW_COUNT> ~ [Rr][Oo][Ww]'_'[Cc][Oo][Uu][Nn][Tt]
+:lexeme ~ <ROW_NUMBER> priority => 1
 <ROW_NUMBER> ~ [Rr][Oo][Ww]'_'[Nn][Uu][Mm][Bb][Ee][Rr]
+:lexeme ~ <SAVEPOINT> priority => 1
 <SAVEPOINT> ~ [Ss][Aa][Vv][Ee][Pp][Oo][Ii][Nn][Tt]
+:lexeme ~ <SCALE> priority => 1
 <SCALE> ~ [Ss][Cc][Aa][Ll][Ee]
+:lexeme ~ <SCHEMA> priority => 1
 <SCHEMA> ~ [Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <SCHEMA_NAME> priority => 1
 <SCHEMA_NAME> ~ [Ss][Cc][Hh][Ee][Mm][Aa]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <SCOPE> priority => 1
 <SCOPE> ~ [Ss][Cc][Oo][Pp][Ee]
+:lexeme ~ <SCOPE_CATALOG> priority => 1
 <SCOPE_CATALOG> ~ [Ss][Cc][Oo][Pp][Ee]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <SCOPE_NAME> priority => 1
 <SCOPE_NAME> ~ [Ss][Cc][Oo][Pp][Ee]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <SCOPE_SCHEMA> priority => 1
 <SCOPE_SCHEMA> ~ [Ss][Cc][Oo][Pp][Ee]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <SCROLL> priority => 1
 <SCROLL> ~ [Ss][Cc][Rr][Oo][Ll][Ll]
+:lexeme ~ <SEARCH> priority => 1
 <SEARCH> ~ [Ss][Ee][Aa][Rr][Cc][Hh]
+:lexeme ~ <SECOND> priority => 1
 <SECOND> ~ [Ss][Ee][Cc][Oo][Nn][Dd]
+:lexeme ~ <SECTION> priority => 1
 <SECTION> ~ [Ss][Ee][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <SECURITY> priority => 1
 <SECURITY> ~ [Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]
+:lexeme ~ <SELECT> priority => 1
 <SELECT> ~ [Ss][Ee][Ll][Ee][Cc][Tt]
+:lexeme ~ <SELF> priority => 1
 <SELF> ~ [Ss][Ee][Ll][Ff]
+:lexeme ~ <SENSITIVE> priority => 1
 <SENSITIVE> ~ [Ss][Ee][Nn][Ss][Ii][Tt][Ii][Vv][Ee]
+:lexeme ~ <SEQUENCE> priority => 1
 <SEQUENCE> ~ [Ss][Ee][Qq][Uu][Ee][Nn][Cc][Ee]
+:lexeme ~ <SERIALIZABLE> priority => 1
 <SERIALIZABLE> ~ [Ss][Ee][Rr][Ii][Aa][Ll][Ii][Zz][Aa][Bb][Ll][Ee]
+:lexeme ~ <SERVER_NAME> priority => 1
 <SERVER_NAME> ~ [Ss][Ee][Rr][Vv][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <SESSION> priority => 1
 <SESSION> ~ [Ss][Ee][Ss][Ss][Ii][Oo][Nn]
+:lexeme ~ <SESSION_USER> priority => 1
 <SESSION_USER> ~ [Ss][Ee][Ss][Ss][Ii][Oo][Nn]'_'[Uu][Ss][Ee][Rr]
+:lexeme ~ <SET> priority => 1
 <SET> ~ [Ss][Ee][Tt]
+:lexeme ~ <SETS> priority => 1
 <SETS> ~ [Ss][Ee][Tt][Ss]
+:lexeme ~ <SIMILAR> priority => 1
 <SIMILAR> ~ [Ss][Ii][Mm][Ii][Ll][Aa][Rr]
+:lexeme ~ <SIMPLE> priority => 1
 <SIMPLE> ~ [Ss][Ii][Mm][Pp][Ll][Ee]
+:lexeme ~ <SIZE> priority => 1
 <SIZE> ~ [Ss][Ii][Zz][Ee]
+:lexeme ~ <SMALLINT> priority => 1
 <SMALLINT> ~ [Ss][Mm][Aa][Ll][Ll][Ii][Nn][Tt]
+:lexeme ~ <SOME> priority => 1
 <SOME> ~ [Ss][Oo][Mm][Ee]
+:lexeme ~ <SOURCE> priority => 1
 <SOURCE> ~ [Ss][Oo][Uu][Rr][Cc][Ee]
+:lexeme ~ <SPACE> priority => 1
 <SPACE> ~ [Ss][Pp][Aa][Cc][Ee]
+:lexeme ~ <SPECIFIC> priority => 1
 <SPECIFIC> ~ [Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]
+:lexeme ~ <SPECIFICTYPE> priority => 1
 <SPECIFICTYPE> ~ [Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc][Tt][Yy][Pp][Ee]
+:lexeme ~ <SPECIFIC_NAME> priority => 1
 <SPECIFIC_NAME> ~ [Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <SQL> priority => 1
 <SQL> ~ [Ss][Qq][Ll]
+:lexeme ~ <SQLEXCEPTION> priority => 1
 <SQLEXCEPTION> ~ [Ss][Qq][Ll][Ee][Xx][Cc][Ee][Pp][Tt][Ii][Oo][Nn]
+:lexeme ~ <SQLSTATE> priority => 1
 <SQLSTATE> ~ [Ss][Qq][Ll][Ss][Tt][Aa][Tt][Ee]
+:lexeme ~ <SQLWARNING> priority => 1
 <SQLWARNING> ~ [Ss][Qq][Ll][Ww][Aa][Rr][Nn][Ii][Nn][Gg]
+:lexeme ~ <SQRT> priority => 1
 <SQRT> ~ [Ss][Qq][Rr][Tt]
+:lexeme ~ <START> priority => 1
 <START> ~ [Ss][Tt][Aa][Rr][Tt]
+:lexeme ~ <STATE> priority => 1
 <STATE> ~ [Ss][Tt][Aa][Tt][Ee]
+:lexeme ~ <STATEMENT> priority => 1
 <STATEMENT> ~ [Ss][Tt][Aa][Tt][Ee][Mm][Ee][Nn][Tt]
+:lexeme ~ <STATIC> priority => 1
 <STATIC> ~ [Ss][Tt][Aa][Tt][Ii][Cc]
+:lexeme ~ <STDDEV_POP> priority => 1
 <STDDEV_POP> ~ [Ss][Tt][Dd][Dd][Ee][Vv]'_'[Pp][Oo][Pp]
+:lexeme ~ <STDDEV_SAMP> priority => 1
 <STDDEV_SAMP> ~ [Ss][Tt][Dd][Dd][Ee][Vv]'_'[Ss][Aa][Mm][Pp]
+:lexeme ~ <STRUCTURE> priority => 1
 <STRUCTURE> ~ [Ss][Tt][Rr][Uu][Cc][Tt][Uu][Rr][Ee]
+:lexeme ~ <STYLE> priority => 1
 <STYLE> ~ [Ss][Tt][Yy][Ll][Ee]
+:lexeme ~ <SUBCLASS_ORIGIN> priority => 1
 <SUBCLASS_ORIGIN> ~ [Ss][Uu][Bb][Cc][Ll][Aa][Ss][Ss]'_'[Oo][Rr][Ii][Gg][Ii][Nn]
+:lexeme ~ <SUBMULTISET> priority => 1
 <SUBMULTISET> ~ [Ss][Uu][Bb][Mm][Uu][Ll][Tt][Ii][Ss][Ee][Tt]
+:lexeme ~ <SUBSTRING> priority => 1
 <SUBSTRING> ~ [Ss][Uu][Bb][Ss][Tt][Rr][Ii][Nn][Gg]
+:lexeme ~ <SUM> priority => 1
 <SUM> ~ [Ss][Uu][Mm]
+:lexeme ~ <SYMMETRIC> priority => 1
 <SYMMETRIC> ~ [Ss][Yy][Mm][Mm][Ee][Tt][Rr][Ii][Cc]
+:lexeme ~ <SYSTEM> priority => 1
 <SYSTEM> ~ [Ss][Yy][Ss][Tt][Ee][Mm]
+:lexeme ~ <SYSTEM_USER> priority => 1
 <SYSTEM_USER> ~ [Ss][Yy][Ss][Tt][Ee][Mm]'_'[Uu][Ss][Ee][Rr]
+:lexeme ~ <TABLE> priority => 1
 <TABLE> ~ [Tt][Aa][Bb][Ll][Ee]
+:lexeme ~ <TABLESAMPLE> priority => 1
 <TABLESAMPLE> ~ [Tt][Aa][Bb][Ll][Ee][Ss][Aa][Mm][Pp][Ll][Ee]
+:lexeme ~ <TABLE_NAME> priority => 1
 <TABLE_NAME> ~ [Tt][Aa][Bb][Ll][Ee]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <TEMPORARY> priority => 1
 <TEMPORARY> ~ [Tt][Ee][Mm][Pp][Oo][Rr][Aa][Rr][Yy]
+:lexeme ~ <THEN> priority => 1
 <THEN> ~ [Tt][Hh][Ee][Nn]
+:lexeme ~ <TIES> priority => 1
 <TIES> ~ [Tt][Ii][Ee][Ss]
 <__TIME> ~ [Tt][Ii][Mm][Ee]
+:lexeme ~ <TIME> priority => 1
 <TIME> ~ <__TIME>
 <__TIMESTAMP> ~ [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
+:lexeme ~ <TIMESTAMP> priority => 1
 <TIMESTAMP> ~ <__TIMESTAMP>
+:lexeme ~ <TIMEZONE_HOUR> priority => 1
 <TIMEZONE_HOUR> ~ [Tt][Ii][Mm][Ee][Zz][Oo][Nn][Ee]'_'[Hh][Oo][Uu][Rr]
+:lexeme ~ <TIMEZONE_MINUTE> priority => 1
 <TIMEZONE_MINUTE> ~ [Tt][Ii][Mm][Ee][Zz][Oo][Nn][Ee]'_'[Mm][Ii][Nn][Uu][Tt][Ee]
+:lexeme ~ <TO> priority => 1
 <TO> ~ [Tt][Oo]
+:lexeme ~ <TOP_LEVEL_COUNT> priority => 1
 <TOP_LEVEL_COUNT> ~ [Tt][Oo][Pp]'_'[Ll][Ee][Vv][Ee][Ll]'_'[Cc][Oo][Uu][Nn][Tt]
+:lexeme ~ <TRAILING> priority => 1
 <TRAILING> ~ [Tt][Rr][Aa][Ii][Ll][Ii][Nn][Gg]
+:lexeme ~ <TRANSACTION> priority => 1
 <TRANSACTION> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn]
+:lexeme ~ <TRANSACTIONS_COMMITTED> priority => 1
 <TRANSACTIONS_COMMITTED> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn][Ss]'_'[Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
+:lexeme ~ <TRANSACTIONS_ROLLED_BACK> priority => 1
 <TRANSACTIONS_ROLLED_BACK> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn][Ss]'_'[Rr][Oo][Ll][Ll][Ee][Dd]'_'[Bb][Aa][Cc][Kk]
+:lexeme ~ <TRANSACTION_ACTIVE> priority => 1
 <TRANSACTION_ACTIVE> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn]'_'[Aa][Cc][Tt][Ii][Vv][Ee]
+:lexeme ~ <TRANSFORM> priority => 1
 <TRANSFORM> ~ [Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm]
+:lexeme ~ <TRANSFORMS> priority => 1
 <TRANSFORMS> ~ [Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm][Ss]
+:lexeme ~ <TRANSLATE> priority => 1
 <TRANSLATE> ~ [Tt][Rr][Aa][Nn][Ss][Ll][Aa][Tt][Ee]
+:lexeme ~ <TRANSLATION> priority => 1
 <TRANSLATION> ~ [Tt][Rr][Aa][Nn][Ss][Ll][Aa][Tt][Ii][Oo][Nn]
+:lexeme ~ <TREAT> priority => 1
 <TREAT> ~ [Tt][Rr][Ee][Aa][Tt]
+:lexeme ~ <TRIGGER> priority => 1
 <TRIGGER> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]
+:lexeme ~ <TRIGGER_CATALOG> priority => 1
 <TRIGGER_CATALOG> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <TRIGGER_NAME> priority => 1
 <TRIGGER_NAME> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <TRIGGER_SCHEMA> priority => 1
 <TRIGGER_SCHEMA> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <TRIM> priority => 1
 <TRIM> ~ [Tt][Rr][Ii][Mm]
 <__TRUE> ~ [Tt][Rr][Uu][Ee]
+:lexeme ~ <TRUE> priority => 1
 <TRUE> ~ <__TRUE>
+:lexeme ~ <TYPE> priority => 1
 <TYPE> ~ [Tt][Yy][Pp][Ee]
 <__U> ~ [Uu]
 <__UESCAPE> ~ [Uu][Ee][Ss][Cc][Aa][Pp][Ee]
+:lexeme ~ <UNBOUNDED> priority => 1
 <UNBOUNDED> ~ [Uu][Nn][Bb][Oo][Uu][Nn][Dd][Ee][Dd]
+:lexeme ~ <UNCOMMITTED> priority => 1
 <UNCOMMITTED> ~ [Uu][Nn][Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
+:lexeme ~ <UNDER> priority => 1
 <UNDER> ~ [Uu][Nn][Dd][Ee][Rr]
+:lexeme ~ <UNION> priority => 1
 <UNION> ~ [Uu][Nn][Ii][Oo][Nn]
+:lexeme ~ <UNIQUE> priority => 1
 <UNIQUE> ~ [Uu][Nn][Ii][Qq][Uu][Ee]
 <__UNKNOWN> ~ [Uu][Nn][Kk][Nn][Oo][Ww][Nn]
+:lexeme ~ <UNKNOWN> priority => 1
 <UNKNOWN> ~ <__UNKNOWN>
+:lexeme ~ <UNNAMED> priority => 1
 <UNNAMED> ~ [Uu][Nn][Nn][Aa][Mm][Ee][Dd]
+:lexeme ~ <UNNEST> priority => 1
 <UNNEST> ~ [Uu][Nn][Nn][Ee][Ss][Tt]
+:lexeme ~ <UPDATE> priority => 1
 <UPDATE> ~ [Uu][Pp][Dd][Aa][Tt][Ee]
+:lexeme ~ <UPPER> priority => 1
 <UPPER> ~ [Uu][Pp][Pp][Ee][Rr]
+:lexeme ~ <USAGE> priority => 1
 <USAGE> ~ [Uu][Ss][Aa][Gg][Ee]
+:lexeme ~ <USER> priority => 1
 <USER> ~ [Uu][Ss][Ee][Rr]
+:lexeme ~ <USER_DEFINED_TYPE_CATALOG> priority => 1
 <USER_DEFINED_TYPE_CATALOG> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
+:lexeme ~ <USER_DEFINED_TYPE_CODE> priority => 1
 <USER_DEFINED_TYPE_CODE> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Cc][Oo][Dd][Ee]
+:lexeme ~ <USER_DEFINED_TYPE_NAME> priority => 1
 <USER_DEFINED_TYPE_NAME> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Nn][Aa][Mm][Ee]
+:lexeme ~ <USER_DEFINED_TYPE_SCHEMA> priority => 1
 <USER_DEFINED_TYPE_SCHEMA> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
+:lexeme ~ <USING> priority => 1
 <USING> ~ [Uu][Ss][Ii][Nn][Gg]
+:lexeme ~ <VALUE> priority => 1
 <VALUE> ~ [Vv][Aa][Ll][Uu][Ee]
+:lexeme ~ <VALUES> priority => 1
 <VALUES> ~ [Vv][Aa][Ll][Uu][Ee][Ss]
+:lexeme ~ <VARCHAR> priority => 1
 <VARCHAR> ~ [Vv][Aa][Rr][Cc][Hh][Aa][Rr]
+:lexeme ~ <VARYING> priority => 1
 <VARYING> ~ [Vv][Aa][Rr][Yy][Ii][Nn][Gg]
+:lexeme ~ <VAR_POP> priority => 1
 <VAR_POP> ~ [Vv][Aa][Rr]'_'[Pp][Oo][Pp]
+:lexeme ~ <VAR_SAMP> priority => 1
 <VAR_SAMP> ~ [Vv][Aa][Rr]'_'[Ss][Aa][Mm][Pp]
+:lexeme ~ <VIEW> priority => 1
 <VIEW> ~ [Vv][Ii][Ee][Ww]
+:lexeme ~ <WHEN> priority => 1
 <WHEN> ~ [Ww][Hh][Ee][Nn]
+:lexeme ~ <WHENEVER> priority => 1
 <WHENEVER> ~ [Ww][Hh][Ee][Nn][Ee][Vv][Ee][Rr]
+:lexeme ~ <WHERE> priority => 1
 <WHERE> ~ [Ww][Hh][Ee][Rr][Ee]
+:lexeme ~ <WIDTH_BUCKET> priority => 1
 <WIDTH_BUCKET> ~ [Ww][Ii][Dd][Tt][Hh]'_'[Bb][Uu][Cc][Kk][Ee][Tt]
+:lexeme ~ <WINDOW> priority => 1
 <WINDOW> ~ [Ww][Ii][Nn][Dd][Oo][Ww]
+:lexeme ~ <WITH> priority => 1
 <WITH> ~ [Ww][Ii][Tt][Hh]
+:lexeme ~ <WITHIN> priority => 1
 <WITHIN> ~ [Ww][Ii][Tt][Hh][Ii][Nn]
+:lexeme ~ <WITHOUT> priority => 1
 <WITHOUT> ~ [Ww][Ii][Tt][Hh][Oo][Uu][Tt]
+:lexeme ~ <WORK> priority => 1
 <WORK> ~ [Ww][Oo][Rr][Kk]
+:lexeme ~ <WRITE> priority => 1
 <WRITE> ~ [Ww][Rr][Ii][Tt][Ee]
 <__X> ~ [Xx]
+:lexeme ~ <YEAR> priority => 1
 <YEAR> ~ [Yy][Ee][Aa][Rr]
+:lexeme ~ <ZONE> priority => 1
 <ZONE> ~ [Zz][Oo][Nn][Ee]
-
