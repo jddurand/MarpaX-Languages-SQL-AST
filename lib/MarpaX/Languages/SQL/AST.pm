@@ -7,6 +7,7 @@ package MarpaX::Languages::SQL::AST;
 
 use Log::Any qw/$log/;
 use Carp qw/croak/;
+use MarpaX::Languages::SQL::AST::Util qw/:all/;
 use MarpaX::Languages::SQL::AST::Grammar qw//;
 use MarpaX::Languages::SQL::AST::Impl qw//;
 
