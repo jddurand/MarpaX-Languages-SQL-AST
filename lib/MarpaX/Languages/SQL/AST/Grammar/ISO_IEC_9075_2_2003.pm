@@ -137,7 +137,9 @@ lexeme default = action => [start,length,value]
 #
 # For the empty statements, or statements ending with ';' while this is not in the grammar
 #
-:discard ~ <__semicolon>
+#:discard ~ <__semicolon>
+
+<sqlStartSequence>  ::= <sqlStart>+
 
 <sqlStart>  ::= <preparableStatement>
               | <directSqlStatement>
