@@ -13,4 +13,6 @@ my $valuep = $sqlAst->parse(\$sqlSourceCode)->value();
 ok(defined($valuep), 'Output from parse()->value() is ok');
 
 __DATA__
-CREATE CHARACTER SET bob.charset_1 GET LATIN1
+CREATE CHARACTER SET bob.charset_1 AS GET LATIN1;
+CREATE CHARACTER SET bob.charset_1 GET LATIN1;
+CREATE CHARACTER SET bob.charset_1 AS GET LATIN1 COLLATE bob.collation_1;
