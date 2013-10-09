@@ -663,11 +663,11 @@ lexeme default = action => [start,length,value]
 # G1 Scalar expressions
 # ---------------------
 <dataType> ::=
-		<predefinedType>
-	|	<rowType>
-	|	<pathResolvedUserDefinedTypeName>
-	|	<referenceType>
-	|	<collectionType>
+		<predefinedType>                         rank =>  0
+	|	<rowType>                                rank => -1
+	|	<pathResolvedUserDefinedTypeName>        rank => -2
+	|	<referenceType>                          rank => -3
+	|	<collectionType>                         rank => -4
 
 <predefinedType> ::=
 		<characterStringType>
@@ -815,45 +815,45 @@ lexeme default = action => [start,length,value]
 <parenthesizedValueExpression> ::= <_left paren> <valueExpression> <_right paren>
 
 <nonparenthesizedValueExpressionPrimary> ::=
-		<unsignedValueSpecification>
-	|	<columnReference>
-	|	<setFunctionSpecification>
-	|	<windowFunction>
-	|	<scalarSubquery>
-	|	<caseExpression>
-	|	<castSpecification>
-	|	<fieldReference>
-	|	<subtypeTreatment>
-	|	<methodInvocation>
-	|	<staticMethodInvocation>
-	|	<newSpecification>
-	|	<attributeOrMethodReference>
-	|	<referenceResolution>
-	|	<collectionValueConstructor>
-	|	<arrayElementReference>
-	|	<multisetElementReference>
-	|	<routineInvocation>
-	|	<nextValueExpression>
+		<columnReference>                      rank =>   0
+	|	<unsignedValueSpecification>           rank =>  -1
+	|	<setFunctionSpecification>             rank =>  -2
+	|	<windowFunction>                       rank =>  -3
+	|	<scalarSubquery>                       rank =>  -4
+	|	<caseExpression>                       rank =>  -5
+	|	<castSpecification>                    rank =>  -6
+	|	<fieldReference>                       rank =>  -7
+	|	<subtypeTreatment>                     rank =>  -8
+	|	<methodInvocation>                     rank =>  -9
+	|	<staticMethodInvocation>               rank => -10
+	|	<newSpecification>                     rank => -11
+	|	<attributeOrMethodReference>           rank => -12
+	|	<referenceResolution>                  rank => -13
+	|	<collectionValueConstructor>           rank => -14
+	|	<arrayElementReference>                rank => -15
+	|	<multisetElementReference>             rank => -16
+	|	<routineInvocation>                    rank => -17
+	|	<nextValueExpression>                  rank => -18
 
 <valueSpecification> ::= <literal> | <generalValueSpecification>
 
 <unsignedValueSpecification> ::= <unsignedLiteral> | <generalValueSpecification>
 
 <generalValueSpecification> ::=
-		<hostParameterSpecification>
-	|	<sqlParameterReference>
-	|	<dynamicParameterSpecification>
-	|	<embeddedVariableSpecification>
-	|	<currentCollationSpecification>
-	|	<CURRENT_DEFAULT_TRANSFORM_GROUP>
-	|	<CURRENT_PATH>
-	|	<CURRENT_ROLE>
-	|	<CURRENT_TRANSFORM_GROUP_FOR_TYPE> <pathResolvedUserDefinedTypeName>
-	|	<CURRENT_USER>
-	|	<SESSION_USER>
-	|	<SYSTEM_USER>
-	|	<USER>
-	|	<VALUE>
+		<hostParameterSpecification>                                              rank =>   0
+	|	<sqlParameterReference>                                                   rank =>  -1
+	|	<dynamicParameterSpecification>                                           rank =>  -2
+	|	<embeddedVariableSpecification>                                           rank =>  -3
+	|	<currentCollationSpecification>                                           rank =>  -4
+	|	<CURRENT_DEFAULT_TRANSFORM_GROUP>                                         rank =>  -5
+	|	<CURRENT_PATH>                                                            rank =>  -6
+	|	<CURRENT_ROLE>                                                            rank =>  -7
+	|	<CURRENT_TRANSFORM_GROUP_FOR_TYPE> <pathResolvedUserDefinedTypeName>      rank =>  -8
+	|	<CURRENT_USER>                                                            rank =>  -9
+	|	<SESSION_USER>                                                            rank => -10
+	|	<SYSTEM_USER>                                                             rank => -11
+	|	<USER>                                                                    rank => -12
+	|	<VALUE>                                                                   rank => -13
 
 <simpleValueSpecification> ::=
 		<literal>
@@ -1429,7 +1429,7 @@ lexeme default = action => [start,length,value]
 	|	<rowSubquery>
 
 <rowValueConstructorElementList> ::= <rowValueConstructorElement>
-                                       | <rowValueConstructorElementList> <_comma> <rowValueConstructorElement>
+                                   | <rowValueConstructorElementList> <_comma> <rowValueConstructorElement>
 
 <rowValueConstructorElement> ::= <valueExpression>
 
@@ -1447,8 +1447,8 @@ lexeme default = action => [start,length,value]
                                                           | <contextuallyTypedRowValueConstructorElementList> <_comma> <contextuallyTypedRowValueConstructorElement>
 
 <contextuallyTypedRowValueConstructorElement> ::=
-		<valueExpression>
-	|	<contextuallyTypedValueSpecification>
+		<valueExpression>                           rank =>  0
+	|	<contextuallyTypedValueSpecification>       rank => -1
 
 <rowValueConstructorPredicand> ::=
 		<booleanPredicand>                          rank =>  0
@@ -1456,32 +1456,32 @@ lexeme default = action => [start,length,value]
 	|	<commonValueExpression>                     rank => -2
 
 <rowValueExpression> ::=
-		<rowValueSpecialCase>
-	|	<explicitRowValueConstructor>
+		<rowValueSpecialCase>                       rank =>  0
+	|	<explicitRowValueConstructor>               rank => -1
 
 <tableRowValueExpression> ::=
-		<rowValueSpecialCase>
-	|	<rowValueConstructor>
+		<rowValueSpecialCase>                       rank =>  0
+	|	<rowValueConstructor>                       rank => -1
 
 <contextuallyTypedRowValueExpression> ::=
-		<rowValueSpecialCase>
-	|	<contextuallyTypedRowValueConstructor>
+		<rowValueSpecialCase>                       rank =>  0
+	|	<contextuallyTypedRowValueConstructor>      rank => -1
 
 <rowValuePredicand> ::=
-		<rowValueSpecialCase>
-	|	<rowValueConstructorPredicand>
+		<rowValueSpecialCase>                       rank =>  0
+	|	<rowValueConstructorPredicand>              rank => -1
 
 <rowValueSpecialCase> ::= <nonparenthesizedValueExpressionPrimary>
 
 <tableValueConstructor> ::= <VALUES> <rowValueExpressionList>
 
 <rowValueExpressionList> ::= <tableRowValueExpression>
-                              | <rowValueExpressionList> <_comma> <tableRowValueExpression>
+                           | <rowValueExpressionList> <_comma> <tableRowValueExpression>
 
 <contextuallyTypedTableValueConstructor> ::= <VALUES> <contextuallyTypedRowValueExpressionList>
 
 <contextuallyTypedRowValueExpressionList> ::= <contextuallyTypedRowValueExpression>
-                                                 | <contextuallyTypedRowValueExpressionList> <_comma> <contextuallyTypedRowValueExpression>
+                                            | <contextuallyTypedRowValueExpressionList> <_comma> <contextuallyTypedRowValueExpression>
 
 <tableExpression> ::= <fromClause>
 	|	<fromClause> <whereClause>
