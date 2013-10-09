@@ -1034,19 +1034,27 @@ lexeme default = action => [start,length,value]
 
 <multisetElementReference> ::= <ELEMENT> <_left paren> <multisetValueExpression> <_right paren>
 
+#
+# <commonValueExpression> is a also big source of ambiguities.
+# We give it explicit lower precedence, and explicit higher precedences to the others.
+#
 <valueExpression> ::=
-		<commonValueExpression>
-	|	<booleanValueExpression>
-	|	<rowValueExpression>
+		<booleanValueExpression>              rank =>  0
+	|	<rowValueExpression>                  rank => -1
+	|	<commonValueExpression>               rank => -2
 
+#
+# <collectionValueExpression> is a also big source of ambiguities, since it is a collection we give it latest
+# precedence, and explicit higher precedences to all others, ordered by appearance in the grammar
+#
 <commonValueExpression> ::=
-		<numericValueExpression>
-	|	<stringValueExpression>
-	|	<datetimeValueExpression>
-	|	<intervalValueExpression>
-	|	<userDefinedTypeValueExpression>
-	|	<referenceValueExpression>
-	|	<collectionValueExpression>
+		<numericValueExpression>              rank =>  0
+	|	<stringValueExpression>               rank => -1
+	|	<datetimeValueExpression>             rank => -2
+	|	<intervalValueExpression>             rank => -3
+	|	<userDefinedTypeValueExpression>      rank => -4
+	|	<referenceValueExpression>            rank => -5
+	|	<collectionValueExpression>           rank => -6
 
 <userDefinedTypeValueExpression> ::= <valueExpressionPrimary>
 
@@ -1407,10 +1415,13 @@ lexeme default = action => [start,length,value]
 
 <tableValueConstructorByQuery> ::= <TABLE> <_left paren> <queryExpression> <_right paren>
 
+#
+# <commonValueExpression> generates ambiguities
+#
 <rowValueConstructor> ::=
-		<commonValueExpression>
-	|	<booleanValueExpression>
-	|	<explicitRowValueConstructor>
+		<booleanValueExpression>                  rank =>  0
+	|	<explicitRowValueConstructor>             rank => -1
+	|	<commonValueExpression>                   rank => -2
 
 <explicitRowValueConstructor> ::=
 		<_left paren> <rowValueConstructorElement> <_comma> <rowValueConstructorElementList> <_right paren>
@@ -1422,12 +1433,15 @@ lexeme default = action => [start,length,value]
 
 <rowValueConstructorElement> ::= <valueExpression>
 
+#
+# <commonValueExpression> generates ambiguities
+#
 <contextuallyTypedRowValueConstructor> ::=
-		<commonValueExpression>
-	|	<booleanValueExpression>
-	|	<contextuallyTypedValueSpecification>
-	|	<_left paren> <contextuallyTypedRowValueConstructorElement> <_comma> <contextuallyTypedRowValueConstructorElementList> <_right paren>
-	|	<ROW> <_left paren> <contextuallyTypedRowValueConstructorElementList> <_right paren>
+		<booleanValueExpression>                    rank =>  0
+	|	<contextuallyTypedValueSpecification>       rank => -1
+	|	<_left paren> <contextuallyTypedRowValueConstructorElement> <_comma> <contextuallyTypedRowValueConstructorElementList> <_right paren> rank => -2
+	|	<ROW> <_left paren> <contextuallyTypedRowValueConstructorElementList> <_right paren> rank => -3
+	|	<commonValueExpression>                     rank => -4
 
 <contextuallyTypedRowValueConstructorElementList> ::= <contextuallyTypedRowValueConstructorElement>
                                                           | <contextuallyTypedRowValueConstructorElementList> <_comma> <contextuallyTypedRowValueConstructorElement>
@@ -1437,9 +1451,9 @@ lexeme default = action => [start,length,value]
 	|	<contextuallyTypedValueSpecification>
 
 <rowValueConstructorPredicand> ::=
-		<commonValueExpression>
-	|	<booleanPredicand>
-	|	<explicitRowValueConstructor>
+		<booleanPredicand>                          rank =>  0
+	|	<explicitRowValueConstructor>               rank => -1
+	|	<commonValueExpression>                     rank => -2
 
 <rowValueExpression> ::=
 		<rowValueSpecialCase>
@@ -3613,10 +3627,13 @@ lexeme default = action => [start,length,value]
 
 <insertionTarget> ::= <_table name>
 
+#
+# Ambiguities with FROM
+#
 <insertColumnsAndSource> ::=
-		<fromSubquery>
-	|	<fromConstructor>
-	|	<fromDefault>
+		<fromSubquery>                  rank =>  0
+	|	<fromConstructor>               rank => -1
+	|	<fromDefault>                   rank => -2
 
 <fromSubquery> ::=
 	  <_left paren> <insertColumnList> <_right paren> <queryExpression>
