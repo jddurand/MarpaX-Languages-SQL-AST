@@ -4713,3 +4713,20 @@ _COMMENT_EVERYYHERE_START ~ '--'
 _COMMENT_EVERYYHERE_END ~ [^\n]*
 _COMMENT ~ _COMMENT_EVERYYHERE_START _COMMENT_EVERYYHERE_END
 :discard ~ _COMMENT
+
+############################################################################
+# Discard of a C comment, c.f. https://gist.github.com/jeffreykegler/5015057
+############################################################################
+<C style comment> ~ '/*' <comment interior> '*/'
+<comment interior> ~
+    <optional non stars>
+    <optional star prefixed segments>
+    <optional pre final stars>
+<optional non stars> ~ [^*]*
+<optional star prefixed segments> ~ <star prefixed segment>*
+<star prefixed segment> ~ <stars> [^/*] <optional star free text>
+<stars> ~ [*]+
+<optional star free text> ~ [^*]*
+<optional pre final stars> ~ [*]*
+:discard ~ <C style comment>
+

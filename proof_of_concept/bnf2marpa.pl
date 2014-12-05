@@ -208,14 +208,33 @@ sub _rules {
   # Advantages: less earlemes, less lexemes, less everything, except more work on the most optimum part of the s/w: the reader
   #
 
-  push(@rc, '');
-  push(@rc, '_WS ~ [\\s]+');
-  push(@rc, ':discard ~ _WS');
-  push(@rc, '');
-  push(@rc, "_COMMENT_EVERYYHERE_START ~ '--'"),
-  push(@rc, '_COMMENT_EVERYYHERE_END ~ [^\n]*');
-  push(@rc, '_COMMENT ~ _COMMENT_EVERYYHERE_START _COMMENT_EVERYYHERE_END');
-  push(@rc, ':discard ~ _COMMENT');
+  push(@rc, <<DISCARD
+
+_WS ~ [\\s]+
+:discard ~ _WS
+
+_COMMENT_EVERYYHERE_START ~ '--'
+_COMMENT_EVERYYHERE_END ~ [^\\n]*
+_COMMENT ~ _COMMENT_EVERYYHERE_START _COMMENT_EVERYYHERE_END
+:discard ~ _COMMENT
+
+############################################################################
+# Discard of a C comment, c.f. https://gist.github.com/jeffreykegler/5015057
+############################################################################
+<C style comment> ~ '/*' <comment interior> '*/'
+<comment interior> ~
+    <optional non stars>
+    <optional star prefixed segments>
+    <optional pre final stars>
+<optional non stars> ~ [^*]*
+<optional star prefixed segments> ~ <star prefixed segment>*
+<star prefixed segment> ~ <stars> [^/*] <optional star free text>
+<stars> ~ [*]+
+<optional star free text> ~ [^*]*
+<optional pre final stars> ~ [*]*
+:discard ~ <C style comment>
+DISCARD
+      );
   $self->{grammar} = join("\n", @rc) . "\n";
 
   return $self;
