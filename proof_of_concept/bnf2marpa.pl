@@ -77,8 +77,9 @@ sub _rules {
   my ($self, @rules) = @_;
 
   my @rc = ();
-  push(@rc, 'inaccessible is warn by default');
-  push(@rc, 'lexeme default = latm => 1');
+  push(@rc, 'inaccessible is ok by default');
+  push(@rc, ':default ::= action => [values] bless => ::lhs');
+  push(@rc, 'lexeme default = action => [start,length,value] latm => 1');
   if (defined($self->{start}->{number})) {
       push(@rc, ':start ::= ' . $self->{start}->{rule});
   }
@@ -108,7 +109,7 @@ sub _rules {
 	  # ------------------------------------------------------------------------------------
 	  my $quantifier = $rule->{quantifier};
 	  if ($quantifier) {
-	      my $many = sprintf('%s_%s', $rhs, 'many');
+	      my $many = sprintf('%s %s', $rhs, 'many');
 	      next if (exists($self->{reQuantifiedSymbols}->{$many}));
 	  }
 
@@ -161,11 +162,11 @@ sub _rules {
 		  # We just have to force it to use our symbol name, and to remove its internal traking of quantified symbols
 		  # We also have to do this only ONCE.
 		  #
-		  my $many = sprintf('%s_%s', $rhs, 'many');
+		  my $many = sprintf('%s %s', $rhs, 'many');
 		  $self->{reQuantifiedSymbols}->{$many} = 1;
 		  delete($self->{quantifiedSymbols}->{$many});
 		  if ($quantifier eq '*') {
-		      my $any = sprintf('%s_%s', $rhs, 'any');
+		      my $any = sprintf('%s %s', $rhs, 'any');
 		      delete($self->{quantifiedSymbols}->{$any});
 		  }
 		  $self->_termFactorQuantifier($rhs, $quantifier, $lhs, 1);
@@ -244,12 +245,20 @@ sub _symbol {
   my ($self, $symbol) = @_;
 
   #
-  # Remove eventual '<' and '>' around symbol
+  # Remove any non-alnum character
   #
-  if ($symbol =~ /^<(.+)>$/) {
-    substr($symbol,  0, 1) = '';
-    substr($symbol, -1, 1) = '';
+  $symbol =~ s/[^[:alnum:]]/ /g;
+
+  #
+  # And break symbol in words, ucfirst() on all
+  #
+  pos($symbol) = undef;
+  my @words = ();
+  while ($symbol =~ m/(\w+)/sxmg) {
+    my $match = substr($symbol, $-[1], $+[1] - $-[1]);
+    push(@words, ($match eq 'SQL' ? $match : ucfirst(lc($match))));
   }
+  $symbol = join(' ', @words);
 
   return $symbol;
 }
@@ -364,7 +373,7 @@ sub _range2 {
 sub _factorExpressions {
   my ($self, $lparen, $expressions, $rparen) = @_;
 
-  my $symbol = sprintf('_Gen%03d', 1 + (scalar @{$self->{rules}}));
+  my $symbol = sprintf('Gen%03d', 1 + (scalar @{$self->{rules}}));
   $self->_rule($symbol, '::=', $expressions);
   return $symbol;
 }
@@ -375,7 +384,7 @@ sub _factor {
   if (! $name) {
       my @name = grep {$self->{lexemes}->{$_} eq $printableValue} keys %{$self->{lexemes}};
       if (! @name) {
-	  $name = sprintf('_Lex%03d', 1 + (keys %{$self->{lexemes}}));
+	  $name = sprintf('Lex%03d', 1 + (keys %{$self->{lexemes}}));
       } else {
 	  $name = $name[0];
       }
@@ -423,7 +432,7 @@ sub _termFactorQuantifier {
 
   my $symbol;
   if ($quantifier eq '*' || $quantifier eq '+') {
-      $symbol = $forcedSymbol || sprintf('%s_%s', $factor, ($quantifier eq '*') ? 'any' : 'many');
+      $symbol = $forcedSymbol || sprintf('%s %s', $factor, ($quantifier eq '*') ? 'any' : 'many');
       if (! exists($self->{quantifiedSymbols}->{$symbol})) {
 	  $self->{quantifiedSymbols}->{$symbol}++;
 	  if (exists($self->{lexemesExact}->{$factor}) &&
@@ -445,7 +454,7 @@ sub _termFactorQuantifier {
 		  my $thisContent = "$self->{lexemes}->{$factor}$thisQuantifier";
                   if ($quantifier eq '*') {
                     $thisQuantifier = '+';
-                    $thisSymbol = sprintf('%s_%s', $factor, 'many');
+                    $thisSymbol = sprintf('%s %s', $factor, 'many');
                   }
                   print STDERR "[INFO] Transformation to a lexeme: $thisSymbol ::= $factor$thisQuantifier\n";
                   $self->_factor($thisContent, $self->{lexemesExact}->{$factor}->{type}, $self->{lexemesExact}->{$factor}->{value}, $thisQuantifier, $thisSymbol);
@@ -456,7 +465,7 @@ sub _termFactorQuantifier {
 		      $self->{symbols}->{$thisSymbol} = {terminal => 1, content => $thisContent};
 		  }
                   if ($quantifier eq '*') {
-                    my $newSymbol = $forcedSymbol || sprintf('_Gen%03d', 1 + (scalar @{$self->{rules}}));
+                    my $newSymbol = $forcedSymbol || sprintf('Gen%03d', 1 + (scalar @{$self->{rules}}));
                     print STDERR "[INFO] Using a nullable symbol for: $symbol ::= $factor$quantifier, i.e. $newSymbol ::= $thisSymbol; $newSymbol ::= ;\n";
                     $self->_rule($newSymbol, '::=', [ [ [ $thisSymbol ] , {} ] ]);
                     $self->_rule($newSymbol, '::=', [ [ [] , {} ] ]);
@@ -481,7 +490,7 @@ sub _termFactorQuantifier {
 	  }
       }
   } elsif ($quantifier eq '?') {
-      $symbol = sprintf('%s_maybe', $factor);
+      $symbol = sprintf('%s maybe', $factor);
       if (! exists($self->{quantifiedSymbols}->{$symbol})) {
 	  $self->{quantifiedSymbols}->{$symbol}++;
 	  $self->_rule($symbol, '::=', [ [ [ "$factor" ] , {} ] ]);
