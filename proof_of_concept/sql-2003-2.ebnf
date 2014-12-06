@@ -8,6 +8,7 @@
 # <embeded SQL TARGET LANGUAGE> are supposed to all be EXEC SQL            #
 # <host label identifier> is skipped                                       #
 # <host PL/I label variable> is skipped                                    #
+# <COBOL dbcs> is not implemented                                          #
 #                                                                          #
 # Marpa specific constraints:                                              #
 # * <ref cast option> has been made non nullable                           #
@@ -3877,7 +3878,10 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <Ada assignment operator> ::= <colon><equals operator>
 
-<Ada host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+/* A per http://cui.unige.ch/isi/bnf/Ada95/identifier.html */
+<Ada host identifier> ::= <Ada host identifier letter> ( <underscore>? ( <Ada host identifier letter> | <digit> ) )*
+
+<Ada host identifier letter> ::= <simple Latin letter>
 
 <Ada type specification> ::=
 		<Ada qualified type specification>
@@ -4050,7 +4054,68 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 		( 01 | 77 ) <COBOL host identifier> <COBOL type specification>
 		<character representation>* <period>
 
-<COBOL host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+/* As per http://www.cs.vu.nl/grammarware/browsable/vs-cobol-ii/#gdef:identifier */
+<COBOL host identifier> ::= <COBOL qualified-data-name> ( "(" <COBOL subscript> ")" )* ( "(" <COBOL leftmost-character-position> ":" [ <COBOL length> ] ")" )?
+
+<COBOL qualified-data-name> ::= <COBOL data-name> ( ( "IN" | "OF" ) <COBOL data-name> )* ( ( "IN" | "OF" ) <COBOL file-name> )?
+
+<COBOL data-name> ::= <COBOL alphabetic-user-defined-word>
+
+<COBOL alphabetic-user-defined-word> ::= (<digit>+ [\-]*)* <digit>* [A-Za-z] [A-Za-z0-9]* ([\-]+ [A-Za-z0-9]+)*
+
+<COBOL file-name> ::= <COBOL alphabetic-user-defined-word>
+
+<COBOL subscript> ::= (  <COBOL integer>
+                       | <COBOL qualified-data-name> ( ( "+" | "-" ) <COBOL integer> )?
+                       | <COBOL index-name> ( ( "+" | "-" ) <COBOL integer> )?
+                      )+
+
+<COBOL integer> ::= [0]* [1-9] <digit>*
+
+<COBOL index-name> ::= <COBOL alphabetic-user-defined-word>
+
+<COBOL host identifier> ::= "LINAGE-COUNTER" ( ( "IN" | "OF" ) <COBOL file-name> )?
+
+<COBOL leftmost-character-position> ::= <COBOL arithmetic-expression>
+
+<COBOL arithmetic-expression> ::= <COBOL times-div> ( ( "+" | "-" ) <COBOL times-div> )*
+
+<COBOL times-div> ::= <COBOL power> ( ( "*" | "/" ) <COBOL power> )*
+
+<COBOL power> ::= ( ( "+" | "-" ) )? <COBOL basis> ( "**" <COBOL basis> )*
+
+<COBOL basis> ::= <COBOL host identifier> | <COBOL literal> | "(" <COBOL arithmetic-expression> ")"
+
+<COBOL literal> ::= <COBOL nonnumeric>
+                  | <COBOL numeric>
+/*                | <COBOL dbcs> */
+                  | <COBOL figurative-constant>
+
+<COBOL nonnumeric> ::= '"' ([^"] | '"' '"')* '"'
+                     | "'" ([^'] | "'" "'")* "'"
+                     | [Xx] '"' <COBOL hexdigits> '"'
+                     | [Xx] "'" <COBOL hexdigits> "'"
+
+<COBOL hexdigits> ::= [0-9A-Fa-f]+
+
+<COBOL numeric> ::= ('+' | '-')? (<digit>* '.' <digit>+ | <digit>+)
+
+/* <COBOL dbcs> = NOT IMPLEMENTED */
+
+<COBOL figurative-constant> ::= "ZERO"
+                              | "ZEROS"
+                              | "ZEROES"
+                              | "SPACE"
+                              | "SPACES"
+                              | "HIGH-VALUE"
+                              | "HIGH-VALUES"
+                              | "LOW-VALUE"
+                              | "LOW-VALUES"
+                              | "QUOTE"
+                              | "QUOTES"
+                              | "ALL" <COBOL literal>
+                              | "NULL"
+                              | "NULLS"
 
 <COBOL type specification> ::=
 		<COBOL character type>
