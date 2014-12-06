@@ -1,6 +1,7 @@
 /*
 ############################################################################
-# All host identifiers are supposed to a perl's "word"                     #
+# All host identifiers are supposed to a regular identifier                #
+# <regular identifier> is supposed to match <SQL language identifier>      #
 # <direct implementation-defined statement> is skipped.                    #
 # <escaped character> prefix is fixed to '\'                               #
 # <escaped character> and <non-escaped character> done as perl FireBird    #
@@ -41,16 +42,14 @@
 ############################################################################
 */
 
-<:start> ::= <sql start sequence>
-<sql start sequence>  ::= <sql start>+
-<sql start>  ::= <preparable statement>
+<:start> ::= <SQL start sequence>
+<SQL start sequence>  ::= <SQL start>+
+<SQL start>  ::= <preparable statement>
                | <direct SQL statement>
                | <embedded SQL declare section>
                | <embedded SQL host program>
                | <embedded SQL statement>
                | <SQL_client module definition>
-
-
 
 <SQL terminal character> ::= <SQL language character>
 
@@ -58,13 +57,15 @@
 
 <simple Latin letter> ::= <simple Latin upper case letter> | <simple Latin lower case letter>
 
-<simple Latin upper case letter> ::=
-		A | B | C | D | E | F | G | H | I | J | K | L | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
+/* Not just to make it more readable: by default my bnf2marpa.pl script will make ALL
+  strings not case sensitive. So saying A will create a lexeme like e.g. <Lex000> ~ 'A':i.
+  And saying a will create a lexeme like e.g. <Lex000> ~ 'a':i => ambiguity */
 
-<simple Latin lower case letter> ::=
-		a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z
+<simple Latin upper case letter> ::= [A-Z]
 
-<digit> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+<simple Latin lower case letter> ::= [a-z]
+
+<digit> ::= [0-9]
 
 <SQL special character> ::=
 		<space>
@@ -166,7 +167,7 @@
 	|	<large object length token>
 	|	<multiplier>
 
-<regular identifier> ::= \w+
+<regular identifier> ::= <SQL language identifier>
 
 <large object length token> ::= <digit>+ <multiplier>
 
@@ -3876,7 +3877,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <Ada assignment operator> ::= <colon><equals operator>
 
-<Ada host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<Ada host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <Ada type specification> ::=
 		<Ada qualified type specification>
@@ -3959,7 +3960,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <C array specification> ::= <left bracket> <length> <right bracket>
 
-<C host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<C host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <C derived variable> ::=
 		<C VARCHAR variable>
@@ -4049,7 +4050,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 		( 01 | 77 ) <COBOL host identifier> <COBOL type specification>
 		<character representation>* <period>
 
-<COBOL host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<COBOL host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <COBOL type specification> ::=
 		<COBOL character type>
@@ -4130,7 +4131,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 <Fortran variable definition> ::=
 		<Fortran type specification> <Fortran host identifier> ( <comma> <Fortran host identifier> )*
 
-<Fortran host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<Fortran host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <Fortran type specification> ::=
 		CHARACTER ( <asterisk> <length> )? ( CHARACTER SET IS? <character set specification> )?
@@ -4185,7 +4186,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 		VARCHAR <MUMPS host identifier> <MUMPS length specification>
 		( <comma> <MUMPS host identifier> <MUMPS length specification> )*
 
-<MUMPS host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<MUMPS host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <MUMPS length specification> ::= <left paren> <length> <right paren>
 
@@ -4232,7 +4233,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 <Pascal variable definition> ::=
 		<Pascal host identifier> ( <comma> <Pascal host identifier> )* <colon> <Pascal type specification> <semicolon>
 
-<Pascal host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<Pascal host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <Pascal type specification> ::=
 		PACKED ARRAY <left bracket> 1 <double period> <length> <right bracket> OF CHAR
@@ -4281,7 +4282,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 		<left paren> <PL_I host identifier> ( <comma> <PL_I host identifier> )* <right paren>
 		<PL_I type specification> <character representation>* <semicolon>
 
-<PL_I host identifier> ::= \w+ /* !! See the Syntax Rules. */
+<PL_I host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
 
 <PL_I type specification> ::=
 		( CHAR | CHARACTER ) VARYING? <left paren><length><right paren> ( CHARACTER SET IS? <character set specification> )?
