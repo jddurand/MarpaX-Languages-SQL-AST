@@ -340,7 +340,6 @@ sub _ranges {
     } else {
       $printRanges .= quotemeta($range1);
     }
-    print STDERR "==> (\$range, \$exactRange, \$printRanges) = ($range, @{$exactRange}, $printRanges)\n";
     push(@exactRanges, $exactRange);
   }
   return [$printRanges, [ @exactRanges ]];
