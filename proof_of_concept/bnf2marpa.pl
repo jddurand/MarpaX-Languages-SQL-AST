@@ -334,7 +334,13 @@ sub _ranges {
   my @exactRanges = ();
   foreach (@ranges) {
     my ($range, $exactRange) = @{$_};
-    $printRanges .= quotemeta($range);
+    my ($range1, $range2) = @{$exactRange};
+    if ($range1 ne $range2) {
+      $printRanges .= quotemeta($range1) . '-' . quotemeta($range2);
+    } else {
+      $printRanges .= quotemeta($range1);
+    }
+    print STDERR "==> (\$range, \$exactRange, \$printRanges) = ($range, @{$exactRange}, $printRanges)\n";
     push(@exactRanges, $exactRange);
   }
   return [$printRanges, [ @exactRanges ]];
