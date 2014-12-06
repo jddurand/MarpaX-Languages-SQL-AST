@@ -247,18 +247,22 @@ sub _symbol {
   #
   # Remove any non-alnum character
   #
-  $symbol =~ s/[^[:alnum:]]/ /g;
-
-  #
-  # And break symbol in words, ucfirst() on all
-  #
-  pos($symbol) = undef;
-  my @words = ();
-  while ($symbol =~ m/(\w+)/sxmg) {
-    my $match = substr($symbol, $-[1], $+[1] - $-[1]);
-    push(@words, ($match eq 'SQL' ? $match : ucfirst(lc($match))));
+  our %UNALTERABLED_SYMBOLS = (':start' => 1, ':discard' => 1);
+  $symbol =~ s/^<//;
+  $symbol =~ s/>$//;
+  if (! exists($UNALTERABLED_SYMBOLS{$symbol})) {
+    $symbol =~ s/[^[:alnum:]]/ /g;
+    #
+    # Break symbol in words, ucfirst() on all
+    #
+    pos($symbol) = undef;
+    my @words = ();
+    while ($symbol =~ m/(\w+)/sxmg) {
+      my $match = substr($symbol, $-[1], $+[1] - $-[1]);
+      push(@words, ($match eq 'SQL' ? $match : ucfirst(lc($match))));
+    }
+    $symbol = join(' ', @words);
   }
-  $symbol = join(' ', @words);
 
   return $symbol;
 }
