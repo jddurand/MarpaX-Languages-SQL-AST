@@ -60,7 +60,7 @@ sub _pushLexemes {
 	my @rhs = map {"'$_':i"} (split(//, $self->{$key}->{$_}));
 	$content = join(' ', "<$_>", '::=', @rhs, 'action', '=>', 'fakedLexeme', '# Faked lexeme - LATM handling the ambiguities');
       } else {
-	my $rhs = join(' ', '\'' . $self->{$key}->{$_} . '\'');
+	my $rhs = join(' ', '\'' . $self->{$key}->{$_} . '\':i');
 	$content = join(' ', "<$_>", '~', $rhs);
       }
     }
