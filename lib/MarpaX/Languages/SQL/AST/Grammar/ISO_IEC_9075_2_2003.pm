@@ -123,5284 +123,4770 @@ sub recce_option {
 
 1;
 __DATA__
-#
-# Defaults
-#
-:default ::= action => [values] bless => ::lhs
-lexeme default = action => [start,length,value]
+inaccessible is ok by default
+:default ::= action => nonTerminalSemantic
+lexeme default = action => [value] latm => 1
+
+:start ::= <SQL Start Sequence>
+<SQL Start many> ::= <SQL Start>+ rank => 0
+<SQL Start Sequence> ::= <SQL Start many> rank => 0
+<SQL Start> ::= <Preparable Statement> rank => 0
+              | <Direct SQL Statement> rank => -1
+              | <Embedded SQL Declare Section> rank => -2
+              | <Embedded SQL Host Program> rank => -3
+              | <Embedded SQL Statement> rank => -4
+              | <SQL Client Module Definition> rank => -5
+<SQL Terminal Character> ::= <SQL Language Character> rank => 0
+<SQL Language Character> ::= <Simple Latin Letter> rank => 0
+                           | <Digit> rank => -1
+                           | <SQL Special Character> rank => -2
+<Simple Latin Letter> ::= <Simple Latin Upper Case Letter> rank => 0
+                        | <Simple Latin Lower Case Letter> rank => -1
+<Simple Latin Upper Case Letter> ::= <Lex001> rank => 0
+<Simple Latin Lower Case Letter> ::= <Lex002> rank => 0
+<Digit> ::= <Lex003> rank => 0
+<SQL Special Character> ::= <Space> rank => 0
+                          | <Double Quote> rank => -1
+                          | <Percent> rank => -2
+                          | <Ampersand> rank => -3
+                          | <Quote> rank => -4
+                          | <Left Paren> rank => -5
+                          | <Right Paren> rank => -6
+                          | <Asterisk> rank => -7
+                          | <Plus Sign> rank => -8
+                          | <Comma> rank => -9
+                          | <Minus Sign> rank => -10
+                          | <Period> rank => -11
+                          | <Solidus> rank => -12
+                          | <Colon> rank => -13
+                          | <Semicolon> rank => -14
+                          | <Less Than Operator> rank => -15
+                          | <Equals Operator> rank => -16
+                          | <Greater Than Operator> rank => -17
+                          | <Question Mark> rank => -18
+                          | <Left Bracket> rank => -19
+                          | <Right Bracket> rank => -20
+                          | <Circumflex> rank => -21
+                          | <Underscore> rank => -22
+                          | <Vertical Bar> rank => -23
+                          | <Left Brace> rank => -24
+                          | <Right Brace> rank => -25
+<Space> ::= <Lex004> rank => 0
+<Double Quote> ::= <Lex005> rank => 0
+<Percent> ::= <Lex006> rank => 0
+<Ampersand> ::= <Lex007> rank => 0
+<Quote> ::= <Lex008> rank => 0
+<Left Paren> ::= <Lex009> rank => 0
+<Right Paren> ::= <Lex010> rank => 0
+<Asterisk> ::= <Lex011> rank => 0
+<Plus Sign> ::= <Lex012> rank => 0
+<Comma> ::= <Lex013> rank => 0
+<Minus Sign> ::= <Lex014> rank => 0
+<Period> ::= <Lex015> rank => 0
+<Solidus> ::= <Lex016> rank => 0
+<Colon> ::= <Lex017> rank => 0
+<Semicolon> ::= <Lex018> rank => 0
+<Less Than Operator> ::= <Lex019> rank => 0
+<Equals Operator> ::= <Lex020> rank => 0
+<Greater Than Operator> ::= <Lex021> rank => 0
+<Question Mark> ::= <Lex022> rank => 0
+<Left Bracket Or Trigraph> ::= <Left Bracket> rank => 0
+                             | <Left Bracket Trigraph> rank => -1
+<Right Bracket Or Trigraph> ::= <Right Bracket> rank => 0
+                              | <Right Bracket Trigraph> rank => -1
+<Left Bracket> ::= <Lex023> rank => 0
+<Left Bracket Trigraph> ::= <Lex024> rank => 0
+<Right Bracket> ::= <Lex025> rank => 0
+<Right Bracket Trigraph> ::= <Lex026> rank => 0
+<Circumflex> ::= <Lex027> rank => 0
+<Underscore> ::= <Lex028> rank => 0
+<Vertical Bar> ::= <Lex029> rank => 0
+<Left Brace> ::= <Lex030> rank => 0
+<Right Brace> ::= <Lex031> rank => 0
+<Token> ::= <Nondelimiter Token> rank => 0
+          | <Delimiter Token> rank => -1
+<Nondelimiter Token> ::= <Regular Identifier> rank => 0
+                       | <Key Word> rank => -1
+                       | <Unsigned Numeric Literal> rank => -2
+                       | <National Character String Literal> rank => -3
+                       | <Large Object Length Token> rank => -4
+                       | <Multiplier> rank => -5
+<Regular Identifier> ::= <SQL Language Identifier> rank => 0
+<Digit many> ::= <Digit>+ rank => 0
+<Large Object Length Token> ::= <Digit many> <Multiplier> rank => 0
+<Multiplier> ::= <Lex032> rank => 0
+               | <Lex033> rank => -1
+               | <Lex034> rank => -2
+<Delimited Identifier> ::= <Double Quote> <Delimited Identifier Body> <Double Quote> rank => 0
+<Delimited Identifier Part many> ::= <Delimited Identifier Part>+ rank => 0
+<Delimited Identifier Body> ::= <Delimited Identifier Part many> rank => 0
+<Delimited Identifier Part> ::= <Nondoublequote Character> rank => 0
+                              | <Doublequote Symbol> rank => -1
+<Unicode Delimited Identifier> ::= <Lex035> <Ampersand> <Double Quote> <Unicode Delimiter Body> <Double Quote> <Unicode Escape Specifier> rank => 0
+<Gen097> ::= <Lex036> <Quote> <Unicode Escape Character> <Quote> rank => 0
+<Gen097 maybe> ::= <Gen097> rank => 0
+<Gen097 maybe> ::= rank => -1
+<Unicode Escape Specifier> ::= <Gen097 maybe> rank => 0
+<Unicode Identifier Part many> ::= <Unicode Identifier Part>+ rank => 0
+<Unicode Delimiter Body> ::= <Unicode Identifier Part many> rank => 0
+<Unicode Identifier Part> ::= <Delimited Identifier Part> rank => 0
+                            | <Unicode Escape Value> rank => -1
+<Unicode Escape Value> ::= <Unicode 4 Digit Escape Value> rank => 0
+                         | <Unicode 6 Digit Escape Value> rank => -1
+                         | <Unicode Character Escape Value> rank => -2
+<Unicode 4 Digit Escape Value> ::= <Unicode Escape Character> <Hexit> <Hexit> <Hexit> <Hexit> rank => 0
+<Unicode 6 Digit Escape Value> ::= <Unicode Escape Character> <Plus Sign> <Hexit> <Hexit> <Hexit> <Hexit> <Hexit> <Hexit> rank => 0
+<Unicode Character Escape Value> ::= <Unicode Escape Character> <Unicode Escape Character> rank => 0
+<Unicode Escape Character> ::= <Lex037> rank => 0
+<Nondoublequote Character> ::= <Lex038> rank => 0
+<Doublequote Symbol> ::= <Lex039> rank => 0
+<Delimiter Token> ::= <Character String Literal> rank => 0
+                    | <Date String> rank => -1
+                    | <Time String> rank => -2
+                    | <Timestamp String> rank => -3
+                    | <Interval String> rank => -4
+                    | <Delimited Identifier> rank => -5
+                    | <Unicode Delimited Identifier> rank => -6
+                    | <SQL Special Character> rank => -7
+                    | <Not Equals Operator> rank => -8
+                    | <Greater Than Or Equals Operator> rank => -9
+                    | <Less Than Or Equals Operator> rank => -10
+                    | <Concatenation Operator> rank => -11
+                    | <Right Arrow> rank => -12
+                    | <Left Bracket Trigraph> rank => -13
+                    | <Right Bracket Trigraph> rank => -14
+                    | <Double Colon> rank => -15
+                    | <Double Period> rank => -16
+<Not Equals Operator> ::= <Less Than Operator> <Greater Than Operator> rank => 0
+<Greater Than Or Equals Operator> ::= <Greater Than Operator> <Equals Operator> rank => 0
+<Less Than Or Equals Operator> ::= <Less Than Operator> <Equals Operator> rank => 0
+<Concatenation Operator> ::= <Vertical Bar> <Vertical Bar> rank => 0
+<Right Arrow> ::= <Minus Sign> <Greater Than Operator> rank => 0
+<Double Colon> ::= <Colon> <Colon> rank => 0
+<Double Period> ::= <Period> <Period> rank => 0
+<Gen138> ::= <Comment> rank => 0
+           | <Space> rank => -1
+<Gen138 many> ::= <Gen138>+ rank => 0
+<Separator> ::= <Gen138 many> rank => 0
+<Comment> ::= <Simple Comment> rank => 0
+            | <Bracketed Comment> rank => -1
+<Comment Character any> ::= <Comment Character>* rank => 0
+<Simple Comment> ::= <Simple Comment Introducer> <Comment Character any> <Newline> rank => 0
+<Minus Sign any> ::= <Minus Sign>* rank => 0
+<Simple Comment Introducer> ::= <Minus Sign> <Minus Sign> <Minus Sign any> rank => 0
+<Bracketed Comment> ::= <Bracketed Comment Introducer> <Bracketed Comment Contents> <Bracketed Comment Terminator> rank => 0
+<Bracketed Comment Introducer> ::= <Solidus> <Asterisk> rank => 0
+<Bracketed Comment Terminator> ::= <Asterisk> <Solidus> rank => 0
+<Gen151> ::= <Comment Character> rank => 0
+           | <Separator> rank => -1
+<Gen151 any> ::= <Gen151>* rank => 0
+<Bracketed Comment Contents> ::= <Gen151 any> rank => 0
+<Comment Character> ::= <Nonquote Character> rank => 0
+                      | <Quote> rank => -1
+<Newline> ::= <Lex040> rank => 0
+<Key Word> ::= <Reserved Word> rank => 0
+             | <Non Reserved Word> rank => -1
+<Non Reserved Word> ::= <Lex041> rank => 0
+                      | <Lex042> rank => -1
+                      | <Lex043> rank => -2
+                      | <Lex044> rank => -3
+                      | <Lex045> rank => -4
+                      | <Lex046> rank => -5
+                      | <Lex047> rank => -6
+                      | <Lex048> rank => -7
+                      | <Lex049> rank => -8
+                      | <Lex050> rank => -9
+                      | <Lex051> rank => -10
+                      | <Lex052> rank => -11
+                      | <Lex053> rank => -12
+                      | <Lex054> rank => -13
+                      | <Lex055> rank => -14
+                      | <Lex056> rank => -15
+                      | <Lex057> rank => -16
+                      | <Lex058> rank => -17
+                      | <Lex059> rank => -18
+                      | <Lex060> rank => -19
+                      | <Lex061> rank => -20
+                      | <Lex062> rank => -21
+                      | <Lex063> rank => -22
+                      | <Lex064> rank => -23
+                      | <Lex065> rank => -24
+                      | <Lex066> rank => -25
+                      | <Lex067> rank => -26
+                      | <Lex068> rank => -27
+                      | <Lex069> rank => -28
+                      | <Lex070> rank => -29
+                      | <Lex071> rank => -30
+                      | <Lex072> rank => -31
+                      | <Lex073> rank => -32
+                      | <Lex074> rank => -33
+                      | <Lex075> rank => -34
+                      | <Lex076> rank => -35
+                      | <Lex077> rank => -36
+                      | <Lex078> rank => -37
+                      | <Lex079> rank => -38
+                      | <Lex080> rank => -39
+                      | <Lex081> rank => -40
+                      | <Lex082> rank => -41
+                      | <Lex083> rank => -42
+                      | <Lex084> rank => -43
+                      | <Lex085> rank => -44
+                      | <Lex086> rank => -45
+                      | <Lex087> rank => -46
+                      | <Lex088> rank => -47
+                      | <Lex089> rank => -48
+                      | <Lex090> rank => -49
+                      | <Lex091> rank => -50
+                      | <Lex092> rank => -51
+                      | <Lex093> rank => -52
+                      | <Lex094> rank => -53
+                      | <Lex095> rank => -54
+                      | <Lex096> rank => -55
+                      | <Lex097> rank => -56
+                      | <Lex098> rank => -57
+                      | <Lex099> rank => -58
+                      | <Lex100> rank => -59
+                      | <Lex101> rank => -60
+                      | <Lex102> rank => -61
+                      | <Lex103> rank => -62
+                      | <Lex104> rank => -63
+                      | <Lex105> rank => -64
+                      | <Lex106> rank => -65
+                      | <Lex107> rank => -66
+                      | <Lex108> rank => -67
+                      | <Lex109> rank => -68
+                      | <Lex110> rank => -69
+                      | <Lex111> rank => -70
+                      | <Lex112> rank => -71
+                      | <Lex113> rank => -72
+                      | <Lex114> rank => -73
+                      | <Lex115> rank => -74
+                      | <Lex116> rank => -75
+                      | <Lex117> rank => -76
+                      | <Lex118> rank => -77
+                      | <Lex119> rank => -78
+                      | <Lex120> rank => -79
+                      | <Lex121> rank => -80
+                      | <Lex122> rank => -81
+                      | <Lex123> rank => -82
+                      | <Lex124> rank => -83
+                      | <Lex125> rank => -84
+                      | <Lex126> rank => -85
+                      | <Lex127> rank => -86
+                      | <Lex128> rank => -87
+                      | <Lex129> rank => -88
+                      | <Lex130> rank => -89
+                      | <Lex131> rank => -90
+                      | <Lex132> rank => -91
+                      | <Lex133> rank => -92
+                      | <Lex134> rank => -93
+                      | <Lex135> rank => -94
+                      | <Lex136> rank => -95
+                      | <Lex034> rank => -96
+                      | <Lex137> rank => -97
+                      | <Lex138> rank => -98
+                      | <Lex139> rank => -99
+                      | <Lex140> rank => -100
+                      | <Lex141> rank => -101
+                      | <Lex142> rank => -102
+                      | <Lex143> rank => -103
+                      | <Lex144> rank => -104
+                      | <Lex145> rank => -105
+                      | <Lex146> rank => -106
+                      | <Lex147> rank => -107
+                      | <Lex148> rank => -108
+                      | <Lex149> rank => -109
+                      | <Lex150> rank => -110
+                      | <Lex032> rank => -111
+                      | <Lex151> rank => -112
+                      | <Lex152> rank => -113
+                      | <Lex153> rank => -114
+                      | <Lex154> rank => -115
+                      | <Lex155> rank => -116
+                      | <Lex156> rank => -117
+                      | <Lex157> rank => -118
+                      | <Lex158> rank => -119
+                      | <Lex159> rank => -120
+                      | <Lex033> rank => -121
+                      | <Lex160> rank => -122
+                      | <Lex161> rank => -123
+                      | <Lex162> rank => -124
+                      | <Lex163> rank => -125
+                      | <Lex164> rank => -126
+                      | <Lex165> rank => -127
+                      | <Lex166> rank => -128
+                      | <Lex167> rank => -129
+                      | <Lex168> rank => -130
+                      | <Lex169> rank => -131
+                      | <Lex170> rank => -132
+                      | <Lex171> rank => -133
+                      | <Lex172> rank => -134
+                      | <Lex173> rank => -135
+                      | <Lex174> rank => -136
+                      | <Lex175> rank => -137
+                      | <Lex176> rank => -138
+                      | <Lex177> rank => -139
+                      | <Lex178> rank => -140
+                      | <Lex179> rank => -141
+                      | <Lex180> rank => -142
+                      | <Lex181> rank => -143
+                      | <Lex182> rank => -144
+                      | <Lex183> rank => -145
+                      | <Lex184> rank => -146
+                      | <Lex185> rank => -147
+                      | <Lex186> rank => -148
+                      | <Lex187> rank => -149
+                      | <Lex188> rank => -150
+                      | <Lex189> rank => -151
+                      | <Lex190> rank => -152
+                      | <Lex191> rank => -153
+                      | <Lex192> rank => -154
+                      | <Lex193> rank => -155
+                      | <Lex194> rank => -156
+                      | <Lex195> rank => -157
+                      | <Lex196> rank => -158
+                      | <Lex197> rank => -159
+                      | <Lex198> rank => -160
+                      | <Lex199> rank => -161
+                      | <Lex200> rank => -162
+                      | <Lex201> rank => -163
+                      | <Lex202> rank => -164
+                      | <Lex203> rank => -165
+                      | <Lex204> rank => -166
+                      | <Lex205> rank => -167
+                      | <Lex206> rank => -168
+                      | <Lex207> rank => -169
+                      | <Lex208> rank => -170
+                      | <Lex209> rank => -171
+                      | <Lex210> rank => -172
+                      | <Lex211> rank => -173
+                      | <Lex212> rank => -174
+                      | <Lex213> rank => -175
+                      | <Lex214> rank => -176
+                      | <Lex215> rank => -177
+                      | <Lex216> rank => -178
+                      | <Lex217> rank => -179
+                      | <Lex218> rank => -180
+                      | <Lex219> rank => -181
+                      | <Lex220> rank => -182
+                      | <Lex221> rank => -183
+                      | <Lex222> rank => -184
+                      | <Lex223> rank => -185
+                      | <Lex224> rank => -186
+                      | <Lex225> rank => -187
+                      | <Lex226> rank => -188
+                      | <Lex227> rank => -189
+                      | <Lex228> rank => -190
+                      | <Lex229> rank => -191
+                      | <Lex230> rank => -192
+                      | <Lex231> rank => -193
+                      | <Lex232> rank => -194
+                      | <Lex233> rank => -195
+                      | <Lex234> rank => -196
+                      | <Lex235> rank => -197
+                      | <Lex236> rank => -198
+                      | <Lex237> rank => -199
+                      | <Lex238> rank => -200
+                      | <Lex239> rank => -201
+                      | <Lex240> rank => -202
+                      | <Lex241> rank => -203
+                      | <Lex242> rank => -204
+                      | <Lex243> rank => -205
+                      | <Lex244> rank => -206
+                      | <Lex245> rank => -207
+                      | <Lex246> rank => -208
+                      | <Lex247> rank => -209
+                      | <Lex248> rank => -210
+                      | <Lex249> rank => -211
+                      | <Lex250> rank => -212
+                      | <Lex251> rank => -213
+                      | <Lex252> rank => -214
+                      | <Lex253> rank => -215
+                      | <Lex254> rank => -216
+                      | <Lex255> rank => -217
+                      | <Lex256> rank => -218
+                      | <Lex257> rank => -219
+                      | <Lex258> rank => -220
+                      | <Lex259> rank => -221
+                      | <Lex260> rank => -222
+                      | <Lex261> rank => -223
+                      | <Lex262> rank => -224
+                      | <Lex263> rank => -225
+                      | <Lex264> rank => -226
+                      | <Lex265> rank => -227
+                      | <Lex266> rank => -228
+                      | <Lex267> rank => -229
+                      | <Lex268> rank => -230
+                      | <Lex269> rank => -231
+                      | <Lex270> rank => -232
+                      | <Lex271> rank => -233
+                      | <Lex272> rank => -234
+                      | <Lex273> rank => -235
+                      | <Lex274> rank => -236
+                      | <Lex275> rank => -237
+                      | <Lex276> rank => -238
+                      | <Lex277> rank => -239
+                      | <Lex278> rank => -240
+                      | <Lex279> rank => -241
+                      | <Lex280> rank => -242
+                      | <Lex281> rank => -243
+                      | <Lex282> rank => -244
+                      | <Lex283> rank => -245
+                      | <Lex284> rank => -246
+                      | <Lex285> rank => -247
+                      | <Lex286> rank => -248
+                      | <Lex287> rank => -249
+                      | <Lex288> rank => -250
+<Reserved Word> ::= <Lex289> rank => 0
+                  | <Lex290> rank => -1
+                  | <Lex291> rank => -2
+                  | <Lex292> rank => -3
+                  | <Lex293> rank => -4
+                  | <Lex294> rank => -5
+                  | <Lex295> rank => -6
+                  | <Lex296> rank => -7
+                  | <Lex297> rank => -8
+                  | <Lex298> rank => -9
+                  | <Lex299> rank => -10
+                  | <Lex300> rank => -11
+                  | <Lex301> rank => -12
+                  | <Lex302> rank => -13
+                  | <Lex303> rank => -14
+                  | <Lex304> rank => -15
+                  | <Lex305> rank => -16
+                  | <Lex306> rank => -17
+                  | <Lex307> rank => -18
+                  | <Lex308> rank => -19
+                  | <Lex309> rank => -20
+                  | <Lex310> rank => -21
+                  | <Lex311> rank => -22
+                  | <Lex312> rank => -23
+                  | <Lex313> rank => -24
+                  | <Lex314> rank => -25
+                  | <Lex315> rank => -26
+                  | <Lex316> rank => -27
+                  | <Lex317> rank => -28
+                  | <Lex318> rank => -29
+                  | <Lex319> rank => -30
+                  | <Lex320> rank => -31
+                  | <Lex321> rank => -32
+                  | <Lex322> rank => -33
+                  | <Lex323> rank => -34
+                  | <Lex324> rank => -35
+                  | <Lex325> rank => -36
+                  | <Lex326> rank => -37
+                  | <Lex327> rank => -38
+                  | <Lex328> rank => -39
+                  | <Lex329> rank => -40
+                  | <Lex330> rank => -41
+                  | <Lex331> rank => -42
+                  | <Lex332> rank => -43
+                  | <Lex333> rank => -44
+                  | <Lex334> rank => -45
+                  | <Lex335> rank => -46
+                  | <Lex336> rank => -47
+                  | <Lex337> rank => -48
+                  | <Lex338> rank => -49
+                  | <Lex339> rank => -50
+                  | <Lex340> rank => -51
+                  | <Lex341> rank => -52
+                  | <Lex342> rank => -53
+                  | <Lex343> rank => -54
+                  | <Lex344> rank => -55
+                  | <Lex345> rank => -56
+                  | <Lex346> rank => -57
+                  | <Lex347> rank => -58
+                  | <Lex348> rank => -59
+                  | <Lex349> rank => -60
+                  | <Lex350> rank => -61
+                  | <Lex351> rank => -62
+                  | <Lex352> rank => -63
+                  | <Lex353> rank => -64
+                  | <Lex354> rank => -65
+                  | <Lex355> rank => -66
+                  | <Lex356> rank => -67
+                  | <Lex357> rank => -68
+                  | <Lex358> rank => -69
+                  | <Lex359> rank => -70
+                  | <Lex360> rank => -71
+                  | <Lex361> rank => -72
+                  | <Lex362> rank => -73
+                  | <Lex363> rank => -74
+                  | <Lex364> rank => -75
+                  | <Lex365> rank => -76
+                  | <Lex366> rank => -77
+                  | <Lex367> rank => -78
+                  | <Lex368> rank => -79
+                  | <Lex369> rank => -80
+                  | <Lex370> rank => -81
+                  | <Lex371> rank => -82
+                  | <Lex372> rank => -83
+                  | <Lex373> rank => -84
+                  | <Lex374> rank => -85
+                  | <Lex375> rank => -86
+                  | <Lex376> rank => -87
+                  | <Lex377> rank => -88
+                  | <Lex378> rank => -89
+                  | <Lex379> rank => -90
+                  | <Lex380> rank => -91
+                  | <Lex381> rank => -92
+                  | <Lex382> rank => -93
+                  | <Lex383> rank => -94
+                  | <Lex384> rank => -95
+                  | <Lex385> rank => -96
+                  | <Lex386> rank => -97
+                  | <Lex387> rank => -98
+                  | <Lex388> rank => -99
+                  | <Lex389> rank => -100
+                  | <Lex390> rank => -101
+                  | <Lex391> rank => -102
+                  | <Lex392> rank => -103
+                  | <Lex393> rank => -104
+                  | <Lex394> rank => -105
+                  | <Lex395> rank => -106
+                  | <Lex396> rank => -107
+                  | <Lex397> rank => -108
+                  | <Lex398> rank => -109
+                  | <Lex399> rank => -110
+                  | <Lex400> rank => -111
+                  | <Lex401> rank => -112
+                  | <Lex150> rank => -113
+                  | <Lex402> rank => -114
+                  | <Lex403> rank => -115
+                  | <Lex404> rank => -116
+                  | <Lex405> rank => -117
+                  | <Lex406> rank => -118
+                  | <Lex407> rank => -119
+                  | <Lex408> rank => -120
+                  | <Lex409> rank => -121
+                  | <Lex410> rank => -122
+                  | <Lex411> rank => -123
+                  | <Lex412> rank => -124
+                  | <Lex413> rank => -125
+                  | <Lex414> rank => -126
+                  | <Lex415> rank => -127
+                  | <Lex416> rank => -128
+                  | <Lex417> rank => -129
+                  | <Lex418> rank => -130
+                  | <Lex419> rank => -131
+                  | <Lex420> rank => -132
+                  | <Lex421> rank => -133
+                  | <Lex422> rank => -134
+                  | <Lex423> rank => -135
+                  | <Lex424> rank => -136
+                  | <Lex425> rank => -137
+                  | <Lex426> rank => -138
+                  | <Lex427> rank => -139
+                  | <Lex428> rank => -140
+                  | <Lex429> rank => -141
+                  | <Lex430> rank => -142
+                  | <Lex431> rank => -143
+                  | <Lex432> rank => -144
+                  | <Lex433> rank => -145
+                  | <Lex434> rank => -146
+                  | <Lex435> rank => -147
+                  | <Lex436> rank => -148
+                  | <Lex437> rank => -149
+                  | <Lex438> rank => -150
+                  | <Lex439> rank => -151
+                  | <Lex440> rank => -152
+                  | <Lex441> rank => -153
+                  | <Lex442> rank => -154
+                  | <Lex443> rank => -155
+                  | <Lex444> rank => -156
+                  | <Lex445> rank => -157
+                  | <Lex446> rank => -158
+                  | <Lex447> rank => -159
+                  | <Lex448> rank => -160
+                  | <Lex449> rank => -161
+                  | <Lex450> rank => -162
+                  | <Lex451> rank => -163
+                  | <Lex452> rank => -164
+                  | <Lex453> rank => -165
+                  | <Lex454> rank => -166
+                  | <Lex455> rank => -167
+                  | <Lex456> rank => -168
+                  | <Lex457> rank => -169
+                  | <Lex458> rank => -170
+                  | <Lex459> rank => -171
+                  | <Lex460> rank => -172
+                  | <Lex461> rank => -173
+                  | <Lex462> rank => -174
+                  | <Lex463> rank => -175
+                  | <Lex464> rank => -176
+                  | <Lex465> rank => -177
+                  | <Lex466> rank => -178
+                  | <Lex467> rank => -179
+                  | <Lex468> rank => -180
+                  | <Lex469> rank => -181
+                  | <Lex470> rank => -182
+                  | <Lex471> rank => -183
+                  | <Lex472> rank => -184
+                  | <Lex473> rank => -185
+                  | <Lex474> rank => -186
+                  | <Lex475> rank => -187
+                  | <Lex476> rank => -188
+                  | <Lex477> rank => -189
+                  | <Lex478> rank => -190
+                  | <Lex479> rank => -191
+                  | <Lex480> rank => -192
+                  | <Lex481> rank => -193
+                  | <Lex482> rank => -194
+                  | <Lex483> rank => -195
+                  | <Lex484> rank => -196
+                  | <Lex485> rank => -197
+                  | <Lex486> rank => -198
+                  | <Lex487> rank => -199
+                  | <Lex488> rank => -200
+                  | <Lex489> rank => -201
+                  | <Lex490> rank => -202
+                  | <Lex491> rank => -203
+                  | <Lex492> rank => -204
+                  | <Lex493> rank => -205
+                  | <Lex494> rank => -206
+                  | <Lex495> rank => -207
+                  | <Lex496> rank => -208
+                  | <Lex497> rank => -209
+                  | <Lex498> rank => -210
+                  | <Lex499> rank => -211
+                  | <Lex500> rank => -212
+                  | <Lex501> rank => -213
+                  | <Lex502> rank => -214
+                  | <Lex503> rank => -215
+                  | <Lex504> rank => -216
+                  | <Lex505> rank => -217
+                  | <Lex506> rank => -218
+                  | <Lex507> rank => -219
+                  | <Lex508> rank => -220
+                  | <Lex509> rank => -221
+                  | <Lex036> rank => -222
+                  | <Lex510> rank => -223
+                  | <Lex511> rank => -224
+                  | <Lex512> rank => -225
+                  | <Lex513> rank => -226
+                  | <Lex514> rank => -227
+                  | <Lex515> rank => -228
+                  | <Lex516> rank => -229
+                  | <Lex517> rank => -230
+                  | <Lex518> rank => -231
+                  | <Lex519> rank => -232
+                  | <Lex520> rank => -233
+                  | <Lex521> rank => -234
+                  | <Lex522> rank => -235
+                  | <Lex523> rank => -236
+                  | <Lex524> rank => -237
+                  | <Lex525> rank => -238
+                  | <Lex526> rank => -239
+                  | <Lex527> rank => -240
+                  | <Lex528> rank => -241
+                  | <Lex529> rank => -242
+                  | <Lex530> rank => -243
+                  | <Lex531> rank => -244
+                  | <Lex532> rank => -245
+<Literal> ::= <Signed Numeric Literal> rank => 0
+            | <General Literal> rank => -1
+<Unsigned Literal> ::= <Unsigned Numeric Literal> rank => 0
+                     | <General Literal> rank => -1
+<General Literal> ::= <Character String Literal> rank => 0
+                    | <National Character String Literal> rank => -1
+                    | <Unicode Character String Literal> rank => -2
+                    | <Binary String Literal> rank => -3
+                    | <Datetime Literal> rank => -4
+                    | <Interval Literal> rank => -5
+                    | <Boolean Literal> rank => -6
+<Gen668> ::= <Introducer> <Character Set Specification> rank => 0
+<Gen668 maybe> ::= <Gen668> rank => 0
+<Gen668 maybe> ::= rank => -1
+<Character Representation any> ::= <Character Representation>* rank => 0
+<Gen672> ::= <Separator> <Quote> <Character Representation any> <Quote> rank => 0
+<Gen672 any> ::= <Gen672>* rank => 0
+<Character String Literal> ::= <Gen668 maybe> <Quote> <Character Representation any> <Quote> <Gen672 any> rank => 0
+<Introducer> ::= <Underscore> rank => 0
+<Character Representation> ::= <Nonquote Character> rank => 0
+                             | <Quote Symbol> rank => -1
+<Nonquote Character> ::= <Lex533> rank => 0
+<Quote Symbol> ::= <Quote> <Quote> rank => 0
+<Gen680> ::= <Separator> <Quote> <Character Representation any> <Quote> rank => 0
+<Gen680 any> ::= <Gen680>* rank => 0
+<National Character String Literal> ::= <Lex534> <Quote> <Character Representation any> <Quote> <Gen680 any> rank => 0
+<Gen683> ::= <Introducer> <Character Set Specification> rank => 0
+<Gen683 maybe> ::= <Gen683> rank => 0
+<Gen683 maybe> ::= rank => -1
+<Unicode Representation any> ::= <Unicode Representation>* rank => 0
+<Gen687> ::= <Separator> <Quote> <Unicode Representation any> <Quote> rank => 0
+<Gen687 any> ::= <Gen687>* rank => 0
+<Gen689> ::= <Lex363> <Escape Character> rank => 0
+<Gen689 maybe> ::= <Gen689> rank => 0
+<Gen689 maybe> ::= rank => -1
+<Unicode Character String Literal> ::= <Gen683 maybe> <Lex035> <Ampersand> <Quote> <Unicode Representation any> <Quote> <Gen687 any> <Gen689 maybe> rank => 0
+<Unicode Representation> ::= <Character Representation> rank => 0
+                           | <Unicode Escape Value> rank => -1
+<Gen695> ::= <Hexit> <Hexit> rank => 0
+<Gen695 any> ::= <Gen695>* rank => 0
+<Gen697> ::= <Hexit> <Hexit> rank => 0
+<Gen697 any> ::= <Gen697>* rank => 0
+<Gen699> ::= <Separator> <Quote> <Gen697 any> <Quote> rank => 0
+<Gen699 any> ::= <Gen699>* rank => 0
+<Gen701> ::= <Lex363> <Escape Character> rank => 0
+<Gen701 maybe> ::= <Gen701> rank => 0
+<Gen701 maybe> ::= rank => -1
+<Binary String Literal> ::= <Lex535> <Quote> <Gen695 any> <Quote> <Gen699 any> <Gen701 maybe> rank => 0
+<Hexit> ::= <Digit> rank => 0
+          | <Lex041> rank => -1
+          | <Lex536> rank => -2
+          | <Lex058> rank => -3
+          | <Lex537> rank => -4
+          | <Lex538> rank => -5
+          | <Lex539> rank => -6
+          | <Lex540> rank => -7
+          | <Lex541> rank => -8
+          | <Lex542> rank => -9
+          | <Lex543> rank => -10
+          | <Lex544> rank => -11
+          | <Lex545> rank => -12
+<Sign maybe> ::= <Sign> rank => 0
+<Sign maybe> ::= rank => -1
+<Signed Numeric Literal> ::= <Sign maybe> <Unsigned Numeric Literal> rank => 0
+<Unsigned Numeric Literal> ::= <Exact Numeric Literal> rank => 0
+                             | <Approximate Numeric Literal> rank => -1
+<Unsigned Integer> ::= <Lex546 many> rank => 0
+<Unsigned Integer maybe> ::= <Unsigned Integer> rank => 0
+<Unsigned Integer maybe> ::= rank => -1
+<Gen726> ::= <Period> <Unsigned Integer maybe> rank => 0
+<Gen726 maybe> ::= <Gen726> rank => 0
+<Gen726 maybe> ::= rank => -1
+<Exact Numeric Literal> ::= <Unsigned Integer> <Gen726 maybe> rank => 0
+                          | <Period> <Unsigned Integer> rank => -1
+<Sign> ::= <Plus Sign> rank => 0
+         | <Minus Sign> rank => -1
+<Approximate Numeric Literal> ::= <Mantissa> <Lex538> <Exponent> rank => 0
+<Mantissa> ::= <Exact Numeric Literal> rank => 0
+<Exponent> ::= <Signed Integer> rank => 0
+<Signed Integer> ::= <Sign maybe> <Unsigned Integer> rank => 0
+<Datetime Literal> ::= <Date Literal> rank => 0
+                     | <Time Literal> rank => -1
+                     | <Timestamp Literal> rank => -2
+<Date Literal> ::= <Lex342> <Date String> rank => 0
+<Time Literal> ::= <Lex500> <Time String> rank => 0
+<Timestamp Literal> ::= <Lex501> <Timestamp String> rank => 0
+<Date String> ::= <Quote> <Unquoted Date String> <Quote> rank => 0
+<Time String> ::= <Quote> <Unquoted Time String> <Quote> rank => 0
+<Timestamp String> ::= <Quote> <Unquoted Timestamp String> <Quote> rank => 0
+<Time Zone Interval> ::= <Sign> <Hours Value> <Colon> <Minutes Value> rank => 0
+<Date Value> ::= <Years Value> <Minus Sign> <Months Value> <Minus Sign> <Days Value> rank => 0
+<Time Value> ::= <Hours Value> <Colon> <Minutes Value> <Colon> <Seconds Value> rank => 0
+<Interval Literal> ::= <Lex399> <Sign maybe> <Interval String> <Interval Qualifier> rank => 0
+<Interval String> ::= <Quote> <Unquoted Interval String> <Quote> rank => 0
+<Unquoted Date String> ::= <Date Value> rank => 0
+<Time Zone Interval maybe> ::= <Time Zone Interval> rank => 0
+<Time Zone Interval maybe> ::= rank => -1
+<Unquoted Time String> ::= <Time Value> <Time Zone Interval maybe> rank => 0
+<Unquoted Timestamp String> ::= <Unquoted Date String> <Space> <Unquoted Time String> rank => 0
+<Gen756> ::= <Year Month Literal> rank => 0
+           | <Day Time Literal> rank => -1
+<Unquoted Interval String> ::= <Sign maybe> <Gen756> rank => 0
+<Gen759> ::= <Years Value> <Minus Sign> rank => 0
+<Gen759 maybe> ::= <Gen759> rank => 0
+<Gen759 maybe> ::= rank => -1
+<Year Month Literal> ::= <Years Value> rank => 0
+                       | <Gen759 maybe> <Months Value> rank => -1
+<Day Time Literal> ::= <Day Time Interval> rank => 0
+                     | <Time Interval> rank => -1
+<Gen766> ::= <Colon> <Seconds Value> rank => 0
+<Gen766 maybe> ::= <Gen766> rank => 0
+<Gen766 maybe> ::= rank => -1
+<Gen769> ::= <Colon> <Minutes Value> <Gen766 maybe> rank => 0
+<Gen769 maybe> ::= <Gen769> rank => 0
+<Gen769 maybe> ::= rank => -1
+<Gen772> ::= <Space> <Hours Value> <Gen769 maybe> rank => 0
+<Gen772 maybe> ::= <Gen772> rank => 0
+<Gen772 maybe> ::= rank => -1
+<Day Time Interval> ::= <Days Value> <Gen772 maybe> rank => 0
+<Gen776> ::= <Colon> <Seconds Value> rank => 0
+<Gen776 maybe> ::= <Gen776> rank => 0
+<Gen776 maybe> ::= rank => -1
+<Gen779> ::= <Colon> <Minutes Value> <Gen776 maybe> rank => 0
+<Gen779 maybe> ::= <Gen779> rank => 0
+<Gen779 maybe> ::= rank => -1
+<Gen782> ::= <Colon> <Seconds Value> rank => 0
+<Gen782 maybe> ::= <Gen782> rank => 0
+<Gen782 maybe> ::= rank => -1
+<Time Interval> ::= <Hours Value> <Gen779 maybe> rank => 0
+                  | <Minutes Value> <Gen782 maybe> rank => -1
+                  | <Seconds Value> rank => -2
+<Years Value> ::= <Datetime Value> rank => 0
+<Months Value> ::= <Datetime Value> rank => 0
+<Days Value> ::= <Datetime Value> rank => 0
+<Hours Value> ::= <Datetime Value> rank => 0
+<Minutes Value> ::= <Datetime Value> rank => 0
+<Seconds Fraction maybe> ::= <Seconds Fraction> rank => 0
+<Seconds Fraction maybe> ::= rank => -1
+<Gen795> ::= <Period> <Seconds Fraction maybe> rank => 0
+<Gen795 maybe> ::= <Gen795> rank => 0
+<Gen795 maybe> ::= rank => -1
+<Seconds Value> ::= <Seconds Integer Value> <Gen795 maybe> rank => 0
+<Seconds Integer Value> ::= <Unsigned Integer> rank => 0
+<Seconds Fraction> ::= <Unsigned Integer> rank => 0
+<Datetime Value> ::= <Unsigned Integer> rank => 0
+<Boolean Literal> ::= <Lex509> rank => 0
+                    | <Lex369> rank => -1
+                    | <Lex512> rank => -2
+<Identifier> ::= <Actual Identifier> rank => 0
+<Actual Identifier> ::= <Regular Identifier> rank => 0
+                      | <Delimited Identifier> rank => -1
+<Gen808> ::= <Underscore> rank => 0
+           | <SQL Language Identifier Part> rank => -1
+<Gen808 any> ::= <Gen808>* rank => 0
+<SQL Language Identifier> ::= <SQL Language Identifier Start> <Gen808 any> rank => 0
+<SQL Language Identifier Start> ::= <Simple Latin Letter> rank => 0
+<SQL Language Identifier Part> ::= <Simple Latin Letter> rank => 0
+                                 | <Digit> rank => -1
+<Authorization Identifier> ::= <Role Name> rank => 0
+                             | <User Identifier> rank => -1
+<Table Name> ::= <Local Or Schema Qualified Name> rank => 0
+<Domain Name> ::= <Schema Qualified Name> rank => 0
+<Unqualified Schema Name> ::= <Identifier> rank => 0
+<Gen820> ::= <Catalog Name> <Period> rank => 0
+<Gen820 maybe> ::= <Gen820> rank => 0
+<Gen820 maybe> ::= rank => -1
+<Schema Name> ::= <Gen820 maybe> <Unqualified Schema Name> rank => 0
+<Catalog Name> ::= <Identifier> rank => 0
+<Gen825> ::= <Schema Name> <Period> rank => 0
+<Gen825 maybe> ::= <Gen825> rank => 0
+<Gen825 maybe> ::= rank => -1
+<Schema Qualified Name> ::= <Gen825 maybe> <Qualified Identifier> rank => 0
+<Gen829> ::= <Local Or Schema Qualifier> <Period> rank => 0
+<Gen829 maybe> ::= <Gen829> rank => 0
+<Gen829 maybe> ::= rank => -1
+<Local Or Schema Qualified Name> ::= <Gen829 maybe> <Qualified Identifier> rank => 0
+<Local Or Schema Qualifier> ::= <Schema Name> rank => 0
+                              | <Lex418> rank => -1
+<Qualified Identifier> ::= <Identifier> rank => 0
+<Column Name> ::= <Identifier> rank => 0
+<Correlation Name> ::= <Identifier> rank => 0
+<Query Name> ::= <Identifier> rank => 0
+<SQL Client Module Name> ::= <Identifier> rank => 0
+<Procedure Name> ::= <Identifier> rank => 0
+<Schema Qualified Routine Name> ::= <Schema Qualified Name> rank => 0
+<Method Name> ::= <Identifier> rank => 0
+<Specific Name> ::= <Schema Qualified Name> rank => 0
+<Cursor Name> ::= <Local Qualified Name> rank => 0
+<Gen845> ::= <Local Qualifier> <Period> rank => 0
+<Gen845 maybe> ::= <Gen845> rank => 0
+<Gen845 maybe> ::= rank => -1
+<Local Qualified Name> ::= <Gen845 maybe> <Qualified Identifier> rank => 0
+<Local Qualifier> ::= <Lex418> rank => 0
+<Host Parameter Name> ::= <Colon> <Identifier> rank => 0
+<SQL Parameter Name> ::= <Identifier> rank => 0
+<Constraint Name> ::= <Schema Qualified Name> rank => 0
+<External Routine Name> ::= <Identifier> rank => 0
+                          | <Character String Literal> rank => -1
+<Trigger Name> ::= <Schema Qualified Name> rank => 0
+<Collation Name> ::= <Schema Qualified Name> rank => 0
+<Gen857> ::= <Schema Name> <Period> rank => 0
+<Gen857 maybe> ::= <Gen857> rank => 0
+<Gen857 maybe> ::= rank => -1
+<Character Set Name> ::= <Gen857 maybe> <SQL Language Identifier> rank => 0
+<Transliteration Name> ::= <Schema Qualified Name> rank => 0
+<Transcoding Name> ::= <Schema Qualified Name> rank => 0
+<User Defined Type Name> ::= <Schema Qualified Type Name> rank => 0
+<Schema Resolved User Defined Type Name> ::= <User Defined Type Name> rank => 0
+<Gen865> ::= <Schema Name> <Period> rank => 0
+<Gen865 maybe> ::= <Gen865> rank => 0
+<Gen865 maybe> ::= rank => -1
+<Schema Qualified Type Name> ::= <Gen865 maybe> <Qualified Identifier> rank => 0
+<Attribute Name> ::= <Identifier> rank => 0
+<Field Name> ::= <Identifier> rank => 0
+<Savepoint Name> ::= <Identifier> rank => 0
+<Sequence Generator Name> ::= <Schema Qualified Name> rank => 0
+<Role Name> ::= <Identifier> rank => 0
+<User Identifier> ::= <Identifier> rank => 0
+<Connection Name> ::= <Simple Value Specification> rank => 0
+<Sql Server Name> ::= <Simple Value Specification> rank => 0
+<Connection User Name> ::= <Simple Value Specification> rank => 0
+<SQL Statement Name> ::= <Statement Name> rank => 0
+                       | <Extended Statement Name> rank => -1
+<Statement Name> ::= <Identifier> rank => 0
+<Scope Option maybe> ::= <Scope Option> rank => 0
+<Scope Option maybe> ::= rank => -1
+<Extended Statement Name> ::= <Scope Option maybe> <Simple Value Specification> rank => 0
+<Dynamic Cursor Name> ::= <Cursor Name> rank => 0
+                        | <Extended Cursor Name> rank => -1
+<Extended Cursor Name> ::= <Scope Option maybe> <Simple Value Specification> rank => 0
+<Descriptor Name> ::= <Scope Option maybe> <Simple Value Specification> rank => 0
+<Scope Option> ::= <Lex380> rank => 0
+                 | <Lex409> rank => -1
+<Window Name> ::= <Identifier> rank => 0
+<Data Type> ::= <Predefined Type> rank => 0
+              | <Row Type> rank => -1
+              | <Path Resolved User Defined Type Name> rank => -2
+              | <Reference Type> rank => -3
+              | <Collection Type> rank => -4
+<Gen896> ::= <Lex317> <Lex482> <Character Set Specification> rank => 0
+<Gen896 maybe> ::= <Gen896> rank => 0
+<Gen896 maybe> ::= rank => -1
+<Collate Clause maybe> ::= <Collate Clause> rank => 0
+<Collate Clause maybe> ::= rank => -1
+<Predefined Type> ::= <Character String Type> <Gen896 maybe> <Collate Clause maybe> rank => 0
+                    | <National Character String Type> <Collate Clause maybe> rank => -1
+                    | <Binary Large Object String Type> rank => -2
+                    | <Numeric Type> rank => -3
+                    | <Boolean Type> rank => -4
+                    | <Datetime Type> rank => -5
+                    | <Interval Type> rank => -6
+<Gen908> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen908 maybe> ::= <Gen908> rank => 0
+<Gen908 maybe> ::= rank => -1
+<Gen911> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen911 maybe> ::= <Gen911> rank => 0
+<Gen911 maybe> ::= rank => -1
+<Gen914> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen914 maybe> ::= <Gen914> rank => 0
+<Gen914 maybe> ::= rank => -1
+<Gen917> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen917 maybe> ::= <Gen917> rank => 0
+<Gen917 maybe> ::= rank => -1
+<Gen920> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen920 maybe> ::= <Gen920> rank => 0
+<Gen920 maybe> ::= rank => -1
+<Character String Type> ::= <Lex317> <Gen908 maybe> rank => 0
+                          | <Lex316> <Gen911 maybe> rank => -1
+                          | <Lex317> <Lex523> <Left Paren> <Length> <Right Paren> rank => -2
+                          | <Lex316> <Lex523> <Left Paren> <Length> <Right Paren> rank => -3
+                          | <Lex522> <Left Paren> <Length> <Right Paren> rank => -4
+                          | <Lex317> <Lex404> <Lex182> <Gen914 maybe> rank => -5
+                          | <Lex316> <Lex404> <Lex182> <Gen917 maybe> rank => -6
+                          | <Lex319> <Gen920 maybe> rank => -7
+<Gen931> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen931 maybe> ::= <Gen931> rank => 0
+<Gen931 maybe> ::= rank => -1
+<Gen934> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen934 maybe> ::= <Gen934> rank => 0
+<Gen934 maybe> ::= rank => -1
+<Gen937> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen937 maybe> ::= <Gen937> rank => 0
+<Gen937 maybe> ::= rank => -1
+<Gen940> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen940 maybe> ::= <Gen940> rank => 0
+<Gen940 maybe> ::= rank => -1
+<Gen943> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen943 maybe> ::= <Gen943> rank => 0
+<Gen943 maybe> ::= rank => -1
+<Gen946> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen946 maybe> ::= <Gen946> rank => 0
+<Gen946 maybe> ::= rank => -1
+<National Character String Type> ::= <Lex421> <Lex317> <Gen931 maybe> rank => 0
+                                   | <Lex421> <Lex316> <Gen934 maybe> rank => -1
+                                   | <Lex423> <Gen937 maybe> rank => -2
+                                   | <Lex421> <Lex317> <Lex523> <Left Paren> <Length> <Right Paren> rank => -3
+                                   | <Lex421> <Lex316> <Lex523> <Left Paren> <Length> <Right Paren> rank => -4
+                                   | <Lex423> <Lex523> <Left Paren> <Length> <Right Paren> rank => -5
+                                   | <Lex421> <Lex317> <Lex404> <Lex182> <Gen940 maybe> rank => -6
+                                   | <Lex423> <Lex404> <Lex182> <Gen943 maybe> rank => -7
+                                   | <Lex424> <Gen946 maybe> rank => -8
+<Gen958> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen958 maybe> ::= <Gen958> rank => 0
+<Gen958 maybe> ::= rank => -1
+<Gen961> ::= <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen961 maybe> ::= <Gen961> rank => 0
+<Gen961 maybe> ::= rank => -1
+<Binary Large Object String Type> ::= <Lex306> <Lex404> <Lex182> <Gen958 maybe> rank => 0
+                                    | <Lex307> <Gen961 maybe> rank => -1
+<Numeric Type> ::= <Exact Numeric Type> rank => 0
+                 | <Approximate Numeric Type> rank => -1
+<Gen968> ::= <Comma> <Scale> rank => 0
+<Gen968 maybe> ::= <Gen968> rank => 0
+<Gen968 maybe> ::= rank => -1
+<Gen971> ::= <Left Paren> <Precision> <Gen968 maybe> <Right Paren> rank => 0
+<Gen971 maybe> ::= <Gen971> rank => 0
+<Gen971 maybe> ::= rank => -1
+<Gen974> ::= <Comma> <Scale> rank => 0
+<Gen974 maybe> ::= <Gen974> rank => 0
+<Gen974 maybe> ::= rank => -1
+<Gen977> ::= <Left Paren> <Precision> <Gen974 maybe> <Right Paren> rank => 0
+<Gen977 maybe> ::= <Gen977> rank => 0
+<Gen977 maybe> ::= rank => -1
+<Gen980> ::= <Comma> <Scale> rank => 0
+<Gen980 maybe> ::= <Gen980> rank => 0
+<Gen980 maybe> ::= rank => -1
+<Gen983> ::= <Left Paren> <Precision> <Gen980 maybe> <Right Paren> rank => 0
+<Gen983 maybe> ::= <Gen983> rank => 0
+<Gen983 maybe> ::= rank => -1
+<Exact Numeric Type> ::= <Lex430> <Gen971 maybe> rank => 0
+                       | <Lex346> <Gen977 maybe> rank => -1
+                       | <Lex345> <Gen983 maybe> rank => -2
+                       | <Lex484> rank => -3
+                       | <Lex397> rank => -4
+                       | <Lex396> rank => -5
+                       | <Lex305> rank => -6
+<Gen993> ::= <Left Paren> <Precision> <Right Paren> rank => 0
+<Gen993 maybe> ::= <Gen993> rank => 0
+<Gen993 maybe> ::= rank => -1
+<Approximate Numeric Type> ::= <Lex372> <Gen993 maybe> rank => 0
+                             | <Lex451> rank => -1
+                             | <Lex355> <Lex445> rank => -2
+<Length> ::= <Unsigned Integer> rank => 0
+<Multiplier maybe> ::= <Multiplier> rank => 0
+<Multiplier maybe> ::= rank => -1
+<Char Length Units maybe> ::= <Char Length Units> rank => 0
+<Char Length Units maybe> ::= rank => -1
+<Large Object Length> ::= <Unsigned Integer> <Multiplier maybe> <Char Length Units maybe> rank => 0
+                        | <Large Object Length Token> <Char Length Units maybe> rank => -1
+<Char Length Units> ::= <Lex067> rank => 0
+                      | <Lex077> rank => -1
+                      | <Lex183> rank => -2
+<Precision> ::= <Unsigned Integer> rank => 0
+<Scale> ::= <Unsigned Integer> rank => 0
+<Boolean Type> ::= <Lex308> rank => 0
+<Gen1012> ::= <Left Paren> <Time Precision> <Right Paren> rank => 0
+<Gen1012 maybe> ::= <Gen1012> rank => 0
+<Gen1012 maybe> ::= rank => -1
+<Gen1015> ::= <With Or Without Time Zone> rank => 0
+<Gen1015 maybe> ::= <Gen1015> rank => 0
+<Gen1015 maybe> ::= rank => -1
+<Gen1018> ::= <Left Paren> <Timestamp Precision> <Right Paren> rank => 0
+<Gen1018 maybe> ::= <Gen1018> rank => 0
+<Gen1018 maybe> ::= rank => -1
+<Gen1021> ::= <With Or Without Time Zone> rank => 0
+<Gen1021 maybe> ::= <Gen1021> rank => 0
+<Gen1021 maybe> ::= rank => -1
+<Datetime Type> ::= <Lex342> rank => 0
+                  | <Lex500> <Gen1012 maybe> <Gen1015 maybe> rank => -1
+                  | <Lex501> <Gen1018 maybe> <Gen1021 maybe> rank => -2
+<With Or Without Time Zone> ::= <Lex529> <Lex500> <Lex288> rank => 0
+                              | <Lex531> <Lex500> <Lex288> rank => -1
+<Time Precision> ::= <Time Fractional Seconds Precision> rank => 0
+<Timestamp Precision> ::= <Time Fractional Seconds Precision> rank => 0
+<Time Fractional Seconds Precision> ::= <Unsigned Integer> rank => 0
+<Interval Type> ::= <Lex399> <Interval Qualifier> rank => 0
+<Row Type> ::= <Lex473> <Row Type Body> rank => 0
+<Gen1034> ::= <Comma> <Field Definition> rank => 0
+<Gen1034 any> ::= <Gen1034>* rank => 0
+<Row Type Body> ::= <Left Paren> <Field Definition> <Gen1034 any> <Right Paren> rank => 0
+<Scope Clause maybe> ::= <Scope Clause> rank => 0
+<Scope Clause maybe> ::= rank => -1
+<Reference Type> ::= <Lex453> <Left Paren> <Referenced Type> <Right Paren> <Scope Clause maybe> rank => 0
+<Scope Clause> ::= <Lex547> <Table Name> rank => 0
+<Referenced Type> ::= <Path Resolved User Defined Type Name> rank => 0
+<Path Resolved User Defined Type Name> ::= <User Defined Type Name> rank => 0
+<Collection Type> ::= <Array Type> rank => 0
+                    | <Multiset Type> rank => -1
+<Gen1045> ::= <Left Bracket Or Trigraph> <Unsigned Integer> <Right Bracket Or Trigraph> rank => 0
+<Gen1045 maybe> ::= <Gen1045> rank => 0
+<Gen1045 maybe> ::= rank => -1
+<Array Type> ::= <Data Type> <Lex296> <Gen1045 maybe> rank => 0
+<Multiset Type> ::= <Data Type> <Lex420> rank => 0
+<Reference Scope Check maybe> ::= <Reference Scope Check> rank => 0
+<Reference Scope Check maybe> ::= rank => -1
+<Field Definition> ::= <Field Name> <Data Type> <Reference Scope Check maybe> rank => 0
+<Value Expression Primary> ::= <Parenthesized Value Expression> rank => 0
+                             | <Nonparenthesized Value Expression Primary> rank => -1
+<Parenthesized Value Expression> ::= <Left Paren> <Value Expression> <Right Paren> rank => 0
+<Nonparenthesized Value Expression Primary> ::= <Unsigned Value Specification> rank => 0
+                                              | <Column Reference> rank => -1
+                                              | <Set Function Specification> rank => -2
+                                              | <Window Function> rank => -3
+                                              | <Scalar Subquery> rank => -4
+                                              | <Case Expression> rank => -5
+                                              | <Cast Specification> rank => -6
+                                              | <Field Reference> rank => -7
+                                              | <Subtype Treatment> rank => -8
+                                              | <Method Invocation> rank => -9
+                                              | <Static Method Invocation> rank => -10
+                                              | <New Specification> rank => -11
+                                              | <Attribute Or Method Reference> rank => -12
+                                              | <Reference Resolution> rank => -13
+                                              | <Collection Value Constructor> rank => -14
+                                              | <Array Element Reference> rank => -15
+                                              | <Multiset Element Reference> rank => -16
+                                              | <Routine Invocation> rank => -17
+                                              | <Next Value Expression> rank => -18
+<Value Specification> ::= <Literal> rank => 0
+                        | <General Value Specification> rank => -1
+<Unsigned Value Specification> ::= <Unsigned Literal> rank => 0
+                                 | <General Value Specification> rank => -1
+<General Value Specification> ::= <Host Parameter Specification> rank => 0
+                                | <SQL Parameter Reference> rank => -1
+                                | <Dynamic Parameter Specification> rank => -2
+                                | <Embedded Variable Specification> rank => -3
+                                | <Current Collation Specification> rank => -4
+                                | <Lex333> rank => -5
+                                | <Lex334> rank => -6
+                                | <Lex335> rank => -7
+                                | <Lex338> <Path Resolved User Defined Type Name> rank => -8
+                                | <Lex339> rank => -9
+                                | <Lex481> rank => -10
+                                | <Lex497> rank => -11
+                                | <Lex516> rank => -12
+                                | <Lex518> rank => -13
+<Simple Value Specification> ::= <Literal> rank => 0
+                               | <Host Parameter Name> rank => -1
+                               | <SQL Parameter Reference> rank => -2
+                               | <Embedded Variable Name> rank => -3
+<Target Specification> ::= <Host Parameter Specification> rank => 0
+                         | <SQL Parameter Reference> rank => -1
+                         | <Column Reference> rank => -2
+                         | <Target Array Element Specification> rank => -3
+                         | <Dynamic Parameter Specification> rank => -4
+                         | <Embedded Variable Specification> rank => -5
+<Simple Target Specification> ::= <Host Parameter Specification> rank => 0
+                                | <SQL Parameter Reference> rank => -1
+                                | <Column Reference> rank => -2
+                                | <Embedded Variable Name> rank => -3
+<Indicator Parameter maybe> ::= <Indicator Parameter> rank => 0
+<Indicator Parameter maybe> ::= rank => -1
+<Host Parameter Specification> ::= <Host Parameter Name> <Indicator Parameter maybe> rank => 0
+<Dynamic Parameter Specification> ::= <Question Mark> rank => 0
+<Indicator Variable maybe> ::= <Indicator Variable> rank => 0
+<Indicator Variable maybe> ::= rank => -1
+<Embedded Variable Specification> ::= <Embedded Variable Name> <Indicator Variable maybe> rank => 0
+<Lex390 maybe> ::= <Lex390> rank => 0
+<Lex390 maybe> ::= rank => -1
+<Indicator Variable> ::= <Lex390 maybe> <Embedded Variable Name> rank => 0
+<Indicator Parameter> ::= <Lex390 maybe> <Host Parameter Name> rank => 0
+<Target Array Element Specification> ::= <Target Array Reference> <Left Bracket Or Trigraph> <Simple Value Specification> <Right Bracket Or Trigraph> rank => 0
+<Target Array Reference> ::= <SQL Parameter Reference> rank => 0
+                           | <Column Reference> rank => -1
+<Current Collation Specification> ::= <Lex102> <Left Paren> <String Value Expression> <Right Paren> rank => 0
+<Contextually Typed Value Specification> ::= <Implicitly Typed Value Specification> rank => 0
+                                           | <Default Specification> rank => -1
+<Implicitly Typed Value Specification> ::= <Null Specification> rank => 0
+                                         | <Empty Specification> rank => -1
+<Null Specification> ::= <Lex429> rank => 0
+<Empty Specification> ::= <Lex296> <Left Bracket Or Trigraph> <Right Bracket Or Trigraph> rank => 0
+                        | <Lex420> <Left Bracket Or Trigraph> <Right Bracket Or Trigraph> rank => -1
+<Default Specification> ::= <Lex348> rank => 0
+<Gen1130> ::= <Period> <Identifier> rank => 0
+<Gen1130 any> ::= <Gen1130>* rank => 0
+<Identifier Chain> ::= <Identifier> <Gen1130 any> rank => 0
+<Basic Identifier Chain> ::= <Identifier Chain> rank => 0
+<Column Reference> ::= <Basic Identifier Chain> rank => 0
+                     | <Lex418> <Period> <Qualified Identifier> <Period> <Column Name> rank => -1
+<SQL Parameter Reference> ::= <Basic Identifier Chain> rank => 0
+<Set Function Specification> ::= <Aggregate Function> rank => 0
+                               | <Grouping Operation> rank => -1
+<Gen1139> ::= <Comma> <Column Reference> rank => 0
+<Gen1139 any> ::= <Gen1139>* rank => 0
+<Grouping Operation> ::= <Lex383> <Left Paren> <Column Reference> <Gen1139 any> <Right Paren> rank => 0
+<Window Function> ::= <Window Function Type> <Lex441> <Window Name Or Specification> rank => 0
+<Window Function Type> ::= <Rank Function Type> <Left Paren> <Right Paren> rank => 0
+                         | <Lex229> <Left Paren> <Right Paren> rank => -1
+                         | <Aggregate Function> rank => -2
+<Rank Function Type> ::= <Lex214> rank => 0
+                       | <Lex113> rank => -1
+                       | <Lex204> rank => -2
+                       | <Lex101> rank => -3
+<Window Name Or Specification> ::= <Window Name> rank => 0
+                                 | <In Line Window Specification> rank => -1
+<In Line Window Specification> ::= <Window Specification> rank => 0
+<Case Expression> ::= <Case Abbreviation> rank => 0
+                    | <Case Specification> rank => -1
+<Gen1155> ::= <Comma> <Value Expression> rank => 0
+<Gen1155 many> ::= <Gen1155>+ rank => 0
+<Case Abbreviation> ::= <Lex179> <Left Paren> <Value Expression> <Comma> <Value Expression> <Right Paren> rank => 0
+                      | <Lex075> <Left Paren> <Value Expression> <Gen1155 many> <Right Paren> rank => -1
+<Case Specification> ::= <Simple Case> rank => 0
+                       | <Searched Case> rank => -1
+<Simple When Clause many> ::= <Simple When Clause>+ rank => 0
+<Else Clause maybe> ::= <Else Clause> rank => 0
+<Else Clause maybe> ::= rank => -1
+<Simple Case> ::= <Lex314> <Case Operand> <Simple When Clause many> <Else Clause maybe> <Lex361> rank => 0
+<Searched When Clause many> ::= <Searched When Clause>+ rank => 0
+<Searched Case> ::= <Lex314> <Searched When Clause many> <Else Clause maybe> <Lex361> rank => 0
+<Simple When Clause> ::= <Lex524> <When Operand> <Lex499> <Result> rank => 0
+<Searched When Clause> ::= <Lex524> <Search Condition> <Lex499> <Result> rank => 0
+<Else Clause> ::= <Lex360> <Result> rank => 0
+<Case Operand> ::= <Row Value Predicand> rank => 0
+                 | <Overlaps Predicate> rank => -1
+<When Operand> ::= <Row Value Predicand> rank => 0
+                 | <Comparison Predicate Part 2> rank => -1
+                 | <Between Predicate Part 2> rank => -2
+                 | <In Predicate Part 2> rank => -3
+                 | <Character Like Predicate Part 2> rank => -4
+                 | <Octet Like Predicate Part 2> rank => -5
+                 | <Similar Predicate Part 2> rank => -6
+                 | <Null Predicate Part 2> rank => -7
+                 | <Quantified Comparison Predicate Part 2> rank => -8
+                 | <Match Predicate Part 2> rank => -9
+                 | <Overlaps Predicate Part 2> rank => -10
+                 | <Distinct Predicate Part 2> rank => -11
+                 | <Member Predicate Part 2> rank => -12
+                 | <Submultiset Predicate Part 2> rank => -13
+                 | <Set Predicate Part 2> rank => -14
+                 | <Type Predicate Part 2> rank => -15
+<Result> ::= <Result Expression> rank => 0
+           | <Lex429> rank => -1
+<Result Expression> ::= <Value Expression> rank => 0
+<Cast Specification> ::= <Lex315> <Left Paren> <Cast Operand> <Lex297> <Cast Target> <Right Paren> rank => 0
+<Cast Operand> ::= <Value Expression> rank => 0
+                 | <Implicitly Typed Value Specification> rank => -1
+<Cast Target> ::= <Domain Name> rank => 0
+                | <Data Type> rank => -1
+<Next Value Expression> ::= <Lex175> <Lex518> <Lex373> <Sequence Generator Name> rank => 0
+<Field Reference> ::= <Value Expression Primary> <Period> <Field Name> rank => 0
+<Subtype Treatment> ::= <Lex507> <Left Paren> <Subtype Operand> <Lex297> <Target Subtype> <Right Paren> rank => 0
+<Subtype Operand> ::= <Value Expression> rank => 0
+<Target Subtype> ::= <Path Resolved User Defined Type Name> rank => 0
+                   | <Reference Type> rank => -1
+<Method Invocation> ::= <Direct Invocation> rank => 0
+                      | <Generalized Invocation> rank => -1
+<SQL Argument List maybe> ::= <SQL Argument List> rank => 0
+<SQL Argument List maybe> ::= rank => -1
+<Direct Invocation> ::= <Value Expression Primary> <Period> <Method Name> <SQL Argument List maybe> rank => 0
+<Generalized Invocation> ::= <Left Paren> <Value Expression Primary> <Lex297> <Data Type> <Right Paren> <Period> <Method Name> <SQL Argument List maybe> rank => 0
+<Method Selection> ::= <Routine Invocation> rank => 0
+<Constructor Method Selection> ::= <Routine Invocation> rank => 0
+<Static Method Invocation> ::= <Path Resolved User Defined Type Name> <Double Colon> <Method Name> <SQL Argument List maybe> rank => 0
+<Static Method Selection> ::= <Routine Invocation> rank => 0
+<New Specification> ::= <Lex425> <Routine Invocation> rank => 0
+<New Invocation> ::= <Method Invocation> rank => 0
+                   | <Routine Invocation> rank => -1
+<Attribute Or Method Reference> ::= <Value Expression Primary> <Dereference Operator> <Qualified Identifier> <SQL Argument List maybe> rank => 0
+<Dereference Operator> ::= <Right Arrow> rank => 0
+<Dereference Operation> ::= <Reference Value Expression> <Dereference Operator> <Attribute Name> rank => 0
+<Method Reference> ::= <Value Expression Primary> <Dereference Operator> <Method Name> <SQL Argument List> rank => 0
+<Reference Resolution> ::= <Lex350> <Left Paren> <Reference Value Expression> <Right Paren> rank => 0
+<Array Element Reference> ::= <Array Value Expression> <Left Bracket Or Trigraph> <Numeric Value Expression> <Right Bracket Or Trigraph> rank => 0
+<Multiset Element Reference> ::= <Lex359> <Left Paren> <Multiset Value Expression> <Right Paren> rank => 0
+<Value Expression> ::= <Common Value Expression> rank => 0
+                     | <Boolean Value Expression> rank => -1
+                     | <Row Value Expression> rank => -2
+<Common Value Expression> ::= <Numeric Value Expression> rank => 0
+                            | <String Value Expression> rank => -1
+                            | <Datetime Value Expression> rank => -2
+                            | <Interval Value Expression> rank => -3
+                            | <User Defined Type Value Expression> rank => -4
+                            | <Reference Value Expression> rank => -5
+                            | <Collection Value Expression> rank => -6
+<User Defined Type Value Expression> ::= <Value Expression Primary> rank => 0
+<Reference Value Expression> ::= <Value Expression Primary> rank => 0
+<Collection Value Expression> ::= <Array Value Expression> rank => 0
+                                | <Multiset Value Expression> rank => -1
+<Collection Value Constructor> ::= <Array Value Constructor> rank => 0
+                                 | <Multiset Value Constructor> rank => -1
+<Numeric Value Expression> ::= <Term> rank => 0
+                             | <Numeric Value Expression> <Plus Sign> <Term> rank => -1
+                             | <Numeric Value Expression> <Minus Sign> <Term> rank => -2
+<Term> ::= <Factor> rank => 0
+         | <Term> <Asterisk> <Factor> rank => -1
+         | <Term> <Solidus> <Factor> rank => -2
+<Factor> ::= <Sign maybe> <Numeric Primary> rank => 0
+<Numeric Primary> ::= <Value Expression Primary> rank => 0
+                    | <Numeric Value Function> rank => -1
+<Numeric Value Function> ::= <Position Expression> rank => 0
+                           | <Extract Expression> rank => -1
+                           | <Length Expression> rank => -2
+                           | <Cardinality Expression> rank => -3
+                           | <Absolute Value Expression> rank => -4
+                           | <Modulus Expression> rank => -5
+                           | <Natural Logarithm> rank => -6
+                           | <Exponential Function> rank => -7
+                           | <Power Function> rank => -8
+                           | <Square Root> rank => -9
+                           | <Floor Function> rank => -10
+                           | <Ceiling Function> rank => -11
+                           | <Width Bucket Function> rank => -12
+<Position Expression> ::= <String Position Expression> rank => 0
+                        | <Blob Position Expression> rank => -1
+<Gen1262> ::= <Lex517> <Char Length Units> rank => 0
+<Gen1262 maybe> ::= <Gen1262> rank => 0
+<Gen1262 maybe> ::= rank => -1
+<String Position Expression> ::= <Lex207> <Left Paren> <String Value Expression> <Lex389> <String Value Expression> <Gen1262 maybe> <Right Paren> rank => 0
+<Blob Position Expression> ::= <Lex207> <Left Paren> <Blob Value Expression> <Lex389> <Blob Value Expression> <Right Paren> rank => 0
+<Length Expression> ::= <Char Length Expression> rank => 0
+                      | <Octet Length Expression> rank => -1
+<Gen1269> ::= <Lex072> rank => 0
+            | <Lex068> rank => -1
+<Gen1271> ::= <Lex517> <Char Length Units> rank => 0
+<Gen1271 maybe> ::= <Gen1271> rank => 0
+<Gen1271 maybe> ::= rank => -1
+<Char Length Expression> ::= <Gen1269> <Left Paren> <String Value Expression> <Gen1271 maybe> <Right Paren> rank => 0
+<Octet Length Expression> ::= <Lex184> <Left Paren> <String Value Expression> <Right Paren> rank => 0
+<Extract Expression> ::= <Lex129> <Left Paren> <Extract Field> <Lex376> <Extract Source> <Right Paren> rank => 0
+<Extract Field> ::= <Primary Datetime Field> rank => 0
+                  | <Time Zone Field> rank => -1
+<Time Zone Field> ::= <Lex502> rank => 0
+                    | <Lex503> rank => -1
+<Extract Source> ::= <Datetime Value Expression> rank => 0
+                   | <Interval Value Expression> rank => -1
+<Cardinality Expression> ::= <Lex059> <Left Paren> <Collection Value Expression> <Right Paren> rank => 0
+<Absolute Value Expression> ::= <Lex042> <Left Paren> <Numeric Value Expression> <Right Paren> rank => 0
+<Modulus Expression> ::= <Lex169> <Left Paren> <Numeric Value Expression> <Comma> <Numeric Value Expression> <Right Paren> rank => 0
+<Natural Logarithm> ::= <Lex157> <Left Paren> <Numeric Value Expression> <Right Paren> rank => 0
+<Exponential Function> ::= <Lex128> <Left Paren> <Numeric Value Expression> <Right Paren> rank => 0
+<Power Function> ::= <Lex208> <Left Paren> <Numeric Value Expression Base> <Comma> <Numeric Value Expression Exponent> <Right Paren> rank => 0
+<Numeric Value Expression Base> ::= <Numeric Value Expression> rank => 0
+<Numeric Value Expression Exponent> ::= <Numeric Value Expression> rank => 0
+<Square Root> ::= <Lex249> <Left Paren> <Numeric Value Expression> <Right Paren> rank => 0
+<Floor Function> ::= <Lex132> <Left Paren> <Numeric Value Expression> <Right Paren> rank => 0
+<Gen1293> ::= <Lex063> rank => 0
+            | <Lex064> rank => -1
+<Ceiling Function> ::= <Gen1293> <Left Paren> <Numeric Value Expression> <Right Paren> rank => 0
+<Width Bucket Function> ::= <Lex527> <Left Paren> <Width Bucket Operand> <Comma> <Width Bucket Bound 1> <Comma> <Width Bucket Bound 2> <Comma> <Width Bucket Count> <Right Paren> rank => 0
+<Width Bucket Operand> ::= <Numeric Value Expression> rank => 0
+<Width Bucket Bound 1> ::= <Numeric Value Expression> rank => 0
+<Width Bucket Bound 2> ::= <Numeric Value Expression> rank => 0
+<Width Bucket Count> ::= <Numeric Value Expression> rank => 0
+<String Value Expression> ::= <Character Value Expression> rank => 0
+                            | <Blob Value Expression> rank => -1
+<Character Value Expression> ::= <Concatenation> rank => 0
+                               | <Character Factor> rank => -1
+<Concatenation> ::= <Character Value Expression> <Concatenation Operator> <Character Factor> rank => 0
+<Character Factor> ::= <Character Primary> <Collate Clause maybe> rank => 0
+<Character Primary> ::= <Value Expression Primary> rank => 0
+                      | <String Value Function> rank => -1
+<Blob Value Expression> ::= <Blob Concatenation> rank => 0
+                          | <Blob Factor> rank => -1
+<Blob Factor> ::= <Blob Primary> rank => 0
+<Blob Primary> ::= <Value Expression Primary> rank => 0
+                 | <String Value Function> rank => -1
+<Blob Concatenation> ::= <Blob Value Expression> <Concatenation Operator> <Blob Factor> rank => 0
+<String Value Function> ::= <Character Value Function> rank => 0
+                          | <Blob Value Function> rank => -1
+<Character Value Function> ::= <Character Substring Function> rank => 0
+                             | <Regular Expression Substring Function> rank => -1
+                             | <Fold> rank => -2
+                             | <Transcoding> rank => -3
+                             | <Character Transliteration> rank => -4
+                             | <Trim Function> rank => -5
+                             | <Character Overlay Function> rank => -6
+                             | <Normalize Function> rank => -7
+                             | <Specific Type Method> rank => -8
+<Gen1326> ::= <Lex373> <String Length> rank => 0
+<Gen1326 maybe> ::= <Gen1326> rank => 0
+<Gen1326 maybe> ::= rank => -1
+<Gen1329> ::= <Lex517> <Char Length Units> rank => 0
+<Gen1329 maybe> ::= <Gen1329> rank => 0
+<Gen1329 maybe> ::= rank => -1
+<Character Substring Function> ::= <Lex257> <Left Paren> <Character Value Expression> <Lex376> <Start Position> <Gen1326 maybe> <Gen1329 maybe> <Right Paren> rank => 0
+<Regular Expression Substring Function> ::= <Lex257> <Left Paren> <Character Value Expression> <Lex483> <Character Value Expression> <Lex363> <Escape Character> <Right Paren> rank => 0
+<Gen1334> ::= <Lex515> rank => 0
+            | <Lex159> rank => -1
+<Fold> ::= <Gen1334> <Left Paren> <Character Value Expression> <Right Paren> rank => 0
+<Transcoding> ::= <Lex096> <Left Paren> <Character Value Expression> <Lex517> <Transcoding Name> <Right Paren> rank => 0
+<Character Transliteration> ::= <Lex270> <Left Paren> <Character Value Expression> <Lex517> <Transliteration Name> <Right Paren> rank => 0
+<Trim Function> ::= <Lex274> <Left Paren> <Trim Operands> <Right Paren> rank => 0
+<Trim Specification maybe> ::= <Trim Specification> rank => 0
+<Trim Specification maybe> ::= rank => -1
+<Trim Character maybe> ::= <Trim Character> rank => 0
+<Trim Character maybe> ::= rank => -1
+<Gen1344> ::= <Trim Specification maybe> <Trim Character maybe> <Lex376> rank => 0
+<Gen1344 maybe> ::= <Gen1344> rank => 0
+<Gen1344 maybe> ::= rank => -1
+<Trim Operands> ::= <Gen1344 maybe> <Trim Source> rank => 0
+<Trim Source> ::= <Character Value Expression> rank => 0
+<Trim Specification> ::= <Lex406> rank => 0
+                       | <Lex505> rank => -1
+                       | <Lex309> rank => -2
+<Trim Character> ::= <Character Value Expression> rank => 0
+<Gen1353> ::= <Lex373> <String Length> rank => 0
+<Gen1353 maybe> ::= <Gen1353> rank => 0
+<Gen1353 maybe> ::= rank => -1
+<Gen1356> ::= <Lex517> <Char Length Units> rank => 0
+<Gen1356 maybe> ::= <Gen1356> rank => 0
+<Gen1356 maybe> ::= rank => -1
+<Character Overlay Function> ::= <Lex190> <Left Paren> <Character Value Expression> <Lex205> <Character Value Expression> <Lex376> <Start Position> <Gen1353 maybe> <Gen1356 maybe> <Right Paren> rank => 0
+<Normalize Function> ::= <Lex176> <Left Paren> <Character Value Expression> <Right Paren> rank => 0
+<Specific Type Method> ::= <User Defined Type Value Expression> <Period> <Lex487> rank => 0
+<Blob Value Function> ::= <Blob Substring Function> rank => 0
+                        | <Blob Trim Function> rank => -1
+                        | <Blob Overlay Function> rank => -2
+<Gen1365> ::= <Lex373> <String Length> rank => 0
+<Gen1365 maybe> ::= <Gen1365> rank => 0
+<Gen1365 maybe> ::= rank => -1
+<Blob Substring Function> ::= <Lex257> <Left Paren> <Blob Value Expression> <Lex376> <Start Position> <Gen1365 maybe> <Right Paren> rank => 0
+<Blob Trim Function> ::= <Lex274> <Left Paren> <Blob Trim Operands> <Right Paren> rank => 0
+<Trim Octet maybe> ::= <Trim Octet> rank => 0
+<Trim Octet maybe> ::= rank => -1
+<Gen1372> ::= <Trim Specification maybe> <Trim Octet maybe> <Lex376> rank => 0
+<Gen1372 maybe> ::= <Gen1372> rank => 0
+<Gen1372 maybe> ::= rank => -1
+<Blob Trim Operands> ::= <Gen1372 maybe> <Blob Trim Source> rank => 0
+<Blob Trim Source> ::= <Blob Value Expression> rank => 0
+<Trim Octet> ::= <Blob Value Expression> rank => 0
+<Gen1378> ::= <Lex373> <String Length> rank => 0
+<Gen1378 maybe> ::= <Gen1378> rank => 0
+<Gen1378 maybe> ::= rank => -1
+<Blob Overlay Function> ::= <Lex190> <Left Paren> <Blob Value Expression> <Lex205> <Blob Value Expression> <Lex376> <Start Position> <Gen1378 maybe> <Right Paren> rank => 0
+<Start Position> ::= <Numeric Value Expression> rank => 0
+<String Length> ::= <Numeric Value Expression> rank => 0
+<Datetime Value Expression> ::= <Datetime Term> rank => 0
+                              | <Interval Value Expression> <Plus Sign> <Datetime Term> rank => -1
+                              | <Datetime Value Expression> <Plus Sign> <Interval Term> rank => -2
+                              | <Datetime Value Expression> <Minus Sign> <Interval Term> rank => -3
+<Datetime Term> ::= <Datetime Factor> rank => 0
+<Time Zone maybe> ::= <Time Zone> rank => 0
+<Time Zone maybe> ::= rank => -1
+<Datetime Factor> ::= <Datetime Primary> <Time Zone maybe> rank => 0
+<Datetime Primary> ::= <Value Expression Primary> rank => 0
+                     | <Datetime Value Function> rank => -1
+<Time Zone> ::= <Lex300> <Time Zone Specifier> rank => 0
+<Time Zone Specifier> ::= <Lex409> rank => 0
+                        | <Lex500> <Lex288> <Interval Primary> rank => -1
+<Datetime Value Function> ::= <Current Date Value Function> rank => 0
+                            | <Current Time Value Function> rank => -1
+                            | <Current Timestamp Value Function> rank => -2
+                            | <Current Local Time Value Function> rank => -3
+                            | <Current Local Timestamp Value Function> rank => -4
+<Current Date Value Function> ::= <Lex332> rank => 0
+<Gen1403> ::= <Left Paren> <Time Precision> <Right Paren> rank => 0
+<Gen1403 maybe> ::= <Gen1403> rank => 0
+<Gen1403 maybe> ::= rank => -1
+<Current Time Value Function> ::= <Lex336> <Gen1403 maybe> rank => 0
+<Gen1407> ::= <Left Paren> <Time Precision> <Right Paren> rank => 0
+<Gen1407 maybe> ::= <Gen1407> rank => 0
+<Gen1407 maybe> ::= rank => -1
+<Current Local Time Value Function> ::= <Lex410> <Gen1407 maybe> rank => 0
+<Gen1411> ::= <Left Paren> <Timestamp Precision> <Right Paren> rank => 0
+<Gen1411 maybe> ::= <Gen1411> rank => 0
+<Gen1411 maybe> ::= rank => -1
+<Current Timestamp Value Function> ::= <Lex337> <Gen1411 maybe> rank => 0
+<Gen1415> ::= <Left Paren> <Timestamp Precision> <Right Paren> rank => 0
+<Gen1415 maybe> ::= <Gen1415> rank => 0
+<Gen1415 maybe> ::= rank => -1
+<Current Local Timestamp Value Function> ::= <Lex411> <Gen1415 maybe> rank => 0
+<Interval Value Expression> ::= <Interval Term> rank => 0
+                              | <Interval Value Expression 1> <Plus Sign> <Interval Term 1> rank => -1
+                              | <Interval Value Expression 1> <Minus Sign> <Interval Term 1> rank => -2
+                              | <Left Paren> <Datetime Value Expression> <Minus Sign> <Datetime Term> <Right Paren> <Interval Qualifier> rank => -3
+<Interval Term> ::= <Interval Factor> rank => 0
+                  | <Interval Term 2> <Asterisk> <Factor> rank => -1
+                  | <Interval Term 2> <Solidus> <Factor> rank => -2
+                  | <Term> <Asterisk> <Interval Factor> rank => -3
+<Interval Factor> ::= <Sign maybe> <Interval Primary> rank => 0
+<Interval Qualifier maybe> ::= <Interval Qualifier> rank => 0
+<Interval Qualifier maybe> ::= rank => -1
+<Interval Primary> ::= <Value Expression Primary> <Interval Qualifier maybe> rank => 0
+                     | <Interval Value Function> rank => -1
+<Interval Value Expression 1> ::= <Interval Value Expression> rank => 0
+<Interval Term 1> ::= <Interval Term> rank => 0
+<Interval Term 2> ::= <Interval Term> rank => 0
+<Interval Value Function> ::= <Interval Absolute Value Function> rank => 0
+<Interval Absolute Value Function> ::= <Lex042> <Left Paren> <Interval Value Expression> <Right Paren> rank => 0
+<Boolean Value Expression> ::= <Boolean Term> rank => 0
+                             | <Boolean Value Expression> <Lex436> <Boolean Term> rank => -1
+<Boolean Term> ::= <Boolean Factor> rank => 0
+                 | <Boolean Term> <Lex293> <Boolean Factor> rank => -1
+<Lex428 maybe> ::= <Lex428> rank => 0
+<Lex428 maybe> ::= rank => -1
+<Boolean Factor> ::= <Lex428 maybe> <Boolean Test> rank => 0
+<Gen1444> ::= <Lex401> <Lex428 maybe> <Truth Value> rank => 0
+<Gen1444 maybe> ::= <Gen1444> rank => 0
+<Gen1444 maybe> ::= rank => -1
+<Boolean Test> ::= <Boolean Primary> <Gen1444 maybe> rank => 0
+<Truth Value> ::= <Lex509> rank => 0
+                | <Lex369> rank => -1
+                | <Lex512> rank => -2
+<Boolean Primary> ::= <Predicate> rank => 0
+                    | <Boolean Predicand> rank => -1
+<Boolean Predicand> ::= <Parenthesized Boolean Value Expression> rank => 0
+                      | <Nonparenthesized Value Expression Primary> rank => -1
+<Parenthesized Boolean Value Expression> ::= <Left Paren> <Boolean Value Expression> <Right Paren> rank => 0
+<Array Value Expression> ::= <Array Concatenation> rank => 0
+                           | <Array Factor> rank => -1
+<Array Concatenation> ::= <Array Value Expression 1> <Concatenation Operator> <Array Factor> rank => 0
+<Array Value Expression 1> ::= <Array Value Expression> rank => 0
+<Array Factor> ::= <Value Expression Primary> rank => 0
+<Array Value Constructor> ::= <Array Value Constructor By Enumeration> rank => 0
+                            | <Array Value Constructor By Query> rank => -1
+<Array Value Constructor By Enumeration> ::= <Lex296> <Left Bracket Or Trigraph> <Array Element List> <Right Bracket Or Trigraph> rank => 0
+<Gen1464> ::= <Comma> <Array Element> rank => 0
+<Gen1464 any> ::= <Gen1464>* rank => 0
+<Array Element List> ::= <Array Element> <Gen1464 any> rank => 0
+<Array Element> ::= <Value Expression> rank => 0
+<Order By Clause maybe> ::= <Order By Clause> rank => 0
+<Order By Clause maybe> ::= rank => -1
+<Array Value Constructor By Query> ::= <Lex296> <Left Paren> <Query Expression> <Order By Clause maybe> <Right Paren> rank => 0
+<Gen1471> ::= <Lex290> rank => 0
+            | <Lex354> rank => -1
+<Gen1473> ::= <Lex290> rank => 0
+            | <Lex354> rank => -1
+<Multiset Value Expression> ::= <Multiset Term> rank => 0
+                              | <Multiset Value Expression> <Lex420> <Lex510> <Gen1471> <Multiset Term> rank => -1
+                              | <Multiset Value Expression> <Lex420> <Lex364> <Gen1473> <Multiset Term> rank => -2
+<Gen1478> ::= <Lex290> rank => 0
+            | <Lex354> rank => -1
+<Multiset Term> ::= <Multiset Primary> rank => 0
+                  | <Multiset Term> <Lex420> <Lex398> <Gen1478> <Multiset Primary> rank => -1
+<Multiset Primary> ::= <Multiset Value Function> rank => 0
+                     | <Value Expression Primary> rank => -1
+<Multiset Value Function> ::= <Multiset Set Function> rank => 0
+<Multiset Set Function> ::= <Lex482> <Left Paren> <Multiset Value Expression> <Right Paren> rank => 0
+<Multiset Value Constructor> ::= <Multiset Value Constructor By Enumeration> rank => 0
+                               | <Multiset Value Constructor By Query> rank => -1
+                               | <Table Value Constructor By Query> rank => -2
+<Multiset Value Constructor By Enumeration> ::= <Lex420> <Left Bracket Or Trigraph> <Multiset Element List> <Right Bracket Or Trigraph> rank => 0
+<Gen1490> ::= <Comma> <Multiset Element> rank => 0
+<Gen1490 any> ::= <Gen1490>* rank => 0
+<Multiset Element List> ::= <Multiset Element> <Gen1490 any> rank => 0
+<Multiset Element> ::= <Value Expression> rank => 0
+<Multiset Value Constructor By Query> ::= <Lex420> <Left Paren> <Query Expression> <Right Paren> rank => 0
+<Table Value Constructor By Query> ::= <Lex498> <Left Paren> <Query Expression> <Right Paren> rank => 0
+<Row Value Constructor> ::= <Common Value Expression> rank => 0
+                          | <Boolean Value Expression> rank => -1
+                          | <Explicit Row Value Constructor> rank => -2
+<Explicit Row Value Constructor> ::= <Left Paren> <Row Value Constructor Element> <Comma> <Row Value Constructor Element List> <Right Paren> rank => 0
+                                   | <Lex473> <Left Paren> <Row Value Constructor Element List> <Right Paren> rank => -1
+                                   | <Row Subquery> rank => -2
+<Gen1502> ::= <Comma> <Row Value Constructor Element> rank => 0
+<Gen1502 any> ::= <Gen1502>* rank => 0
+<Row Value Constructor Element List> ::= <Row Value Constructor Element> <Gen1502 any> rank => 0
+<Row Value Constructor Element> ::= <Value Expression> rank => 0
+<Contextually Typed Row Value Constructor> ::= <Common Value Expression> rank => 0
+                                             | <Boolean Value Expression> rank => -1
+                                             | <Contextually Typed Value Specification> rank => -2
+                                             | <Left Paren> <Contextually Typed Row Value Constructor Element> <Comma> <Contextually Typed Row Value Constructor Element List> <Right Paren> rank => -3
+                                             | <Lex473> <Left Paren> <Contextually Typed Row Value Constructor Element List> <Right Paren> rank => -4
+<Gen1511> ::= <Comma> <Contextually Typed Row Value Constructor Element> rank => 0
+<Gen1511 any> ::= <Gen1511>* rank => 0
+<Contextually Typed Row Value Constructor Element List> ::= <Contextually Typed Row Value Constructor Element> <Gen1511 any> rank => 0
+<Contextually Typed Row Value Constructor Element> ::= <Value Expression> rank => 0
+                                                     | <Contextually Typed Value Specification> rank => -1
+<Row Value Constructor Predicand> ::= <Common Value Expression> rank => 0
+                                    | <Boolean Predicand> rank => -1
+                                    | <Explicit Row Value Constructor> rank => -2
+<Row Value Expression> ::= <Row Value Special Case> rank => 0
+                         | <Explicit Row Value Constructor> rank => -1
+<Table Row Value Expression> ::= <Row Value Special Case> rank => 0
+                               | <Row Value Constructor> rank => -1
+<Contextually Typed Row Value Expression> ::= <Row Value Special Case> rank => 0
+                                            | <Contextually Typed Row Value Constructor> rank => -1
+<Row Value Predicand> ::= <Row Value Special Case> rank => 0
+                        | <Row Value Constructor Predicand> rank => -1
+<Row Value Special Case> ::= <Nonparenthesized Value Expression Primary> rank => 0
+<Table Value Constructor> ::= <Lex519> <Row Value Expression List> rank => 0
+<Gen1529> ::= <Comma> <Table Row Value Expression> rank => 0
+<Gen1529 any> ::= <Gen1529>* rank => 0
+<Row Value Expression List> ::= <Table Row Value Expression> <Gen1529 any> rank => 0
+<Contextually Typed Table Value Constructor> ::= <Lex519> <Contextually Typed Row Value Expression List> rank => 0
+<Gen1533> ::= <Comma> <Contextually Typed Row Value Expression> rank => 0
+<Gen1533 any> ::= <Gen1533>* rank => 0
+<Contextually Typed Row Value Expression List> ::= <Contextually Typed Row Value Expression> <Gen1533 any> rank => 0
+<Where Clause maybe> ::= <Where Clause> rank => 0
+<Where Clause maybe> ::= rank => -1
+<Group By Clause maybe> ::= <Group By Clause> rank => 0
+<Group By Clause maybe> ::= rank => -1
+<Having Clause maybe> ::= <Having Clause> rank => 0
+<Having Clause maybe> ::= rank => -1
+<Window Clause maybe> ::= <Window Clause> rank => 0
+<Window Clause maybe> ::= rank => -1
+<Table Expression> ::= <From Clause> <Where Clause maybe> <Group By Clause maybe> <Having Clause maybe> <Window Clause maybe> rank => 0
+<From Clause> ::= <Lex376> <Table Reference List> rank => 0
+<Gen1546> ::= <Comma> <Table Reference> rank => 0
+<Gen1546 any> ::= <Gen1546>* rank => 0
+<Table Reference List> ::= <Table Reference> <Gen1546 any> rank => 0
+<Sample Clause maybe> ::= <Sample Clause> rank => 0
+<Sample Clause maybe> ::= rank => -1
+<Table Reference> ::= <Table Primary Or Joined Table> <Sample Clause maybe> rank => 0
+<Table Primary Or Joined Table> ::= <Table Primary> rank => 0
+                                  | <Joined Table> rank => -1
+<Repeatable Clause maybe> ::= <Repeatable Clause> rank => 0
+<Repeatable Clause maybe> ::= rank => -1
+<Sample Clause> ::= <Lex259> <Sample Method> <Left Paren> <Sample Percentage> <Right Paren> <Repeatable Clause maybe> rank => 0
+<Sample Method> ::= <Lex056> rank => 0
+                  | <Lex496> rank => -1
+<Repeatable Clause> ::= <Lex217> <Left Paren> <Repeat Argument> <Right Paren> rank => 0
+<Sample Percentage> ::= <Numeric Value Expression> rank => 0
+<Repeat Argument> ::= <Numeric Value Expression> rank => 0
+<Lex297 maybe> ::= <Lex297> rank => 0
+<Lex297 maybe> ::= rank => -1
+<Gen1564> ::= <Left Paren> <Derived Column List> <Right Paren> rank => 0
+<Gen1564 maybe> ::= <Gen1564> rank => 0
+<Gen1564 maybe> ::= rank => -1
+<Gen1567> ::= <Lex297 maybe> <Correlation Name> <Gen1564 maybe> rank => 0
+<Gen1567 maybe> ::= <Gen1567> rank => 0
+<Gen1567 maybe> ::= rank => -1
+<Gen1570> ::= <Left Paren> <Derived Column List> <Right Paren> rank => 0
+<Gen1570 maybe> ::= <Gen1570> rank => 0
+<Gen1570 maybe> ::= rank => -1
+<Gen1573> ::= <Left Paren> <Derived Column List> <Right Paren> rank => 0
+<Gen1573 maybe> ::= <Gen1573> rank => 0
+<Gen1573 maybe> ::= rank => -1
+<Gen1576> ::= <Left Paren> <Derived Column List> <Right Paren> rank => 0
+<Gen1576 maybe> ::= <Gen1576> rank => 0
+<Gen1576 maybe> ::= rank => -1
+<Gen1579> ::= <Left Paren> <Derived Column List> <Right Paren> rank => 0
+<Gen1579 maybe> ::= <Gen1579> rank => 0
+<Gen1579 maybe> ::= rank => -1
+<Gen1582> ::= <Left Paren> <Derived Column List> <Right Paren> rank => 0
+<Gen1582 maybe> ::= <Gen1582> rank => 0
+<Gen1582 maybe> ::= rank => -1
+<Gen1585> ::= <Lex297 maybe> <Correlation Name> <Gen1582 maybe> rank => 0
+<Gen1585 maybe> ::= <Gen1585> rank => 0
+<Gen1585 maybe> ::= rank => -1
+<Table Primary> ::= <Table Or Query Name> <Gen1567 maybe> rank => 0
+                  | <Derived Table> <Lex297 maybe> <Correlation Name> <Gen1570 maybe> rank => -1
+                  | <Lateral Derived Table> <Lex297 maybe> <Correlation Name> <Gen1573 maybe> rank => -2
+                  | <Collection Derived Table> <Lex297 maybe> <Correlation Name> <Gen1576 maybe> rank => -3
+                  | <Table Function Derived Table> <Lex297 maybe> <Correlation Name> <Gen1579 maybe> rank => -4
+                  | <Only Spec> <Gen1585 maybe> rank => -5
+                  | <Left Paren> <Joined Table> <Right Paren> rank => -6
+<Only Spec> ::= <Lex434> <Left Paren> <Table Or Query Name> <Right Paren> rank => 0
+<Lateral Derived Table> ::= <Lex405> <Table Subquery> rank => 0
+<Gen1597> ::= <Lex529> <Lex188> rank => 0
+<Gen1597 maybe> ::= <Gen1597> rank => 0
+<Gen1597 maybe> ::= rank => -1
+<Collection Derived Table> ::= <Lex513> <Left Paren> <Collection Value Expression> <Right Paren> <Gen1597 maybe> rank => 0
+<Table Function Derived Table> ::= <Lex498> <Left Paren> <Collection Value Expression> <Right Paren> rank => 0
+<Derived Table> ::= <Table Subquery> rank => 0
+<Table Or Query Name> ::= <Table Name> rank => 0
+                        | <Query Name> rank => -1
+<Derived Column List> ::= <Column Name List> rank => 0
+<Gen1606> ::= <Comma> <Column Name> rank => 0
+<Gen1606 any> ::= <Gen1606>* rank => 0
+<Column Name List> ::= <Column Name> <Gen1606 any> rank => 0
+<Joined Table> ::= <Cross Join> rank => 0
+                 | <Qualified Join> rank => -1
+                 | <Natural Join> rank => -2
+                 | <Union Join> rank => -3
+<Cross Join> ::= <Table Reference> <Lex329> <Lex402> <Table Primary> rank => 0
+<Join Type maybe> ::= <Join Type> rank => 0
+<Join Type maybe> ::= rank => -1
+<Qualified Join> ::= <Table Reference> <Join Type maybe> <Lex402> <Table Reference> <Join Specification> rank => 0
+<Natural Join> ::= <Table Reference> <Lex422> <Join Type maybe> <Lex402> <Table Primary> rank => 0
+<Union Join> ::= <Table Reference> <Lex510> <Lex402> <Table Primary> rank => 0
+<Join Specification> ::= <Join Condition> rank => 0
+                       | <Named Columns Join> rank => -1
+<Join Condition> ::= <Lex433> <Search Condition> rank => 0
+<Named Columns Join> ::= <Lex517> <Left Paren> <Join Column List> <Right Paren> rank => 0
+<Lex439 maybe> ::= <Lex439> rank => 0
+<Lex439 maybe> ::= rank => -1
+<Join Type> ::= <Lex391> rank => 0
+              | <Outer Join Type> <Lex439 maybe> rank => -1
+<Outer Join Type> ::= <Lex407> rank => 0
+                    | <Lex470> rank => -1
+                    | <Lex377> rank => -2
+<Join Column List> ::= <Column Name List> rank => 0
+<Where Clause> ::= <Lex526> <Search Condition> rank => 0
+<Set Quantifier maybe> ::= <Set Quantifier> rank => 0
+<Set Quantifier maybe> ::= rank => -1
+<Group By Clause> ::= <Lex382> <Lex310> <Set Quantifier maybe> <Grouping Element List> rank => 0
+<Gen1635> ::= <Comma> <Grouping Element> rank => 0
+<Gen1635 any> ::= <Gen1635>* rank => 0
+<Grouping Element List> ::= <Grouping Element> <Gen1635 any> rank => 0
+<Grouping Element> ::= <Ordinary Grouping Set> rank => 0
+                     | <Rollup List> rank => -1
+                     | <Cube List> rank => -2
+                     | <Grouping Sets Specification> rank => -3
+                     | <Empty Grouping Set> rank => -4
+<Ordinary Grouping Set> ::= <Grouping Column Reference> rank => 0
+                          | <Left Paren> <Grouping Column Reference List> <Right Paren> rank => -1
+<Grouping Column Reference> ::= <Column Reference> <Collate Clause maybe> rank => 0
+<Gen1646> ::= <Comma> <Grouping Column Reference> rank => 0
+<Gen1646 any> ::= <Gen1646>* rank => 0
+<Grouping Column Reference List> ::= <Grouping Column Reference> <Gen1646 any> rank => 0
+<Rollup List> ::= <Lex472> <Left Paren> <Ordinary Grouping Set List> <Right Paren> rank => 0
+<Gen1650> ::= <Comma> <Ordinary Grouping Set> rank => 0
+<Gen1650 any> ::= <Gen1650>* rank => 0
+<Ordinary Grouping Set List> ::= <Ordinary Grouping Set> <Gen1650 any> rank => 0
+<Cube List> ::= <Lex330> <Left Paren> <Ordinary Grouping Set List> <Right Paren> rank => 0
+<Grouping Sets Specification> ::= <Lex383> <Lex243> <Left Paren> <Grouping Set List> <Right Paren> rank => 0
+<Gen1655> ::= <Comma> <Grouping Set> rank => 0
+<Gen1655 any> ::= <Gen1655>* rank => 0
+<Grouping Set List> ::= <Grouping Set> <Gen1655 any> rank => 0
+<Grouping Set> ::= <Ordinary Grouping Set> rank => 0
+                 | <Rollup List> rank => -1
+                 | <Cube List> rank => -2
+                 | <Grouping Sets Specification> rank => -3
+                 | <Empty Grouping Set> rank => -4
+<Empty Grouping Set> ::= <Left Paren> <Right Paren> rank => 0
+<Having Clause> ::= <Lex384> <Search Condition> rank => 0
+<Window Clause> ::= <Lex528> <Window Definition List> rank => 0
+<Gen1666> ::= <Comma> <Window Definition> rank => 0
+<Gen1666 any> ::= <Gen1666>* rank => 0
+<Window Definition List> ::= <Window Definition> <Gen1666 any> rank => 0
+<Window Definition> ::= <New Window Name> <Lex297> <Window Specification> rank => 0
+<New Window Name> ::= <Window Name> rank => 0
+<Window Specification> ::= <Left Paren> <Window Specification Details> <Right Paren> rank => 0
+<Existing Window Name maybe> ::= <Existing Window Name> rank => 0
+<Existing Window Name maybe> ::= rank => -1
+<Window Partition Clause maybe> ::= <Window Partition Clause> rank => 0
+<Window Partition Clause maybe> ::= rank => -1
+<Window Order Clause maybe> ::= <Window Order Clause> rank => 0
+<Window Order Clause maybe> ::= rank => -1
+<Window Frame Clause maybe> ::= <Window Frame Clause> rank => 0
+<Window Frame Clause maybe> ::= rank => -1
+<Window Specification Details> ::= <Existing Window Name maybe> <Window Partition Clause maybe> <Window Order Clause maybe> <Window Frame Clause maybe> rank => 0
+<Existing Window Name> ::= <Window Name> rank => 0
+<Window Partition Clause> ::= <Lex444> <Lex310> <Window Partition Column Reference List> rank => 0
+<Gen1683> ::= <Comma> <Window Partition Column Reference> rank => 0
+<Gen1683 any> ::= <Gen1683>* rank => 0
+<Window Partition Column Reference List> ::= <Window Partition Column Reference> <Gen1683 any> rank => 0
+<Window Partition Column Reference> ::= <Column Reference> <Collate Clause maybe> rank => 0
+<Window Order Clause> ::= <Lex437> <Lex310> <Sort Specification List> rank => 0
+<Window Frame Exclusion maybe> ::= <Window Frame Exclusion> rank => 0
+<Window Frame Exclusion maybe> ::= rank => -1
+<Window Frame Clause> ::= <Window Frame Units> <Window Frame Extent> <Window Frame Exclusion maybe> rank => 0
+<Window Frame Units> ::= <Lex474> rank => 0
+                       | <Lex449> rank => -1
+<Window Frame Extent> ::= <Window Frame Start> rank => 0
+                        | <Window Frame Between> rank => -1
+<Window Frame Start> ::= <Lex276> <Lex209> rank => 0
+                       | <Window Frame Preceding> rank => -1
+                       | <Lex331> <Lex473> rank => -2
+<Window Frame Preceding> ::= <Unsigned Value Specification> <Lex209> rank => 0
+<Window Frame Between> ::= <Lex304> <Window Frame Bound 1> <Lex293> <Window Frame Bound 2> rank => 0
+<Window Frame Bound 1> ::= <Window Frame Bound> rank => 0
+<Window Frame Bound 2> ::= <Window Frame Bound> rank => 0
+<Window Frame Bound> ::= <Window Frame Start> rank => 0
+                       | <Lex276> <Lex133> rank => -1
+                       | <Window Frame Following> rank => -2
+<Window Frame Following> ::= <Unsigned Value Specification> <Lex133> rank => 0
+<Window Frame Exclusion> ::= <Lex126> <Lex331> <Lex473> rank => 0
+                           | <Lex126> <Lex382> rank => -1
+                           | <Lex126> <Lex262> rank => -2
+                           | <Lex126> <Lex426> <Lex189> rank => -3
+<Query Specification> ::= <Lex479> <Set Quantifier maybe> <Select List> <Table Expression> rank => 0
+<Gen1711> ::= <Comma> <Select Sublist> rank => 0
+<Gen1711 any> ::= <Gen1711>* rank => 0
+<Select List> ::= <Asterisk> rank => 0
+                | <Select Sublist> <Gen1711 any> rank => -1
+<Select Sublist> ::= <Derived Column> rank => 0
+                   | <Qualified Asterisk> rank => -1
+<Qualified Asterisk> ::= <Asterisked Identifier Chain> <Period> <Asterisk> rank => 0
+                       | <All Fields Reference> rank => -1
+<Gen1719> ::= <Period> <Asterisked Identifier> rank => 0
+<Gen1719 any> ::= <Gen1719>* rank => 0
+<Asterisked Identifier Chain> ::= <Asterisked Identifier> <Gen1719 any> rank => 0
+<Asterisked Identifier> ::= <Identifier> rank => 0
+<As Clause maybe> ::= <As Clause> rank => 0
+<As Clause maybe> ::= rank => -1
+<Derived Column> ::= <Value Expression> <As Clause maybe> rank => 0
+<As Clause> ::= <Lex297 maybe> <Column Name> rank => 0
+<Gen1727> ::= <Lex297> <Left Paren> <All Fields Column Name List> <Right Paren> rank => 0
+<Gen1727 maybe> ::= <Gen1727> rank => 0
+<Gen1727 maybe> ::= rank => -1
+<All Fields Reference> ::= <Value Expression Primary> <Period> <Asterisk> <Gen1727 maybe> rank => 0
+<All Fields Column Name List> ::= <Column Name List> rank => 0
+<With Clause maybe> ::= <With Clause> rank => 0
+<With Clause maybe> ::= rank => -1
+<Query Expression> ::= <With Clause maybe> <Query Expression Body> rank => 0
+<Lex452 maybe> ::= <Lex452> rank => 0
+<Lex452 maybe> ::= rank => -1
+<With Clause> ::= <Lex529> <Lex452 maybe> <With List> rank => 0
+<Gen1738> ::= <Comma> <With List Element> rank => 0
+<Gen1738 any> ::= <Gen1738>* rank => 0
+<With List> ::= <With List Element> <Gen1738 any> rank => 0
+<Gen1741> ::= <Left Paren> <With Column List> <Right Paren> rank => 0
+<Gen1741 maybe> ::= <Gen1741> rank => 0
+<Gen1741 maybe> ::= rank => -1
+<Search Or Cycle Clause maybe> ::= <Search Or Cycle Clause> rank => 0
+<Search Or Cycle Clause maybe> ::= rank => -1
+<With List Element> ::= <Query Name> <Gen1741 maybe> <Lex297> <Left Paren> <Query Expression> <Right Paren> <Search Or Cycle Clause maybe> rank => 0
+<With Column List> ::= <Column Name List> rank => 0
+<Query Expression Body> ::= <Non Join Query Expression> rank => 0
+                          | <Joined Table> rank => -1
+<Gen1750> ::= <Lex290> rank => 0
+            | <Lex354> rank => -1
+<Gen1750 maybe> ::= <Gen1750> rank => 0
+<Gen1750 maybe> ::= rank => -1
+<Corresponding Spec maybe> ::= <Corresponding Spec> rank => 0
+<Corresponding Spec maybe> ::= rank => -1
+<Gen1756> ::= <Lex290> rank => 0
+            | <Lex354> rank => -1
+<Gen1756 maybe> ::= <Gen1756> rank => 0
+<Gen1756 maybe> ::= rank => -1
+<Non Join Query Expression> ::= <Non Join Query Term> rank => 0
+                              | <Query Expression Body> <Lex510> <Gen1750 maybe> <Corresponding Spec maybe> <Query Term> rank => -1
+                              | <Query Expression Body> <Lex364> <Gen1756 maybe> <Corresponding Spec maybe> <Query Term> rank => -2
+<Query Term> ::= <Non Join Query Term> rank => 0
+               | <Joined Table> rank => -1
+<Gen1765> ::= <Lex290> rank => 0
+            | <Lex354> rank => -1
+<Gen1765 maybe> ::= <Gen1765> rank => 0
+<Gen1765 maybe> ::= rank => -1
+<Non Join Query Term> ::= <Non Join Query Primary> rank => 0
+                        | <Query Term> <Lex398> <Gen1765 maybe> <Corresponding Spec maybe> <Query Primary> rank => -1
+<Query Primary> ::= <Non Join Query Primary> rank => 0
+                  | <Joined Table> rank => -1
+<Non Join Query Primary> ::= <Simple Table> rank => 0
+                           | <Left Paren> <Non Join Query Expression> <Right Paren> rank => -1
+<Simple Table> ::= <Query Specification> rank => 0
+                 | <Table Value Constructor> rank => -1
+                 | <Explicit Table> rank => -2
+<Explicit Table> ::= <Lex498> <Table Or Query Name> rank => 0
+<Gen1779> ::= <Lex310> <Left Paren> <Corresponding Column List> <Right Paren> rank => 0
+<Gen1779 maybe> ::= <Gen1779> rank => 0
+<Gen1779 maybe> ::= rank => -1
+<Corresponding Spec> ::= <Lex327> <Gen1779 maybe> rank => 0
+<Corresponding Column List> ::= <Column Name List> rank => 0
+<Search Or Cycle Clause> ::= <Search Clause> rank => 0
+                           | <Cycle Clause> rank => -1
+                           | <Search Clause> <Cycle Clause> rank => -2
+<Search Clause> ::= <Lex477> <Recursive Search Order> <Lex482> <Sequence Column> rank => 0
+<Recursive Search Order> ::= <Lex114> <Lex131> <Lex310> <Sort Specification List> rank => 0
+                           | <Lex057> <Lex131> <Lex310> <Sort Specification List> rank => -1
+<Sequence Column> ::= <Column Name> rank => 0
+<Cycle Clause> ::= <Lex341> <Cycle Column List> <Lex482> <Cycle Mark Column> <Lex504> <Cycle Mark Value> <Lex348> <Non Cycle Mark Value> <Lex517> <Path Column> rank => 0
+<Gen1792> ::= <Comma> <Cycle Column> rank => 0
+<Gen1792 any> ::= <Gen1792>* rank => 0
+<Cycle Column List> ::= <Cycle Column> <Gen1792 any> rank => 0
+<Cycle Column> ::= <Column Name> rank => 0
+<Cycle Mark Column> ::= <Column Name> rank => 0
+<Path Column> ::= <Column Name> rank => 0
+<Cycle Mark Value> ::= <Value Expression> rank => 0
+<Non Cycle Mark Value> ::= <Value Expression> rank => 0
+<Scalar Subquery> ::= <Subquery> rank => 0
+<Row Subquery> ::= <Subquery> rank => 0
+<Table Subquery> ::= <Subquery> rank => 0
+<Subquery> ::= <Left Paren> <Query Expression> <Right Paren> rank => 0
+<Predicate> ::= <Comparison Predicate> rank => 0
+              | <Between Predicate> rank => -1
+              | <In Predicate> rank => -2
+              | <Like Predicate> rank => -3
+              | <Similar Predicate> rank => -4
+              | <Null Predicate> rank => -5
+              | <Quantified Comparison Predicate> rank => -6
+              | <Exists Predicate> rank => -7
+              | <Unique Predicate> rank => -8
+              | <Normalized Predicate> rank => -9
+              | <Match Predicate> rank => -10
+              | <Overlaps Predicate> rank => -11
+              | <Distinct Predicate> rank => -12
+              | <Member Predicate> rank => -13
+              | <Submultiset Predicate> rank => -14
+              | <Set Predicate> rank => -15
+              | <Type Predicate> rank => -16
+<Comparison Predicate> ::= <Row Value Predicand> <Comparison Predicate Part 2> rank => 0
+<Comparison Predicate Part 2> ::= <Comp Op> <Row Value Predicand> rank => 0
+<Comp Op> ::= <Equals Operator> rank => 0
+            | <Not Equals Operator> rank => -1
+            | <Less Than Operator> rank => -2
+            | <Greater Than Operator> rank => -3
+            | <Less Than Or Equals Operator> rank => -4
+            | <Greater Than Or Equals Operator> rank => -5
+<Between Predicate> ::= <Row Value Predicand> <Between Predicate Part 2> rank => 0
+<Gen1830> ::= <Lex299> rank => 0
+            | <Lex495> rank => -1
+<Gen1830 maybe> ::= <Gen1830> rank => 0
+<Gen1830 maybe> ::= rank => -1
+<Between Predicate Part 2> ::= <Lex428 maybe> <Lex304> <Gen1830 maybe> <Row Value Predicand> <Lex293> <Row Value Predicand> rank => 0
+<In Predicate> ::= <Row Value Predicand> <In Predicate Part 2> rank => 0
+<In Predicate Part 2> ::= <Lex428 maybe> <Lex389> <In Predicate Value> rank => 0
+<In Predicate Value> ::= <Table Subquery> rank => 0
+                       | <Left Paren> <In Value List> <Right Paren> rank => -1
+<Gen1839> ::= <Comma> <Row Value Expression> rank => 0
+<Gen1839 any> ::= <Gen1839>* rank => 0
+<In Value List> ::= <Row Value Expression> <Gen1839 any> rank => 0
+<Like Predicate> ::= <Character Like Predicate> rank => 0
+                   | <Octet Like Predicate> rank => -1
+<Character Like Predicate> ::= <Row Value Predicand> <Character Like Predicate Part 2> rank => 0
+<Gen1845> ::= <Lex363> <Escape Character> rank => 0
+<Gen1845 maybe> ::= <Gen1845> rank => 0
+<Gen1845 maybe> ::= rank => -1
+<Character Like Predicate Part 2> ::= <Lex428 maybe> <Lex408> <Character Pattern> <Gen1845 maybe> rank => 0
+<Character Pattern> ::= <Character Value Expression> rank => 0
+<Escape Character> ::= <Character Value Expression> rank => 0
+<Octet Like Predicate> ::= <Row Value Predicand> <Octet Like Predicate Part 2> rank => 0
+<Gen1852> ::= <Lex363> <Escape Octet> rank => 0
+<Gen1852 maybe> ::= <Gen1852> rank => 0
+<Gen1852 maybe> ::= rank => -1
+<Octet Like Predicate Part 2> ::= <Lex428 maybe> <Lex408> <Octet Pattern> <Gen1852 maybe> rank => 0
+<Octet Pattern> ::= <Blob Value Expression> rank => 0
+<Escape Octet> ::= <Blob Value Expression> rank => 0
+<Similar Predicate> ::= <Row Value Predicand> <Similar Predicate Part 2> rank => 0
+<Gen1859> ::= <Lex363> <Escape Character> rank => 0
+<Gen1859 maybe> ::= <Gen1859> rank => 0
+<Gen1859 maybe> ::= rank => -1
+<Similar Predicate Part 2> ::= <Lex428 maybe> <Lex483> <Lex504> <Similar Pattern> <Gen1859 maybe> rank => 0
+<Similar Pattern> ::= <Character Value Expression> rank => 0
+<Regular Expression> ::= <Regular Term> rank => 0
+                       | <Regular Expression> <Vertical Bar> <Regular Term> rank => -1
+<Regular Term> ::= <Regular Factor> rank => 0
+                 | <Regular Term> <Regular Factor> rank => -1
+<Regular Factor> ::= <Regular Primary> rank => 0
+                   | <Regular Primary> <Asterisk> rank => -1
+                   | <Regular Primary> <Plus Sign> rank => -2
+                   | <Regular Primary> <Question Mark> rank => -3
+                   | <Regular Primary> <Repeat Factor> rank => -4
+<Upper Limit maybe> ::= <Upper Limit> rank => 0
+<Upper Limit maybe> ::= rank => -1
+<Repeat Factor> ::= <Left Brace> <Low Value> <Upper Limit maybe> <Right Brace> rank => 0
+<High Value maybe> ::= <High Value> rank => 0
+<High Value maybe> ::= rank => -1
+<Upper Limit> ::= <Comma> <High Value maybe> rank => 0
+<Low Value> ::= <Unsigned Integer> rank => 0
+<High Value> ::= <Unsigned Integer> rank => 0
+<Regular Primary> ::= <Character Specifier> rank => 0
+                    | <Percent> rank => -1
+                    | <Regular Character Set> rank => -2
+                    | <Left Paren> <Regular Expression> <Right Paren> rank => -3
+<Character Specifier> ::= <Non Escaped Character> rank => 0
+                        | <Escaped Character> rank => -1
+<Non Escaped Character> ::= <Lex548> rank => 0
+<Escaped Character> ::= <Lex549> <Lex550> rank => 0
+<Character Enumeration many> ::= <Character Enumeration>+ rank => 0
+<Character Enumeration Include many> ::= <Character Enumeration Include>+ rank => 0
+<Character Enumeration Exclude many> ::= <Character Enumeration Exclude>+ rank => 0
+<Regular Character Set> ::= <Underscore> rank => 0
+                          | <Left Bracket> <Character Enumeration many> <Right Bracket> rank => -1
+                          | <Left Bracket> <Circumflex> <Character Enumeration many> <Right Bracket> rank => -2
+                          | <Left Bracket> <Character Enumeration Include many> <Circumflex> <Character Enumeration Exclude many> <Right Bracket> rank => -3
+<Character Enumeration Include> ::= <Character Enumeration> rank => 0
+<Character Enumeration Exclude> ::= <Character Enumeration> rank => 0
+<Character Enumeration> ::= <Character Specifier> rank => 0
+                          | <Character Specifier> <Minus Sign> <Character Specifier> rank => -1
+                          | <Left Bracket> <Colon> <Regular Character Set Identifier> <Colon> <Right Bracket> rank => -2
+<Regular Character Set Identifier> ::= <Identifier> rank => 0
+<Null Predicate> ::= <Row Value Predicand> <Null Predicate Part 2> rank => 0
+<Null Predicate Part 2> ::= <Lex401> <Lex428 maybe> <Lex429> rank => 0
+<Quantified Comparison Predicate> ::= <Row Value Predicand> <Quantified Comparison Predicate Part 2> rank => 0
+<Quantified Comparison Predicate Part 2> ::= <Comp Op> <Quantifier> <Table Subquery> rank => 0
+<Quantifier> ::= <All> rank => 0
+               | <Some> rank => -1
+<All> ::= <Lex290> rank => 0
+<Some> ::= <Lex485> rank => 0
+         | <Lex294> rank => -1
+<Exists Predicate> ::= <Lex367> <Table Subquery> rank => 0
+<Unique Predicate> ::= <Lex511> <Table Subquery> rank => 0
+<Normalized Predicate> ::= <String Value Expression> <Lex401> <Lex428 maybe> <Lex177> rank => 0
+<Match Predicate> ::= <Row Value Predicand> <Match Predicate Part 2> rank => 0
+<Lex511 maybe> ::= <Lex511> rank => 0
+<Lex511 maybe> ::= rank => -1
+<Gen1917> ::= <Lex244> rank => 0
+            | <Lex199> rank => -1
+            | <Lex377> rank => -2
+<Gen1917 maybe> ::= <Gen1917> rank => 0
+<Gen1917 maybe> ::= rank => -1
+<Match Predicate Part 2> ::= <Lex412> <Lex511 maybe> <Gen1917 maybe> <Table Subquery> rank => 0
+<Overlaps Predicate> ::= <Overlaps Predicate Part 1> <Overlaps Predicate Part 2> rank => 0
+<Overlaps Predicate Part 1> ::= <Row Value Predicand 1> rank => 0
+<Overlaps Predicate Part 2> ::= <Lex442> <Row Value Predicand 2> rank => 0
+<Row Value Predicand 1> ::= <Row Value Predicand> rank => 0
+<Row Value Predicand 2> ::= <Row Value Predicand> rank => 0
+<Distinct Predicate> ::= <Row Value Predicand 3> <Distinct Predicate Part 2> rank => 0
+<Distinct Predicate Part 2> ::= <Lex401> <Lex354> <Lex376> <Row Value Predicand 4> rank => 0
+<Row Value Predicand 3> ::= <Row Value Predicand> rank => 0
+<Row Value Predicand 4> ::= <Row Value Predicand> rank => 0
+<Member Predicate> ::= <Row Value Predicand> <Member Predicate Part 2> rank => 0
+<Lex431 maybe> ::= <Lex431> rank => 0
+<Lex431 maybe> ::= rank => -1
+<Member Predicate Part 2> ::= <Lex428 maybe> <Lex413> <Lex431 maybe> <Multiset Value Expression> rank => 0
+<Submultiset Predicate> ::= <Row Value Predicand> <Submultiset Predicate Part 2> rank => 0
+<Submultiset Predicate Part 2> ::= <Lex428 maybe> <Lex494> <Lex431 maybe> <Multiset Value Expression> rank => 0
+<Set Predicate> ::= <Row Value Predicand> <Set Predicate Part 2> rank => 0
+<Set Predicate Part 2> ::= <Lex401> <Lex428 maybe> <Lex041> <Lex482> rank => 0
+<Type Predicate> ::= <Row Value Predicand> <Type Predicate Part 2> rank => 0
+<Type Predicate Part 2> ::= <Lex401> <Lex428 maybe> <Lex431> <Left Paren> <Type List> <Right Paren> rank => 0
+<Gen1942> ::= <Comma> <User Defined Type Specification> rank => 0
+<Gen1942 any> ::= <Gen1942>* rank => 0
+<Type List> ::= <User Defined Type Specification> <Gen1942 any> rank => 0
+<User Defined Type Specification> ::= <Inclusive User Defined Type Specification> rank => 0
+                                    | <Exclusive User Defined Type Specification> rank => -1
+<Inclusive User Defined Type Specification> ::= <Path Resolved User Defined Type Name> rank => 0
+<Exclusive User Defined Type Specification> ::= <Lex434> <Path Resolved User Defined Type Name> rank => 0
+<Search Condition> ::= <Boolean Value Expression> rank => 0
+<Interval Qualifier> ::= <Start Field> <Lex504> <End Field> rank => 0
+                       | <Single Datetime Field> rank => -1
+<Gen1952> ::= <Left Paren> <Interval Leading Field Precision> <Right Paren> rank => 0
+<Gen1952 maybe> ::= <Gen1952> rank => 0
+<Gen1952 maybe> ::= rank => -1
+<Start Field> ::= <Non Second Primary Datetime Field> <Gen1952 maybe> rank => 0
+<Gen1956> ::= <Left Paren> <Interval Fractional Seconds Precision> <Right Paren> rank => 0
+<Gen1956 maybe> ::= <Gen1956> rank => 0
+<Gen1956 maybe> ::= rank => -1
+<End Field> ::= <Non Second Primary Datetime Field> rank => 0
+              | <Lex478> <Gen1956 maybe> rank => -1
+<Gen1961> ::= <Left Paren> <Interval Leading Field Precision> <Right Paren> rank => 0
+<Gen1961 maybe> ::= <Gen1961> rank => 0
+<Gen1961 maybe> ::= rank => -1
+<Gen1964> ::= <Comma> <Interval Fractional Seconds Precision> rank => 0
+<Gen1964 maybe> ::= <Gen1964> rank => 0
+<Gen1964 maybe> ::= rank => -1
+<Gen1967> ::= <Left Paren> <Interval Leading Field Precision> <Gen1964 maybe> <Right Paren> rank => 0
+<Gen1967 maybe> ::= <Gen1967> rank => 0
+<Gen1967 maybe> ::= rank => -1
+<Single Datetime Field> ::= <Non Second Primary Datetime Field> <Gen1961 maybe> rank => 0
+                          | <Lex478> <Gen1967 maybe> rank => -1
+<Primary Datetime Field> ::= <Non Second Primary Datetime Field> rank => 0
+                           | <Lex478> rank => -1
+<Non Second Primary Datetime Field> ::= <Lex532> rank => 0
+                                      | <Lex419> rank => -1
+                                      | <Lex343> rank => -2
+                                      | <Lex386> rank => -3
+                                      | <Lex416> rank => -4
+<Interval Fractional Seconds Precision> ::= <Unsigned Integer> rank => 0
+<Interval Leading Field Precision> ::= <Unsigned Integer> rank => 0
+<Language Clause> ::= <Lex403> <Language Name> rank => 0
+<Language Name> ::= <Lex045> rank => 0
+                  | <Lex058> rank => -1
+                  | <Lex076> rank => -2
+                  | <Lex134> rank => -3
+                  | <Lex171> rank => -4
+                  | <Lex200> rank => -5
+                  | <Lex206> rank => -6
+                  | <Lex488> rank => -7
+<Path Specification> ::= <Lex201> <Schema Name List> rank => 0
+<Gen1991> ::= <Comma> <Schema Name> rank => 0
+<Gen1991 any> ::= <Gen1991>* rank => 0
+<Schema Name List> ::= <Schema Name> <Gen1991 any> rank => 0
+<Routine Invocation> ::= <Routine Name> <SQL Argument List> rank => 0
+<Gen1995> ::= <Schema Name> <Period> rank => 0
+<Gen1995 maybe> ::= <Gen1995> rank => 0
+<Gen1995 maybe> ::= rank => -1
+<Routine Name> ::= <Gen1995 maybe> <Qualified Identifier> rank => 0
+<Gen1999> ::= <Comma> <SQL Argument> rank => 0
+<Gen1999 any> ::= <Gen1999>* rank => 0
+<Gen2001> ::= <SQL Argument> <Gen1999 any> rank => 0
+<Gen2001 maybe> ::= <Gen2001> rank => 0
+<Gen2001 maybe> ::= rank => -1
+<SQL Argument List> ::= <Left Paren> <Gen2001 maybe> <Right Paren> rank => 0
+<SQL Argument> ::= <Value Expression> rank => 0
+                 | <Generalized Expression> rank => -1
+                 | <Target Specification> rank => -2
+<Generalized Expression> ::= <Value Expression> <Lex297> <Path Resolved User Defined Type Name> rank => 0
+<Character Set Specification> ::= <Standard Character Set Name> rank => 0
+                                | <Implementation Defined Character Set Name> rank => -1
+                                | <User Defined Character Set Name> rank => -2
+<Standard Character Set Name> ::= <Character Set Name> rank => 0
+<Implementation Defined Character Set Name> ::= <Character Set Name> rank => 0
+<User Defined Character Set Name> ::= <Character Set Name> rank => 0
+<Gen2015> ::= <Lex373> <Schema Resolved User Defined Type Name> rank => 0
+<Gen2015 maybe> ::= <Gen2015> rank => 0
+<Gen2015 maybe> ::= rank => -1
+<Specific Routine Designator> ::= <Lex486> <Routine Type> <Specific Name> rank => 0
+                                | <Routine Type> <Member Name> <Gen2015 maybe> rank => -1
+<Gen2020> ::= <Lex146> rank => 0
+            | <Lex493> rank => -1
+            | <Lex551> rank => -2
+<Gen2020 maybe> ::= <Gen2020> rank => 0
+<Gen2020 maybe> ::= rank => -1
+<Routine Type> ::= <Lex224> rank => 0
+                 | <Lex378> rank => -1
+                 | <Lex448> rank => -2
+                 | <Gen2020 maybe> <Lex415> rank => -3
+<Data Type List maybe> ::= <Data Type List> rank => 0
+<Data Type List maybe> ::= rank => -1
+<Member Name> ::= <Member Name Alternatives> <Data Type List maybe> rank => 0
+<Member Name Alternatives> ::= <Schema Qualified Routine Name> rank => 0
+                             | <Method Name> rank => -1
+<Gen2034> ::= <Comma> <Data Type> rank => 0
+<Gen2034 any> ::= <Gen2034>* rank => 0
+<Gen2036> ::= <Data Type> <Gen2034 any> rank => 0
+<Gen2036 maybe> ::= <Gen2036> rank => 0
+<Gen2036 maybe> ::= rank => -1
+<Data Type List> ::= <Left Paren> <Gen2036 maybe> <Right Paren> rank => 0
+<Collate Clause> ::= <Lex321> <Collation Name> rank => 0
+<Constraint Name Definition> ::= <Lex325> <Constraint Name> rank => 0
+<Gen2042> ::= <Lex428 maybe> <Lex108> rank => 0
+<Gen2042 maybe> ::= <Gen2042> rank => 0
+<Gen2042 maybe> ::= rank => -1
+<Constraint Check Time maybe> ::= <Constraint Check Time> rank => 0
+<Constraint Check Time maybe> ::= rank => -1
+<Constraint Characteristics> ::= <Constraint Check Time> <Gen2042 maybe> rank => 0
+                               | <Lex428 maybe> <Lex108> <Constraint Check Time maybe> rank => -1
+<Constraint Check Time> ::= <Lex145> <Lex109> rank => 0
+                          | <Lex145> <Lex388> rank => -1
+<Filter Clause maybe> ::= <Filter Clause> rank => 0
+<Filter Clause maybe> ::= rank => -1
+<Aggregate Function> ::= <Lex098> <Left Paren> <Asterisk> <Right Paren> <Filter Clause maybe> rank => 0
+                       | <General Set Function> <Filter Clause maybe> rank => -1
+                       | <Binary Set Function> <Filter Clause maybe> rank => -2
+                       | <Ordered Set Function> <Filter Clause maybe> rank => -3
+<General Set Function> ::= <Set Function Type> <Left Paren> <Set Quantifier maybe> <Value Expression> <Right Paren> rank => 0
+<Set Function Type> ::= <Computational Operation> rank => 0
+<Computational Operation> ::= <Lex054> rank => 0
+                            | <Lex162> rank => -1
+                            | <Lex167> rank => -2
+                            | <Lex258> rank => -3
+                            | <Lex124> rank => -4
+                            | <Lex294> rank => -5
+                            | <Lex485> rank => -6
+                            | <Lex098> rank => -7
+                            | <Lex252> rank => -8
+                            | <Lex253> rank => -9
+                            | <Lex521> rank => -10
+                            | <Lex520> rank => -11
+                            | <Lex082> rank => -12
+                            | <Lex136> rank => -13
+                            | <Lex148> rank => -14
+<Set Quantifier> ::= <Lex354> rank => 0
+                   | <Lex290> rank => -1
+<Filter Clause> ::= <Lex371> <Left Paren> <Lex526> <Search Condition> <Right Paren> rank => 0
+<Binary Set Function> ::= <Binary Set Function Type> <Left Paren> <Dependent Variable Expression> <Comma> <Independent Variable Expression> <Right Paren> rank => 0
+<Binary Set Function Type> ::= <Lex099> rank => 0
+                             | <Lex100> rank => -1
+                             | <Lex097> rank => -2
+                             | <Lex461> rank => -3
+                             | <Lex459> rank => -4
+                             | <Lex458> rank => -5
+                             | <Lex460> rank => -6
+                             | <Lex456> rank => -7
+                             | <Lex457> rank => -8
+                             | <Lex462> rank => -9
+                             | <Lex464> rank => -10
+                             | <Lex463> rank => -11
+<Dependent Variable Expression> ::= <Numeric Value Expression> rank => 0
+<Independent Variable Expression> ::= <Numeric Value Expression> rank => 0
+<Ordered Set Function> ::= <Hypothetical Set Function> rank => 0
+                         | <Inverse Distribution Function> rank => -1
+<Hypothetical Set Function> ::= <Rank Function Type> <Left Paren> <Hypothetical Set Function Value Expression List> <Right Paren> <Within Group Specification> rank => 0
+<Within Group Specification> ::= <Lex530> <Lex382> <Left Paren> <Lex437> <Lex310> <Sort Specification List> <Right Paren> rank => 0
+<Gen2096> ::= <Comma> <Value Expression> rank => 0
+<Gen2096 any> ::= <Gen2096>* rank => 0
+<Hypothetical Set Function Value Expression List> ::= <Value Expression> <Gen2096 any> rank => 0
+<Inverse Distribution Function> ::= <Inverse Distribution Function Type> <Left Paren> <Inverse Distribution Function Argument> <Right Paren> <Within Group Specification> rank => 0
+<Inverse Distribution Function Argument> ::= <Numeric Value Expression> rank => 0
+<Inverse Distribution Function Type> ::= <Lex202> rank => 0
+                                       | <Lex203> rank => -1
+<Gen2103> ::= <Comma> <Sort Specification> rank => 0
+<Gen2103 any> ::= <Gen2103>* rank => 0
+<Sort Specification List> ::= <Sort Specification> <Gen2103 any> rank => 0
+<Ordering Specification maybe> ::= <Ordering Specification> rank => 0
+<Ordering Specification maybe> ::= rank => -1
+<Null Ordering maybe> ::= <Null Ordering> rank => 0
+<Null Ordering maybe> ::= rank => -1
+<Sort Specification> ::= <Sort Key> <Ordering Specification maybe> <Null Ordering maybe> rank => 0
+<Sort Key> ::= <Value Expression> rank => 0
+<Ordering Specification> ::= <Lex049> rank => 0
+                           | <Lex116> rank => -1
+<Null Ordering> ::= <Lex180> <Lex131> rank => 0
+                  | <Lex180> <Lex154> rank => -1
+<Schema Character Set Or Path maybe> ::= <Schema Character Set Or Path> rank => 0
+<Schema Character Set Or Path maybe> ::= rank => -1
+<Schema Element any> ::= <Schema Element>* rank => 0
+<Schema Definition> ::= <Lex328> <Lex231> <Schema Name Clause> <Schema Character Set Or Path maybe> <Schema Element any> rank => 0
+<Schema Character Set Or Path> ::= <Schema Character Set Specification> rank => 0
+                                 | <Schema Path Specification> rank => -1
+                                 | <Schema Character Set Specification> <Schema Path Specification> rank => -2
+                                 | <Schema Path Specification> <Schema Character Set Specification> rank => -3
+<Schema Name Clause> ::= <Schema Name> rank => 0
+                       | <Lex302> <Schema Authorization Identifier> rank => -1
+                       | <Schema Name> <Lex302> <Schema Authorization Identifier> rank => -2
+<Schema Authorization Identifier> ::= <Authorization Identifier> rank => 0
+<Schema Character Set Specification> ::= <Lex348> <Lex317> <Lex482> <Character Set Specification> rank => 0
+<Schema Path Specification> ::= <Path Specification> rank => 0
+<Schema Element> ::= <Table Definition> rank => 0
+                   | <View Definition> rank => -1
+                   | <Domain Definition> rank => -2
+                   | <Character Set Definition> rank => -3
+                   | <Collation Definition> rank => -4
+                   | <Transliteration Definition> rank => -5
+                   | <Assertion Definition> rank => -6
+                   | <Trigger Definition> rank => -7
+                   | <User Defined Type Definition> rank => -8
+                   | <User Defined Cast Definition> rank => -9
+                   | <User Defined Ordering Definition> rank => -10
+                   | <Transform Definition> rank => -11
+                   | <Schema Routine> rank => -12
+                   | <Sequence Generator Definition> rank => -13
+                   | <Grant Statement> rank => -14
+                   | <Role Definition> rank => -15
+<Drop Schema Statement> ::= <Lex356> <Lex231> <Schema Name> <Drop Behavior> rank => 0
+<Drop Behavior> ::= <Lex060> rank => 0
+                  | <Lex552> rank => -1
+<Table Scope maybe> ::= <Table Scope> rank => 0
+<Table Scope maybe> ::= rank => -1
+<Gen2151> ::= <Lex433> <Lex323> <Table Commit Action> <Lex474> rank => 0
+<Gen2151 maybe> ::= <Gen2151> rank => 0
+<Gen2151 maybe> ::= rank => -1
+<Table Definition> ::= <Lex328> <Table Scope maybe> <Lex498> <Table Name> <Table Contents Source> <Gen2151 maybe> rank => 0
+<Subtable Clause maybe> ::= <Subtable Clause> rank => 0
+<Subtable Clause maybe> ::= rank => -1
+<Table Element List maybe> ::= <Table Element List> rank => 0
+<Table Element List maybe> ::= rank => -1
+<Table Contents Source> ::= <Table Element List> rank => 0
+                          | <Lex431> <Path Resolved User Defined Type Name> <Subtable Clause maybe> <Table Element List maybe> rank => -1
+                          | <As Subquery Clause> rank => -2
+<Table Scope> ::= <Global Or Local> <Lex261> rank => 0
+<Global Or Local> ::= <Lex380> rank => 0
+                    | <Lex409> rank => -1
+<Table Commit Action> ::= <Lex210> rank => 0
+                        | <Lex349> rank => -1
+<Gen2167> ::= <Comma> <Table Element> rank => 0
+<Gen2167 any> ::= <Gen2167>* rank => 0
+<Table Element List> ::= <Left Paren> <Table Element> <Gen2167 any> <Right Paren> rank => 0
+<Table Element> ::= <Column Definition> rank => 0
+                  | <Table Constraint Definition> rank => -1
+                  | <Like Clause> rank => -2
+                  | <Self Referencing Column Specification> rank => -3
+                  | <Column Options> rank => -4
+<Self Referencing Column Specification> ::= <Lex453> <Lex401> <Self Referencing Column Name> <Reference Generation> rank => 0
+<Reference Generation> ::= <Lex496> <Lex553> rank => 0
+                         | <Lex516> <Lex553> rank => -1
+                         | <Lex115> rank => -2
+<Self Referencing Column Name> ::= <Column Name> rank => 0
+<Column Options> ::= <Column Name> <Lex529> <Lex186> <Column Option List> rank => 0
+<Default Clause maybe> ::= <Default Clause> rank => 0
+<Default Clause maybe> ::= rank => -1
+<Column Constraint Definition any> ::= <Column Constraint Definition>* rank => 0
+<Column Option List> ::= <Scope Clause maybe> <Default Clause maybe> <Column Constraint Definition any> rank => 0
+<Subtable Clause> ::= <Lex278> <Supertable Clause> rank => 0
+<Supertable Clause> ::= <Supertable Name> rank => 0
+<Supertable Name> ::= <Table Name> rank => 0
+<Like Options maybe> ::= <Like Options> rank => 0
+<Like Options maybe> ::= rank => -1
+<Like Clause> ::= <Lex408> <Table Name> <Like Options maybe> rank => 0
+<Like Options> ::= <Identity Option> rank => 0
+                 | <Column Default Option> rank => -1
+<Identity Option> ::= <Lex143> <Lex387> rank => 0
+                    | <Lex127> <Lex387> rank => -1
+<Column Default Option> ::= <Lex143> <Lex107> rank => 0
+                          | <Lex127> <Lex107> rank => -1
+<Gen2197> ::= <Left Paren> <Column Name List> <Right Paren> rank => 0
+<Gen2197 maybe> ::= <Gen2197> rank => 0
+<Gen2197 maybe> ::= rank => -1
+<As Subquery Clause> ::= <Gen2197 maybe> <Lex297> <Subquery> <With Or Without Data> rank => 0
+<With Or Without Data> ::= <Lex529> <Lex426> <Lex104> rank => 0
+                         | <Lex529> <Lex104> rank => -1
+<Gen2203> ::= <Data Type> rank => 0
+            | <Domain Name> rank => -1
+<Gen2203 maybe> ::= <Gen2203> rank => 0
+<Gen2203 maybe> ::= rank => -1
+<Gen2207> ::= <Default Clause> rank => 0
+            | <Identity Column Specification> rank => -1
+            | <Generation Clause> rank => -2
+<Gen2207 maybe> ::= <Gen2207> rank => 0
+<Gen2207 maybe> ::= rank => -1
+<Column Definition> ::= <Column Name> <Gen2203 maybe> <Reference Scope Check maybe> <Gen2207 maybe> <Column Constraint Definition any> <Collate Clause maybe> rank => 0
+<Constraint Name Definition maybe> ::= <Constraint Name Definition> rank => 0
+<Constraint Name Definition maybe> ::= rank => -1
+<Constraint Characteristics maybe> ::= <Constraint Characteristics> rank => 0
+<Constraint Characteristics maybe> ::= rank => -1
+<Column Constraint Definition> ::= <Constraint Name Definition maybe> <Column Constraint> <Constraint Characteristics maybe> rank => 0
+<Column Constraint> ::= <Lex428> <Lex429> rank => 0
+                      | <Unique Specification> rank => -1
+                      | <References Specification> rank => -2
+                      | <Check Constraint Definition> rank => -3
+<Gen2222> ::= <Lex433> <Lex349> <Reference Scope Check Action> rank => 0
+<Gen2222 maybe> ::= <Gen2222> rank => 0
+<Gen2222 maybe> ::= rank => -1
+<Reference Scope Check> ::= <Lex454> <Lex295> <Lex428 maybe> <Lex073> <Gen2222 maybe> rank => 0
+<Reference Scope Check Action> ::= <Referential Action> rank => 0
+<Gen2227> ::= <Lex048> rank => 0
+            | <Lex310> <Lex348> rank => -1
+<Gen2229> ::= <Left Paren> <Common Sequence Generator Options> <Right Paren> rank => 0
+<Gen2229 maybe> ::= <Gen2229> rank => 0
+<Gen2229 maybe> ::= rank => -1
+<Identity Column Specification> ::= <Lex553> <Gen2227> <Lex297> <Lex387> <Gen2229 maybe> rank => 0
+<Generation Clause> ::= <Generation Rule> <Lex297> <Generation Expression> rank => 0
+<Generation Rule> ::= <Lex553> <Lex048> rank => 0
+<Generation Expression> ::= <Left Paren> <Value Expression> <Right Paren> rank => 0
+<Default Clause> ::= <Lex348> <Default Option> rank => 0
+<Default Option> ::= <Literal> rank => 0
+                   | <Datetime Value Function> rank => -1
+                   | <Lex516> rank => -2
+                   | <Lex339> rank => -3
+                   | <Lex335> rank => -4
+                   | <Lex481> rank => -5
+                   | <Lex497> rank => -6
+                   | <Lex334> rank => -7
+                   | <Implicitly Typed Value Specification> rank => -8
+<Table Constraint Definition> ::= <Constraint Name Definition maybe> <Table Constraint> <Constraint Characteristics maybe> rank => 0
+<Table Constraint> ::= <Unique Constraint Definition> rank => 0
+                     | <Referential Constraint Definition> rank => -1
+                     | <Check Constraint Definition> rank => -2
+<Gen2250> ::= <Lex518> rank => 0
+<Unique Constraint Definition> ::= <Unique Specification> <Left Paren> <Unique Column List> <Right Paren> rank => 0
+                                 | <Lex511> <Gen2250> rank => -1
+<Unique Specification> ::= <Lex511> rank => 0
+                         | <Lex447> <Lex151> rank => -1
+<Unique Column List> ::= <Column Name List> rank => 0
+<Referential Constraint Definition> ::= <Lex374> <Lex151> <Left Paren> <Referencing Columns> <Right Paren> <References Specification> rank => 0
+<Gen2257> ::= <Lex412> <Match Type> rank => 0
+<Gen2257 maybe> ::= <Gen2257> rank => 0
+<Gen2257 maybe> ::= rank => -1
+<Referential Triggered Action maybe> ::= <Referential Triggered Action> rank => 0
+<Referential Triggered Action maybe> ::= rank => -1
+<References Specification> ::= <Lex454> <Referenced Table And Columns> <Gen2257 maybe> <Referential Triggered Action maybe> rank => 0
+<Match Type> ::= <Lex377> rank => 0
+               | <Lex199> rank => -1
+               | <Lex244> rank => -2
+<Referencing Columns> ::= <Reference Column List> rank => 0
+<Gen2267> ::= <Left Paren> <Reference Column List> <Right Paren> rank => 0
+<Gen2267 maybe> ::= <Gen2267> rank => 0
+<Gen2267 maybe> ::= rank => -1
+<Referenced Table And Columns> ::= <Table Name> <Gen2267 maybe> rank => 0
+<Reference Column List> ::= <Column Name List> rank => 0
+<Delete Rule maybe> ::= <Delete Rule> rank => 0
+<Delete Rule maybe> ::= rank => -1
+<Update Rule maybe> ::= <Update Rule> rank => 0
+<Update Rule maybe> ::= rank => -1
+<Referential Triggered Action> ::= <Update Rule> <Delete Rule maybe> rank => 0
+                                 | <Delete Rule> <Update Rule maybe> rank => -1
+<Update Rule> ::= <Lex433> <Lex514> <Referential Action> rank => 0
+<Delete Rule> ::= <Lex433> <Lex349> <Referential Action> rank => 0
+<Referential Action> ::= <Lex060> rank => 0
+                       | <Lex482> <Lex429> rank => -1
+                       | <Lex482> <Lex348> rank => -2
+                       | <Lex552> rank => -3
+                       | <Lex426> <Lex044> rank => -4
+<Check Constraint Definition> ::= <Lex318> <Left Paren> <Search Condition> <Right Paren> rank => 0
+<Alter Table Statement> ::= <Lex292> <Lex498> <Table Name> <Alter Table Action> rank => 0
+<Alter Table Action> ::= <Add Column Definition> rank => 0
+                       | <Alter Column Definition> rank => -1
+                       | <Drop Column Definition> rank => -2
+                       | <Add Table Constraint Definition> rank => -3
+                       | <Drop Table Constraint Definition> rank => -4
+<Lex322 maybe> ::= <Lex322> rank => 0
+<Lex322 maybe> ::= rank => -1
+<Add Column Definition> ::= <Lex289> <Lex322 maybe> <Column Definition> rank => 0
+<Alter Column Definition> ::= <Lex292> <Lex322 maybe> <Column Name> <Alter Column Action> rank => 0
+<Alter Column Action> ::= <Set Column Default Clause> rank => 0
+                        | <Drop Column Default Clause> rank => -1
+                        | <Add Column Scope Clause> rank => -2
+                        | <Drop Column Scope Clause> rank => -3
+                        | <Alter Identity Column Specification> rank => -4
+<Set Column Default Clause> ::= <Lex482> <Default Clause> rank => 0
+<Drop Column Default Clause> ::= <Lex356> <Lex348> rank => 0
+<Add Column Scope Clause> ::= <Lex289> <Scope Clause> rank => 0
+<Drop Column Scope Clause> ::= <Lex356> <Lex547> <Drop Behavior> rank => 0
+<Alter Identity Column Option many> ::= <Alter Identity Column Option>+ rank => 0
+<Alter Identity Column Specification> ::= <Alter Identity Column Option many> rank => 0
+<Alter Identity Column Option> ::= <Alter Sequence Generator Restart Option> rank => 0
+                                 | <Lex482> <Basic Sequence Generator Option> rank => -1
+<Drop Column Definition> ::= <Lex356> <Lex322 maybe> <Column Name> <Drop Behavior> rank => 0
+<Add Table Constraint Definition> ::= <Lex289> <Table Constraint Definition> rank => 0
+<Drop Table Constraint Definition> ::= <Lex356> <Lex325> <Constraint Name> <Drop Behavior> rank => 0
+<Drop Table Statement> ::= <Lex356> <Lex498> <Table Name> <Drop Behavior> rank => 0
+<Levels Clause maybe> ::= <Levels Clause> rank => 0
+<Levels Clause maybe> ::= rank => -1
+<Gen2315> ::= <Lex529> <Levels Clause maybe> <Lex318> <Lex185> rank => 0
+<Gen2315 maybe> ::= <Gen2315> rank => 0
+<Gen2315 maybe> ::= rank => -1
+<View Definition> ::= <Lex328> <Lex452 maybe> <Lex285> <Table Name> <View Specification> <Lex297> <Query Expression> <Gen2315 maybe> rank => 0
+<View Specification> ::= <Regular View Specification> rank => 0
+                       | <Referenceable View Specification> rank => -1
+<Gen2321> ::= <Left Paren> <View Column List> <Right Paren> rank => 0
+<Gen2321 maybe> ::= <Gen2321> rank => 0
+<Gen2321 maybe> ::= rank => -1
+<Regular View Specification> ::= <Gen2321 maybe> rank => 0
+<Subview Clause maybe> ::= <Subview Clause> rank => 0
+<Subview Clause maybe> ::= rank => -1
+<View Element List maybe> ::= <View Element List> rank => 0
+<View Element List maybe> ::= rank => -1
+<Referenceable View Specification> ::= <Lex431> <Path Resolved User Defined Type Name> <Subview Clause maybe> <View Element List maybe> rank => 0
+<Subview Clause> ::= <Lex278> <Table Name> rank => 0
+<Gen2331> ::= <Comma> <View Element> rank => 0
+<Gen2331 any> ::= <Gen2331>* rank => 0
+<View Element List> ::= <Left Paren> <View Element> <Gen2331 any> <Right Paren> rank => 0
+<View Element> ::= <Self Referencing Column Specification> rank => 0
+                 | <View Column Option> rank => -1
+<View Column Option> ::= <Column Name> <Lex529> <Lex186> <Scope Clause> rank => 0
+<Levels Clause> ::= <Lex313> rank => 0
+                  | <Lex409> rank => -1
+<View Column List> ::= <Column Name List> rank => 0
+<Drop View Statement> ::= <Lex356> <Lex285> <Table Name> <Drop Behavior> rank => 0
+<Domain Constraint any> ::= <Domain Constraint>* rank => 0
+<Domain Definition> ::= <Lex328> <Lex120> <Domain Name> <Lex297 maybe> <Data Type> <Default Clause maybe> <Domain Constraint any> <Collate Clause maybe> rank => 0
+<Domain Constraint> ::= <Constraint Name Definition maybe> <Check Constraint Definition> <Constraint Characteristics maybe> rank => 0
+<Alter Domain Statement> ::= <Lex292> <Lex120> <Domain Name> <Alter Domain Action> rank => 0
+<Alter Domain Action> ::= <Set Domain Default Clause> rank => 0
+                        | <Drop Domain Default Clause> rank => -1
+                        | <Add Domain Constraint Definition> rank => -2
+                        | <Drop Domain Constraint Definition> rank => -3
+<Set Domain Default Clause> ::= <Lex482> <Default Clause> rank => 0
+<Drop Domain Default Clause> ::= <Lex356> <Lex348> rank => 0
+<Add Domain Constraint Definition> ::= <Lex289> <Domain Constraint> rank => 0
+<Drop Domain Constraint Definition> ::= <Lex356> <Lex325> <Constraint Name> rank => 0
+<Drop Domain Statement> ::= <Lex356> <Lex120> <Domain Name> <Drop Behavior> rank => 0
+<Character Set Definition> ::= <Lex328> <Lex317> <Lex482> <Character Set Name> <Lex297 maybe> <Character Set Source> <Collate Clause maybe> rank => 0
+<Character Set Source> ::= <Lex379> <Character Set Specification> rank => 0
+<Drop Character Set Statement> ::= <Lex356> <Lex317> <Lex482> <Character Set Name> rank => 0
+<Pad Characteristic maybe> ::= <Pad Characteristic> rank => 0
+<Pad Characteristic maybe> ::= rank => -1
+<Collation Definition> ::= <Lex328> <Lex078> <Collation Name> <Lex373> <Character Set Specification> <Lex376> <Existing Collation Name> <Pad Characteristic maybe> rank => 0
+<Existing Collation Name> ::= <Collation Name> rank => 0
+<Pad Characteristic> ::= <Lex426> <Lex192> rank => 0
+                       | <Lex192> <Lex247> rank => -1
+<Drop Collation Statement> ::= <Lex356> <Lex078> <Collation Name> <Drop Behavior> rank => 0
+<Transliteration Definition> ::= <Lex328> <Lex506> <Transliteration Name> <Lex373> <Source Character Set Specification> <Lex504> <Target Character Set Specification> <Lex376> <Transliteration Source> rank => 0
+<Source Character Set Specification> ::= <Character Set Specification> rank => 0
+<Target Character Set Specification> ::= <Character Set Specification> rank => 0
+<Transliteration Source> ::= <Existing Transliteration Name> rank => 0
+                           | <Transliteration Routine> rank => -1
+<Existing Transliteration Name> ::= <Transliteration Name> rank => 0
+<Transliteration Routine> ::= <Specific Routine Designator> rank => 0
+<Drop Transliteration Statement> ::= <Lex356> <Lex506> <Transliteration Name> rank => 0
+<Assertion Definition> ::= <Lex328> <Lex050> <Constraint Name> <Lex318> <Left Paren> <Search Condition> <Right Paren> <Constraint Characteristics maybe> rank => 0
+<Drop Assertion Statement> ::= <Lex356> <Lex050> <Constraint Name> rank => 0
+<Gen2374> ::= <Lex455> <Old Or New Values Alias List> rank => 0
+<Gen2374 maybe> ::= <Gen2374> rank => 0
+<Gen2374 maybe> ::= rank => -1
+<Trigger Definition> ::= <Lex328> <Lex508> <Trigger Name> <Trigger Action Time> <Trigger Event> <Lex433> <Table Name> <Gen2374 maybe> <Triggered Action> rank => 0
+<Trigger Action Time> ::= <Lex055> rank => 0
+                        | <Lex047> rank => -1
+<Gen2380> ::= <Lex431> <Trigger Column List> rank => 0
+<Gen2380 maybe> ::= <Gen2380> rank => 0
+<Gen2380 maybe> ::= rank => -1
+<Trigger Event> ::= <Lex395> rank => 0
+                  | <Lex349> rank => -1
+                  | <Lex514> <Gen2380 maybe> rank => -2
+<Trigger Column List> ::= <Column Name List> rank => 0
+<Gen2387> ::= <Lex473> rank => 0
+            | <Lex251> rank => -1
+<Gen2389> ::= <Lex373> <Lex358> <Gen2387> rank => 0
+<Gen2389 maybe> ::= <Gen2389> rank => 0
+<Gen2389 maybe> ::= rank => -1
+<Gen2392> ::= <Lex524> <Left Paren> <Search Condition> <Right Paren> rank => 0
+<Gen2392 maybe> ::= <Gen2392> rank => 0
+<Gen2392 maybe> ::= rank => -1
+<Triggered Action> ::= <Gen2389 maybe> <Gen2392 maybe> <Triggered SQL Statement> rank => 0
+<Gen2396> ::= <SQL Procedure Statement> <Semicolon> rank => 0
+<Gen2396 many> ::= <Gen2396>+ rank => 0
+<Triggered SQL Statement> ::= <SQL Procedure Statement> rank => 0
+                            | <Lex303> <Lex301> <Gen2396 many> <Lex361> rank => -1
+<Old Or New Values Alias many> ::= <Old Or New Values Alias>+ rank => 0
+<Old Or New Values Alias List> ::= <Old Or New Values Alias many> rank => 0
+<Lex473 maybe> ::= <Lex473> rank => 0
+<Lex473 maybe> ::= rank => -1
+<Old Or New Values Alias> ::= <Lex432> <Lex473 maybe> <Lex297 maybe> <Old Values Correlation Name> rank => 0
+                            | <Lex425> <Lex473 maybe> <Lex297 maybe> <New Values Correlation Name> rank => -1
+                            | <Lex432> <Lex498> <Lex297 maybe> <Old Values Table Alias> rank => -2
+                            | <Lex425> <Lex498> <Lex297 maybe> <New Values Table Alias> rank => -3
+<Old Values Table Alias> ::= <Identifier> rank => 0
+<New Values Table Alias> ::= <Identifier> rank => 0
+<Old Values Correlation Name> ::= <Correlation Name> rank => 0
+<New Values Correlation Name> ::= <Correlation Name> rank => 0
+<Drop Trigger Statement> ::= <Lex356> <Lex508> <Trigger Name> rank => 0
+<User Defined Type Definition> ::= <Lex328> <Lex275> <User Defined Type Body> rank => 0
+<Subtype Clause maybe> ::= <Subtype Clause> rank => 0
+<Subtype Clause maybe> ::= rank => -1
+<Gen2416> ::= <Lex297> <Representation> rank => 0
+<Gen2416 maybe> ::= <Gen2416> rank => 0
+<Gen2416 maybe> ::= rank => -1
+<User Defined Type Option List maybe> ::= <User Defined Type Option List> rank => 0
+<User Defined Type Option List maybe> ::= rank => -1
+<Method Specification List maybe> ::= <Method Specification List> rank => 0
+<Method Specification List maybe> ::= rank => -1
+<User Defined Type Body> ::= <Schema Resolved User Defined Type Name> <Subtype Clause maybe> <Gen2416 maybe> <User Defined Type Option List maybe> <Method Specification List maybe> rank => 0
+<User Defined Type Option any> ::= <User Defined Type Option>* rank => 0
+<User Defined Type Option List> ::= <User Defined Type Option> <User Defined Type Option any> rank => 0
+<User Defined Type Option> ::= <Instantiable Clause> rank => 0
+                             | <Finality> rank => -1
+                             | <Reference Type Specification> rank => -2
+                             | <Ref Cast Option> rank => -3
+                             | <Cast Option> rank => -4
+<Subtype Clause> ::= <Lex278> <Supertype Name> rank => 0
+<Supertype Name> ::= <Path Resolved User Defined Type Name> rank => 0
+<Representation> ::= <Predefined Type> rank => 0
+                   | <Member List> rank => -1
+<Gen2435> ::= <Comma> <Member> rank => 0
+<Gen2435 any> ::= <Gen2435>* rank => 0
+<Member List> ::= <Left Paren> <Member> <Gen2435 any> <Right Paren> rank => 0
+<Member> ::= <Attribute Definition> rank => 0
+<Instantiable Clause> ::= <Lex147> rank => 0
+                        | <Lex428> <Lex147> rank => -1
+<Finality> ::= <Lex130> rank => 0
+             | <Lex428> <Lex130> rank => -1
+<Reference Type Specification> ::= <User Defined Representation> rank => 0
+                                 | <Derived Representation> rank => -1
+                                 | <System Generated Representation> rank => -2
+<User Defined Representation> ::= <Lex453> <Lex517> <Predefined Type> rank => 0
+<Derived Representation> ::= <Lex453> <Lex376> <List Of Attributes> rank => 0
+<System Generated Representation> ::= <Lex453> <Lex401> <Lex496> <Lex553> rank => 0
+<Cast To Type maybe> ::= <Cast To Type> rank => 0
+<Cast To Type maybe> ::= rank => -1
+<Ref Cast Option> ::= <Cast To Ref> <Cast To Type maybe> rank => 0
+                    | <Cast To Type> rank => -1
+<Cast To Ref> ::= <Lex315> <Left Paren> <Lex246> <Lex297> <Lex453> <Right Paren> <Lex529> <Cast To Ref Identifier> rank => 0
+<Cast To Ref Identifier> ::= <Identifier> rank => 0
+<Cast To Type> ::= <Lex315> <Left Paren> <Lex453> <Lex297> <Lex246> <Right Paren> <Lex529> <Cast To Type Identifier> rank => 0
+<Cast To Type Identifier> ::= <Identifier> rank => 0
+<Gen2457> ::= <Comma> <Attribute Name> rank => 0
+<Gen2457 any> ::= <Gen2457>* rank => 0
+<List Of Attributes> ::= <Left Paren> <Attribute Name> <Gen2457 any> <Right Paren> rank => 0
+<Cast To Distinct maybe> ::= <Cast To Distinct> rank => 0
+<Cast To Distinct maybe> ::= rank => -1
+<Cast Option> ::= <Cast To Distinct maybe> <Cast To Source> rank => 0
+                | <Cast To Source> rank => -1
+<Cast To Distinct> ::= <Lex315> <Left Paren> <Lex246> <Lex297> <Lex354> <Right Paren> <Lex529> <Cast To Distinct Identifier> rank => 0
+<Cast To Distinct Identifier> ::= <Identifier> rank => 0
+<Cast To Source> ::= <Lex315> <Left Paren> <Lex354> <Lex297> <Lex246> <Right Paren> <Lex529> <Cast To Source Identifier> rank => 0
+<Cast To Source Identifier> ::= <Identifier> rank => 0
+<Gen2468> ::= <Comma> <Method Specification> rank => 0
+<Gen2468 any> ::= <Gen2468>* rank => 0
+<Method Specification List> ::= <Method Specification> <Gen2468 any> rank => 0
+<Method Specification> ::= <Original Method Specification> rank => 0
+                         | <Overriding Method Specification> rank => -1
+<Gen2473> ::= <Lex238> <Lex297> <Lex466> rank => 0
+<Gen2473 maybe> ::= <Gen2473> rank => 0
+<Gen2473 maybe> ::= rank => -1
+<Gen2476> ::= <Lex238> <Lex297> <Lex158> rank => 0
+<Gen2476 maybe> ::= <Gen2476> rank => 0
+<Gen2476 maybe> ::= rank => -1
+<Method Characteristics maybe> ::= <Method Characteristics> rank => 0
+<Method Characteristics maybe> ::= rank => -1
+<Original Method Specification> ::= <Partial Method Specification> <Gen2473 maybe> <Gen2476 maybe> <Method Characteristics maybe> rank => 0
+<Overriding Method Specification> ::= <Lex191> <Partial Method Specification> rank => 0
+<Gen2483> ::= <Lex146> rank => 0
+            | <Lex493> rank => -1
+            | <Lex551> rank => -2
+<Gen2483 maybe> ::= <Gen2483> rank => 0
+<Gen2483 maybe> ::= rank => -1
+<Gen2488> ::= <Lex486> <Specific Method Name> rank => 0
+<Gen2488 maybe> ::= <Gen2488> rank => 0
+<Gen2488 maybe> ::= rank => -1
+<Partial Method Specification> ::= <Gen2483 maybe> <Lex415> <Method Name> <SQL Parameter Declaration List> <Returns Clause> <Gen2488 maybe> rank => 0
+<Gen2492> ::= <Schema Name> <Period> rank => 0
+<Gen2492 maybe> ::= <Gen2492> rank => 0
+<Gen2492 maybe> ::= rank => -1
+<Specific Method Name> ::= <Gen2492 maybe> <Qualified Identifier> rank => 0
+<Method Characteristic many> ::= <Method Characteristic>+ rank => 0
+<Method Characteristics> ::= <Method Characteristic many> rank => 0
+<Method Characteristic> ::= <Language Clause> rank => 0
+                          | <Parameter Style Clause> rank => -1
+                          | <Deterministic Characteristic> rank => -2
+                          | <SQL Data Access Indication> rank => -3
+                          | <Null Call Clause> rank => -4
+<Attribute Default maybe> ::= <Attribute Default> rank => 0
+<Attribute Default maybe> ::= rank => -1
+<Attribute Definition> ::= <Attribute Name> <Data Type> <Reference Scope Check maybe> <Attribute Default maybe> <Collate Clause maybe> rank => 0
+<Attribute Default> ::= <Default Clause> rank => 0
+<Alter Type Statement> ::= <Lex292> <Lex275> <Schema Resolved User Defined Type Name> <Alter Type Action> rank => 0
+<Alter Type Action> ::= <Add Attribute Definition> rank => 0
+                      | <Drop Attribute Definition> rank => -1
+                      | <Add Original Method Specification> rank => -2
+                      | <Add Overriding Method Specification> rank => -3
+                      | <Drop Method Specification> rank => -4
+<Add Attribute Definition> ::= <Lex289> <Lex052> <Attribute Definition> rank => 0
+<Drop Attribute Definition> ::= <Lex356> <Lex052> <Attribute Name> <Lex552> rank => 0
+<Add Original Method Specification> ::= <Lex289> <Original Method Specification> rank => 0
+<Add Overriding Method Specification> ::= <Lex289> <Overriding Method Specification> rank => 0
+<Drop Method Specification> ::= <Lex356> <Specific Method Specification Designator> <Lex552> rank => 0
+<Gen2518> ::= <Lex146> rank => 0
+            | <Lex493> rank => -1
+            | <Lex551> rank => -2
+<Gen2518 maybe> ::= <Gen2518> rank => 0
+<Gen2518 maybe> ::= rank => -1
+<Specific Method Specification Designator> ::= <Gen2518 maybe> <Lex415> <Method Name> <Data Type List> rank => 0
+<Drop Data Type Statement> ::= <Lex356> <Lex275> <Schema Resolved User Defined Type Name> <Drop Behavior> rank => 0
+<SQL Invoked Routine> ::= <Schema Routine> rank => 0
+<Schema Routine> ::= <Schema Procedure> rank => 0
+                   | <Schema Function> rank => -1
+<Schema Procedure> ::= <Lex328> <SQL Invoked Procedure> rank => 0
+<Schema Function> ::= <Lex328> <SQL Invoked Function> rank => 0
+<SQL Invoked Procedure> ::= <Lex448> <Schema Qualified Routine Name> <SQL Parameter Declaration List> <Routine Characteristics> <Routine Body> rank => 0
+<Gen2531> ::= <Function Specification> rank => 0
+            | <Method Specification Designator> rank => -1
+<SQL Invoked Function> ::= <Gen2531> <Routine Body> rank => 0
+<Gen2534> ::= <Comma> <SQL Parameter Declaration> rank => 0
+<Gen2534 any> ::= <Gen2534>* rank => 0
+<Gen2536> ::= <SQL Parameter Declaration> <Gen2534 any> rank => 0
+<Gen2536 maybe> ::= <Gen2536> rank => 0
+<Gen2536 maybe> ::= rank => -1
+<SQL Parameter Declaration List> ::= <Left Paren> <Gen2536 maybe> <Right Paren> rank => 0
+<Parameter Mode maybe> ::= <Parameter Mode> rank => 0
+<Parameter Mode maybe> ::= rank => -1
+<SQL Parameter Name maybe> ::= <SQL Parameter Name> rank => 0
+<SQL Parameter Name maybe> ::= rank => -1
+<Lex466 maybe> ::= <Lex466> rank => 0
+<Lex466 maybe> ::= rank => -1
+<SQL Parameter Declaration> ::= <Parameter Mode maybe> <SQL Parameter Name maybe> <Parameter Type> <Lex466 maybe> rank => 0
+<Parameter Mode> ::= <Lex389> rank => 0
+                   | <Lex438> rank => -1
+                   | <Lex392> rank => -2
+<Locator Indication maybe> ::= <Locator Indication> rank => 0
+<Locator Indication maybe> ::= rank => -1
+<Parameter Type> ::= <Data Type> <Locator Indication maybe> rank => 0
+<Locator Indication> ::= <Lex297> <Lex158> rank => 0
+<Dispatch Clause maybe> ::= <Dispatch Clause> rank => 0
+<Dispatch Clause maybe> ::= rank => -1
+<Function Specification> ::= <Lex378> <Schema Qualified Routine Name> <SQL Parameter Declaration List> <Returns Clause> <Routine Characteristics> <Dispatch Clause maybe> rank => 0
+<Gen2557> ::= <Lex146> rank => 0
+            | <Lex493> rank => -1
+            | <Lex551> rank => -2
+<Gen2557 maybe> ::= <Gen2557> rank => 0
+<Gen2557 maybe> ::= rank => -1
+<Returns Clause maybe> ::= <Returns Clause> rank => 0
+<Returns Clause maybe> ::= rank => -1
+<Method Specification Designator> ::= <Lex486> <Lex415> <Specific Method Name> rank => 0
+                                    | <Gen2557 maybe> <Lex415> <Method Name> <SQL Parameter Declaration List> <Returns Clause maybe> <Lex373> <Schema Resolved User Defined Type Name> rank => -1
+<Routine Characteristic any> ::= <Routine Characteristic>* rank => 0
+<Routine Characteristics> ::= <Routine Characteristic any> rank => 0
+<Routine Characteristic> ::= <Language Clause> rank => 0
+                           | <Parameter Style Clause> rank => -1
+                           | <Lex486> <Specific Name> rank => -2
+                           | <Deterministic Characteristic> rank => -3
+                           | <SQL Data Access Indication> rank => -4
+                           | <Null Call Clause> rank => -5
+                           | <Dynamic Result Sets Characteristic> rank => -6
+                           | <Savepoint Level Indication> rank => -7
+<Savepoint Level Indication> ::= <Lex425> <Lex475> <Lex156> rank => 0
+                               | <Lex432> <Lex475> <Lex156> rank => -1
+<Dynamic Result Sets Characteristic> ::= <Lex357> <Lex466> <Lex243> <Maximum Dynamic Result Sets> rank => 0
+<Parameter Style Clause> ::= <Lex443> <Lex255> <Parameter Style> rank => 0
+<Dispatch Clause> ::= <Lex493> <Lex119> rank => 0
+<Returns Clause> ::= <Lex468> <Returns Type> rank => 0
+<Result Cast maybe> ::= <Result Cast> rank => 0
+<Result Cast maybe> ::= rank => -1
+<Returns Type> ::= <Returns Data Type> <Result Cast maybe> rank => 0
+                 | <Returns Table Type> rank => -1
+<Returns Table Type> ::= <Lex498> <Table Function Column List> rank => 0
+<Gen2587> ::= <Comma> <Table Function Column List Element> rank => 0
+<Gen2587 any> ::= <Gen2587>* rank => 0
+<Table Function Column List> ::= <Left Paren> <Table Function Column List Element> <Gen2587 any> <Right Paren> rank => 0
+<Table Function Column List Element> ::= <Column Name> <Data Type> rank => 0
+<Result Cast> ::= <Lex315> <Lex376> <Result Cast From Type> rank => 0
+<Result Cast From Type> ::= <Data Type> <Locator Indication maybe> rank => 0
+<Returns Data Type> ::= <Data Type> <Locator Indication maybe> rank => 0
+<Routine Body> ::= <SQL Routine Spec> rank => 0
+                 | <External Body Reference> rank => -1
+<Rights Clause maybe> ::= <Rights Clause> rank => 0
+<Rights Clause maybe> ::= rank => -1
+<SQL Routine Spec> ::= <Rights Clause maybe> <SQL Routine Body> rank => 0
+<Rights Clause> ::= <Lex488> <Lex237> <Lex149> rank => 0
+                  | <Lex488> <Lex237> <Lex111> rank => -1
+<SQL Routine Body> ::= <SQL Procedure Statement> rank => 0
+<Gen2602> ::= <Lex172> <External Routine Name> rank => 0
+<Gen2602 maybe> ::= <Gen2602> rank => 0
+<Gen2602 maybe> ::= rank => -1
+<Parameter Style Clause maybe> ::= <Parameter Style Clause> rank => 0
+<Parameter Style Clause maybe> ::= rank => -1
+<Transform Group Specification maybe> ::= <Transform Group Specification> rank => 0
+<Transform Group Specification maybe> ::= rank => -1
+<External Security Clause maybe> ::= <External Security Clause> rank => 0
+<External Security Clause maybe> ::= rank => -1
+<External Body Reference> ::= <Lex368> <Gen2602 maybe> <Parameter Style Clause maybe> <Transform Group Specification maybe> <External Security Clause maybe> rank => 0
+<External Security Clause> ::= <Lex368> <Lex237> <Lex111> rank => 0
+                             | <Lex368> <Lex237> <Lex149> rank => -1
+                             | <Lex368> <Lex237> <Lex142> <Lex110> rank => -2
+<Parameter Style> ::= <Lex488> rank => 0
+                    | <Lex137> rank => -1
+<Deterministic Characteristic> ::= <Lex352> rank => 0
+                                 | <Lex428> <Lex352> rank => -1
+<SQL Data Access Indication> ::= <Lex426> <Lex488> rank => 0
+                               | <Lex095> <Lex488> rank => -1
+                               | <Lex450> <Lex488> <Lex104> rank => -2
+                               | <Lex417> <Lex488> <Lex104> rank => -3
+<Null Call Clause> ::= <Lex468> <Lex429> <Lex433> <Lex429> <Lex393> rank => 0
+                     | <Lex312> <Lex433> <Lex429> <Lex393> rank => -1
+<Maximum Dynamic Result Sets> ::= <Unsigned Integer> rank => 0
+<Gen2626> ::= <Single Group Specification> rank => 0
+            | <Multiple Group Specification> rank => -1
+<Transform Group Specification> ::= <Lex268> <Lex382> <Gen2626> rank => 0
+<Single Group Specification> ::= <Group Name> rank => 0
+<Gen2630> ::= <Comma> <Group Specification> rank => 0
+<Gen2630 any> ::= <Gen2630>* rank => 0
+<Multiple Group Specification> ::= <Group Specification> <Gen2630 any> rank => 0
+<Group Specification> ::= <Group Name> <Lex373> <Lex275> <Path Resolved User Defined Type Name> rank => 0
+<Alter Routine Statement> ::= <Lex292> <Specific Routine Designator> <Alter Routine Characteristics> <Alter Routine Behavior> rank => 0
+<Alter Routine Characteristic many> ::= <Alter Routine Characteristic>+ rank => 0
+<Alter Routine Characteristics> ::= <Alter Routine Characteristic many> rank => 0
+<Alter Routine Characteristic> ::= <Language Clause> rank => 0
+                                 | <Parameter Style Clause> rank => -1
+                                 | <SQL Data Access Indication> rank => -2
+                                 | <Null Call Clause> rank => -3
+                                 | <Dynamic Result Sets Characteristic> rank => -4
+                                 | <Lex172> <External Routine Name> rank => -5
+<Alter Routine Behavior> ::= <Lex552> rank => 0
+<Drop Routine Statement> ::= <Lex356> <Specific Routine Designator> <Drop Behavior> rank => 0
+<Gen2645> ::= <Lex297> <Lex051> rank => 0
+<Gen2645 maybe> ::= <Gen2645> rank => 0
+<Gen2645 maybe> ::= rank => -1
+<User Defined Cast Definition> ::= <Lex328> <Lex315> <Left Paren> <Source Data Type> <Lex297> <Target Data Type> <Right Paren> <Lex529> <Cast Function> <Gen2645 maybe> rank => 0
+<Cast Function> ::= <Specific Routine Designator> rank => 0
+<Source Data Type> ::= <Data Type> rank => 0
+<Target Data Type> ::= <Data Type> rank => 0
+<Drop User Defined Cast Statement> ::= <Lex356> <Lex315> <Left Paren> <Source Data Type> <Lex297> <Target Data Type> <Right Paren> <Drop Behavior> rank => 0
+<User Defined Ordering Definition> ::= <Lex328> <Lex187> <Lex373> <Schema Resolved User Defined Type Name> <Ordering Form> rank => 0
+<Ordering Form> ::= <Equals Ordering Form> rank => 0
+                  | <Full Ordering Form> rank => -1
+<Equals Ordering Form> ::= <Lex123> <Lex434> <Lex310> <Ordering Category> rank => 0
+<Full Ordering Form> ::= <Lex437> <Lex377> <Lex310> <Ordering Category> rank => 0
+<Ordering Category> ::= <Relative Category> rank => 0
+                      | <Map Category> rank => -1
+                      | <State Category> rank => -2
+<Relative Category> ::= <Lex216> <Lex529> <Relative Function Specification> rank => 0
+<Map Category> ::= <Lex160> <Lex529> <Map Function Specification> rank => 0
+<Specific Name maybe> ::= <Specific Name> rank => 0
+<Specific Name maybe> ::= rank => -1
+<State Category> ::= <Lex250> <Specific Name maybe> rank => 0
+<Relative Function Specification> ::= <Specific Routine Designator> rank => 0
+<Map Function Specification> ::= <Specific Routine Designator> rank => 0
+<Drop User Defined Ordering Statement> ::= <Lex356> <Lex187> <Lex373> <Schema Resolved User Defined Type Name> <Drop Behavior> rank => 0
+<Gen2669> ::= <Lex268> rank => 0
+            | <Lex269> rank => -1
+<Transform Group many> ::= <Transform Group>+ rank => 0
+<Transform Definition> ::= <Lex328> <Gen2669> <Lex373> <Schema Resolved User Defined Type Name> <Transform Group many> rank => 0
+<Transform Group> ::= <Group Name> <Left Paren> <Transform Element List> <Right Paren> rank => 0
+<Group Name> ::= <Identifier> rank => 0
+<Gen2675> ::= <Comma> <Transform Element> rank => 0
+<Gen2675 maybe> ::= <Gen2675> rank => 0
+<Gen2675 maybe> ::= rank => -1
+<Transform Element List> ::= <Transform Element> <Gen2675 maybe> rank => 0
+<Transform Element> ::= <To Sql> rank => 0
+                      | <From Sql> rank => -1
+<To Sql> ::= <Lex504> <Lex488> <Lex529> <To Sql Function> rank => 0
+<From Sql> ::= <Lex376> <Lex488> <Lex529> <From Sql Function> rank => 0
+<To Sql Function> ::= <Specific Routine Designator> rank => 0
+<From Sql Function> ::= <Specific Routine Designator> rank => 0
+<Gen2685> ::= <Lex268> rank => 0
+            | <Lex269> rank => -1
+<Alter Group many> ::= <Alter Group>+ rank => 0
+<Alter Transform Statement> ::= <Lex292> <Gen2685> <Lex373> <Schema Resolved User Defined Type Name> <Alter Group many> rank => 0
+<Alter Group> ::= <Group Name> <Left Paren> <Alter Transform Action List> <Right Paren> rank => 0
+<Gen2690> ::= <Comma> <Alter Transform Action> rank => 0
+<Gen2690 any> ::= <Gen2690>* rank => 0
+<Alter Transform Action List> ::= <Alter Transform Action> <Gen2690 any> rank => 0
+<Alter Transform Action> ::= <Add Transform Element List> rank => 0
+                           | <Drop Transform Element List> rank => -1
+<Add Transform Element List> ::= <Lex289> <Left Paren> <Transform Element List> <Right Paren> rank => 0
+<Gen2696> ::= <Comma> <Transform Kind> rank => 0
+<Gen2696 maybe> ::= <Gen2696> rank => 0
+<Gen2696 maybe> ::= rank => -1
+<Drop Transform Element List> ::= <Lex356> <Left Paren> <Transform Kind> <Gen2696 maybe> <Drop Behavior> <Right Paren> rank => 0
+<Transform Kind> ::= <Lex504> <Lex488> rank => 0
+                   | <Lex376> <Lex488> rank => -1
+<Gen2702> ::= <Lex268> rank => 0
+            | <Lex269> rank => -1
+<Drop Transform Statement> ::= <Lex356> <Gen2702> <Transforms To Be Dropped> <Lex373> <Schema Resolved User Defined Type Name> <Drop Behavior> rank => 0
+<Transforms To Be Dropped> ::= <Lex290> rank => 0
+                             | <Transform Group Element> rank => -1
+<Transform Group Element> ::= <Group Name> rank => 0
+<Sequence Generator Options maybe> ::= <Sequence Generator Options> rank => 0
+<Sequence Generator Options maybe> ::= rank => -1
+<Sequence Generator Definition> ::= <Lex328> <Lex239> <Sequence Generator Name> <Sequence Generator Options maybe> rank => 0
+<Sequence Generator Option many> ::= <Sequence Generator Option>+ rank => 0
+<Sequence Generator Options> ::= <Sequence Generator Option many> rank => 0
+<Sequence Generator Option> ::= <Sequence Generator Data Type Option> rank => 0
+                              | <Common Sequence Generator Options> rank => -1
+<Common Sequence Generator Option many> ::= <Common Sequence Generator Option>+ rank => 0
+<Common Sequence Generator Options> ::= <Common Sequence Generator Option many> rank => 0
+<Common Sequence Generator Option> ::= <Sequence Generator Start With Option> rank => 0
+                                     | <Basic Sequence Generator Option> rank => -1
+<Basic Sequence Generator Option> ::= <Sequence Generator Increment By Option> rank => 0
+                                    | <Sequence Generator Maxvalue Option> rank => -1
+                                    | <Sequence Generator Minvalue Option> rank => -2
+                                    | <Sequence Generator Cycle Option> rank => -3
+<Sequence Generator Data Type Option> ::= <Lex297> <Data Type> rank => 0
+<Sequence Generator Start With Option> ::= <Lex492> <Lex529> <Sequence Generator Start Value> rank => 0
+<Sequence Generator Start Value> ::= <Signed Numeric Literal> rank => 0
+<Sequence Generator Increment By Option> ::= <Lex144> <Lex310> <Sequence Generator Increment> rank => 0
+<Sequence Generator Increment> ::= <Signed Numeric Literal> rank => 0
+<Sequence Generator Maxvalue Option> ::= <Lex163> <Sequence Generator Max Value> rank => 0
+                                       | <Lex426> <Lex163> rank => -1
+<Sequence Generator Max Value> ::= <Signed Numeric Literal> rank => 0
+<Sequence Generator Minvalue Option> ::= <Lex168> <Sequence Generator Min Value> rank => 0
+                                       | <Lex426> <Lex168> rank => -1
+<Sequence Generator Min Value> ::= <Signed Numeric Literal> rank => 0
+<Sequence Generator Cycle Option> ::= <Lex341> rank => 0
+                                    | <Lex426> <Lex341> rank => -1
+<Alter Sequence Generator Statement> ::= <Lex292> <Lex239> <Sequence Generator Name> <Alter Sequence Generator Options> rank => 0
+<Alter Sequence Generator Option many> ::= <Alter Sequence Generator Option>+ rank => 0
+<Alter Sequence Generator Options> ::= <Alter Sequence Generator Option many> rank => 0
+<Alter Sequence Generator Option> ::= <Alter Sequence Generator Restart Option> rank => 0
+                                    | <Basic Sequence Generator Option> rank => -1
+<Alter Sequence Generator Restart Option> ::= <Lex218> <Lex529> <Sequence Generator Restart Value> rank => 0
+<Sequence Generator Restart Value> ::= <Signed Numeric Literal> rank => 0
+<Drop Sequence Generator Statement> ::= <Lex356> <Lex239> <Sequence Generator Name> <Drop Behavior> rank => 0
+<Grant Statement> ::= <Grant Privilege Statement> rank => 0
+                    | <Grant Role Statement> rank => -1
+<Gen2746> ::= <Comma> <Grantee> rank => 0
+<Gen2746 any> ::= <Gen2746>* rank => 0
+<Gen2748> ::= <Lex529> <Lex141> <Lex185> rank => 0
+<Gen2748 maybe> ::= <Gen2748> rank => 0
+<Gen2748 maybe> ::= rank => -1
+<Gen2751> ::= <Lex529> <Lex381> <Lex185> rank => 0
+<Gen2751 maybe> ::= <Gen2751> rank => 0
+<Gen2751 maybe> ::= rank => -1
+<Gen2754> ::= <Lex140> <Lex310> <Grantor> rank => 0
+<Gen2754 maybe> ::= <Gen2754> rank => 0
+<Gen2754 maybe> ::= rank => -1
+<Grant Privilege Statement> ::= <Lex381> <Privileges> <Lex504> <Grantee> <Gen2746 any> <Gen2748 maybe> <Gen2751 maybe> <Gen2754 maybe> rank => 0
+<Privileges> ::= <Object Privileges> <Lex433> <Object Name> rank => 0
+<Lex498 maybe> ::= <Lex498> rank => 0
+<Lex498 maybe> ::= rank => -1
+<Object Name> ::= <Lex498 maybe> <Table Name> rank => 0
+                | <Lex120> <Domain Name> rank => -1
+                | <Lex078> <Collation Name> rank => -2
+                | <Lex317> <Lex482> <Character Set Name> rank => -3
+                | <Lex506> <Transliteration Name> rank => -4
+                | <Lex275> <Schema Resolved User Defined Type Name> rank => -5
+                | <Lex239> <Sequence Generator Name> rank => -6
+                | <Specific Routine Designator> rank => -7
+<Gen2769> ::= <Comma> <Action> rank => 0
+<Gen2769 any> ::= <Gen2769>* rank => 0
+<Object Privileges> ::= <Lex290> <Lex212> rank => 0
+                      | <Action> <Gen2769 any> rank => -1
+<Gen2773> ::= <Left Paren> <Privilege Column List> <Right Paren> rank => 0
+<Gen2773 maybe> ::= <Gen2773> rank => 0
+<Gen2773 maybe> ::= rank => -1
+<Gen2776> ::= <Left Paren> <Privilege Column List> <Right Paren> rank => 0
+<Gen2776 maybe> ::= <Gen2776> rank => 0
+<Gen2776 maybe> ::= rank => -1
+<Gen2779> ::= <Left Paren> <Privilege Column List> <Right Paren> rank => 0
+<Gen2779 maybe> ::= <Gen2779> rank => 0
+<Gen2779 maybe> ::= rank => -1
+<Action> ::= <Lex479> rank => 0
+           | <Lex479> <Left Paren> <Privilege Column List> <Right Paren> rank => -1
+           | <Lex479> <Left Paren> <Privilege Method List> <Right Paren> rank => -2
+           | <Lex349> rank => -3
+           | <Lex395> <Gen2773 maybe> rank => -4
+           | <Lex514> <Gen2776 maybe> rank => -5
+           | <Lex454> <Gen2779 maybe> rank => -6
+           | <Lex280> rank => -7
+           | <Lex508> rank => -8
+           | <Lex278> rank => -9
+           | <Lex366> rank => -10
+<Gen2793> ::= <Comma> <Specific Routine Designator> rank => 0
+<Gen2793 any> ::= <Gen2793>* rank => 0
+<Privilege Method List> ::= <Specific Routine Designator> <Gen2793 any> rank => 0
+<Privilege Column List> ::= <Column Name List> rank => 0
+<Grantee> ::= <Lex213> rank => 0
+            | <Authorization Identifier> rank => -1
+<Grantor> ::= <Lex339> rank => 0
+            | <Lex335> rank => -1
+<Gen2801> ::= <Lex529> <Lex046> <Grantor> rank => 0
+<Gen2801 maybe> ::= <Gen2801> rank => 0
+<Gen2801 maybe> ::= rank => -1
+<Role Definition> ::= <Lex328> <Lex223> <Role Name> <Gen2801 maybe> rank => 0
+<Gen2805> ::= <Comma> <Role Granted> rank => 0
+<Gen2805 any> ::= <Gen2805>* rank => 0
+<Gen2807> ::= <Comma> <Grantee> rank => 0
+<Gen2807 any> ::= <Gen2807>* rank => 0
+<Gen2809> ::= <Lex529> <Lex046> <Lex185> rank => 0
+<Gen2809 maybe> ::= <Gen2809> rank => 0
+<Gen2809 maybe> ::= rank => -1
+<Gen2812> ::= <Lex140> <Lex310> <Grantor> rank => 0
+<Gen2812 maybe> ::= <Gen2812> rank => 0
+<Gen2812 maybe> ::= rank => -1
+<Grant Role Statement> ::= <Lex381> <Role Granted> <Gen2805 any> <Lex504> <Grantee> <Gen2807 any> <Gen2809 maybe> <Gen2812 maybe> rank => 0
+<Role Granted> ::= <Role Name> rank => 0
+<Drop Role Statement> ::= <Lex356> <Lex223> <Role Name> rank => 0
+<Revoke Statement> ::= <Revoke Privilege Statement> rank => 0
+                     | <Revoke Role Statement> rank => -1
+<Revoke Option Extension maybe> ::= <Revoke Option Extension> rank => 0
+<Revoke Option Extension maybe> ::= rank => -1
+<Gen2822> ::= <Comma> <Grantee> rank => 0
+<Gen2822 any> ::= <Gen2822>* rank => 0
+<Gen2824> ::= <Lex140> <Lex310> <Grantor> rank => 0
+<Gen2824 maybe> ::= <Gen2824> rank => 0
+<Gen2824 maybe> ::= rank => -1
+<Revoke Privilege Statement> ::= <Lex469> <Revoke Option Extension maybe> <Privileges> <Lex376> <Grantee> <Gen2822 any> <Gen2824 maybe> <Drop Behavior> rank => 0
+<Revoke Option Extension> ::= <Lex381> <Lex185> <Lex373> rank => 0
+                            | <Lex141> <Lex185> <Lex373> rank => -1
+<Gen2830> ::= <Lex046> <Lex185> <Lex373> rank => 0
+<Gen2830 maybe> ::= <Gen2830> rank => 0
+<Gen2830 maybe> ::= rank => -1
+<Gen2833> ::= <Comma> <Role Revoked> rank => 0
+<Gen2833 any> ::= <Gen2833>* rank => 0
+<Gen2835> ::= <Comma> <Grantee> rank => 0
+<Gen2835 any> ::= <Gen2835>* rank => 0
+<Gen2837> ::= <Lex140> <Lex310> <Grantor> rank => 0
+<Gen2837 maybe> ::= <Gen2837> rank => 0
+<Gen2837 maybe> ::= rank => -1
+<Revoke Role Statement> ::= <Lex469> <Gen2830 maybe> <Role Revoked> <Gen2833 any> <Lex376> <Grantee> <Gen2835 any> <Gen2837 maybe> <Drop Behavior> rank => 0
+<Role Revoked> ::= <Role Name> rank => 0
+<Module Path Specification maybe> ::= <Module Path Specification> rank => 0
+<Module Path Specification maybe> ::= rank => -1
+<Module Transform Group Specification maybe> ::= <Module Transform Group Specification> rank => 0
+<Module Transform Group Specification maybe> ::= rank => -1
+<Module Collations maybe> ::= <Module Collations> rank => 0
+<Module Collations maybe> ::= rank => -1
+<Temporary Table Declaration any> ::= <Temporary Table Declaration>* rank => 0
+<Module Contents many> ::= <Module Contents>+ rank => 0
+<SQL Client Module Definition> ::= <Module Name Clause> <Language Clause> <Module Authorization Clause> <Module Path Specification maybe> <Module Transform Group Specification maybe> <Module Collations maybe> <Temporary Table Declaration any> <Module Contents many> rank => 0
+<Gen2851> ::= <Lex434> rank => 0
+            | <Lex293> <Lex357> rank => -1
+<Gen2853> ::= <Lex373> <Lex493> <Gen2851> rank => 0
+<Gen2853 maybe> ::= <Gen2853> rank => 0
+<Gen2853 maybe> ::= rank => -1
+<Gen2856> ::= <Lex434> rank => 0
+            | <Lex293> <Lex357> rank => -1
+<Gen2858> ::= <Lex373> <Lex493> <Gen2856> rank => 0
+<Gen2858 maybe> ::= <Gen2858> rank => 0
+<Gen2858 maybe> ::= rank => -1
+<Module Authorization Clause> ::= <Lex231> <Schema Name> rank => 0
+                                | <Lex302> <Module Authorization Identifier> <Gen2853 maybe> rank => -1
+                                | <Lex231> <Schema Name> <Lex302> <Module Authorization Identifier> <Gen2858 maybe> rank => -2
+<Module Authorization Identifier> ::= <Authorization Identifier> rank => 0
+<Module Path Specification> ::= <Path Specification> rank => 0
+<Module Transform Group Specification> ::= <Transform Group Specification> rank => 0
+<Module Collation Specification many> ::= <Module Collation Specification>+ rank => 0
+<Module Collations> ::= <Module Collation Specification many> rank => 0
+<Gen2869> ::= <Lex373> <Character Set Specification List> rank => 0
+<Gen2869 maybe> ::= <Gen2869> rank => 0
+<Gen2869 maybe> ::= rank => -1
+<Module Collation Specification> ::= <Lex078> <Collation Name> <Gen2869 maybe> rank => 0
+<Gen2873> ::= <Comma> <Character Set Specification> rank => 0
+<Gen2873 any> ::= <Gen2873>* rank => 0
+<Character Set Specification List> ::= <Character Set Specification> <Gen2873 any> rank => 0
+<Module Contents> ::= <Declare Cursor> rank => 0
+                    | <Dynamic Declare Cursor> rank => -1
+                    | <Externally Invoked Procedure> rank => -2
+<SQL Client Module Name maybe> ::= <SQL Client Module Name> rank => 0
+<SQL Client Module Name maybe> ::= rank => -1
+<Module Character Set Specification maybe> ::= <Module Character Set Specification> rank => 0
+<Module Character Set Specification maybe> ::= rank => -1
+<Module Name Clause> ::= <Lex418> <SQL Client Module Name maybe> <Module Character Set Specification maybe> rank => 0
+<Module Character Set Specification> ::= <Lex173> <Lex295> <Character Set Specification> rank => 0
+<Externally Invoked Procedure> ::= <Lex448> <Procedure Name> <Host Parameter Declaration List> <Semicolon> <SQL Procedure Statement> <Semicolon> rank => 0
+<Gen2886> ::= <Comma> <Host Parameter Declaration> rank => 0
+<Gen2886 any> ::= <Gen2886>* rank => 0
+<Host Parameter Declaration List> ::= <Left Paren> <Host Parameter Declaration> <Gen2886 any> <Right Paren> rank => 0
+<Host Parameter Declaration> ::= <Host Parameter Name> <Host Parameter Data Type> rank => 0
+                               | <Status Parameter> rank => -1
+<Host Parameter Data Type> ::= <Data Type> <Locator Indication maybe> rank => 0
+<Status Parameter> ::= <Lex490> rank => 0
+<SQL Procedure Statement> ::= <SQL Executable Statement> rank => 0
+<SQL Executable Statement> ::= <SQL Schema Statement> rank => 0
+                             | <SQL Data Statement> rank => -1
+                             | <SQL Control Statement> rank => -2
+                             | <SQL Transaction Statement> rank => -3
+                             | <SQL Connection Statement> rank => -4
+                             | <SQL Session Statement> rank => -5
+                             | <SQL Diagnostics Statement> rank => -6
+                             | <SQL Dynamic Statement> rank => -7
+<SQL Schema Statement> ::= <SQL Schema Definition Statement> rank => 0
+                         | <SQL Schema Manipulation Statement> rank => -1
+<SQL Schema Definition Statement> ::= <Schema Definition> rank => 0
+                                    | <Table Definition> rank => -1
+                                    | <View Definition> rank => -2
+                                    | <SQL Invoked Routine> rank => -3
+                                    | <Grant Statement> rank => -4
+                                    | <Role Definition> rank => -5
+                                    | <Domain Definition> rank => -6
+                                    | <Character Set Definition> rank => -7
+                                    | <Collation Definition> rank => -8
+                                    | <Transliteration Definition> rank => -9
+                                    | <Assertion Definition> rank => -10
+                                    | <Trigger Definition> rank => -11
+                                    | <User Defined Type Definition> rank => -12
+                                    | <User Defined Cast Definition> rank => -13
+                                    | <User Defined Ordering Definition> rank => -14
+                                    | <Transform Definition> rank => -15
+                                    | <Sequence Generator Definition> rank => -16
+<SQL Schema Manipulation Statement> ::= <Drop Schema Statement> rank => 0
+                                      | <Alter Table Statement> rank => -1
+                                      | <Drop Table Statement> rank => -2
+                                      | <Drop View Statement> rank => -3
+                                      | <Alter Routine Statement> rank => -4
+                                      | <Drop Routine Statement> rank => -5
+                                      | <Drop User Defined Cast Statement> rank => -6
+                                      | <Revoke Statement> rank => -7
+                                      | <Drop Role Statement> rank => -8
+                                      | <Alter Domain Statement> rank => -9
+                                      | <Drop Domain Statement> rank => -10
+                                      | <Drop Character Set Statement> rank => -11
+                                      | <Drop Collation Statement> rank => -12
+                                      | <Drop Transliteration Statement> rank => -13
+                                      | <Drop Assertion Statement> rank => -14
+                                      | <Drop Trigger Statement> rank => -15
+                                      | <Alter Type Statement> rank => -16
+                                      | <Drop Data Type Statement> rank => -17
+                                      | <Drop User Defined Ordering Statement> rank => -18
+                                      | <Alter Transform Statement> rank => -19
+                                      | <Drop Transform Statement> rank => -20
+                                      | <Alter Sequence Generator Statement> rank => -21
+                                      | <Drop Sequence Generator Statement> rank => -22
+<SQL Data Statement> ::= <Open Statement> rank => 0
+                       | <Fetch Statement> rank => -1
+                       | <Close Statement> rank => -2
+                       | <Select Statement Single Row> rank => -3
+                       | <Free Locator Statement> rank => -4
+                       | <Hold Locator Statement> rank => -5
+                       | <SQL Data Change Statement> rank => -6
+<SQL Data Change Statement> ::= <Delete Statement Positioned> rank => 0
+                              | <Delete Statement Searched> rank => -1
+                              | <Insert Statement> rank => -2
+                              | <Update Statement Positioned> rank => -3
+                              | <Update Statement Searched> rank => -4
+                              | <Merge Statement> rank => -5
+<SQL Control Statement> ::= <Call Statement> rank => 0
+                          | <Return Statement> rank => -1
+<SQL Transaction Statement> ::= <Start Transaction Statement> rank => 0
+                              | <Set Transaction Statement> rank => -1
+                              | <Set Constraints Mode Statement> rank => -2
+                              | <Savepoint Statement> rank => -3
+                              | <Release Savepoint Statement> rank => -4
+                              | <Commit Statement> rank => -5
+                              | <Rollback Statement> rank => -6
+<SQL Connection Statement> ::= <Connect Statement> rank => 0
+                             | <Set Connection Statement> rank => -1
+                             | <Disconnect Statement> rank => -2
+<SQL Session Statement> ::= <Set Session User Identifier Statement> rank => 0
+                          | <Set Role Statement> rank => -1
+                          | <Set Local Time Zone Statement> rank => -2
+                          | <Set Session Characteristics Statement> rank => -3
+                          | <Set Catalog Statement> rank => -4
+                          | <Set Schema Statement> rank => -5
+                          | <Set Names Statement> rank => -6
+                          | <Set Path Statement> rank => -7
+                          | <Set Transform Group Statement> rank => -8
+                          | <Set Session Collation Statement> rank => -9
+<SQL Diagnostics Statement> ::= <Get Diagnostics Statement> rank => 0
+<SQL Dynamic Statement> ::= <System Descriptor Statement> rank => 0
+                          | <Prepare Statement> rank => -1
+                          | <Deallocate Prepared Statement> rank => -2
+                          | <Describe Statement> rank => -3
+                          | <Execute Statement> rank => -4
+                          | <Execute Immediate Statement> rank => -5
+                          | <SQL Dynamic Data Statement> rank => -6
+<SQL Dynamic Data Statement> ::= <Allocate Cursor Statement> rank => 0
+                               | <Dynamic Open Statement> rank => -1
+                               | <Dynamic Fetch Statement> rank => -2
+                               | <Dynamic Close Statement> rank => -3
+                               | <Dynamic Delete Statement Positioned> rank => -4
+                               | <Dynamic Update Statement Positioned> rank => -5
+<System Descriptor Statement> ::= <Allocate Descriptor Statement> rank => 0
+                                | <Deallocate Descriptor Statement> rank => -1
+                                | <Set Descriptor Statement> rank => -2
+                                | <Get Descriptor Statement> rank => -3
+<Cursor Sensitivity maybe> ::= <Cursor Sensitivity> rank => 0
+<Cursor Sensitivity maybe> ::= rank => -1
+<Cursor Scrollability maybe> ::= <Cursor Scrollability> rank => 0
+<Cursor Scrollability maybe> ::= rank => -1
+<Cursor Holdability maybe> ::= <Cursor Holdability> rank => 0
+<Cursor Holdability maybe> ::= rank => -1
+<Cursor Returnability maybe> ::= <Cursor Returnability> rank => 0
+<Cursor Returnability maybe> ::= rank => -1
+<Declare Cursor> ::= <Lex347> <Cursor Name> <Cursor Sensitivity maybe> <Cursor Scrollability maybe> <Lex340> <Cursor Holdability maybe> <Cursor Returnability maybe> <Lex373> <Cursor Specification> rank => 0
+<Cursor Sensitivity> ::= <Lex480> rank => 0
+                       | <Lex394> rank => -1
+                       | <Lex298> rank => -2
+<Cursor Scrollability> ::= <Lex476> rank => 0
+                         | <Lex426> <Lex476> rank => -1
+<Cursor Holdability> ::= <Lex529> <Lex385> rank => 0
+                       | <Lex531> <Lex385> rank => -1
+<Cursor Returnability> ::= <Lex529> <Lex467> rank => 0
+                         | <Lex531> <Lex467> rank => -1
+<Updatability Clause maybe> ::= <Updatability Clause> rank => 0
+<Updatability Clause maybe> ::= rank => -1
+<Cursor Specification> ::= <Query Expression> <Order By Clause maybe> <Updatability Clause maybe> rank => 0
+<Gen3018> ::= <Lex431> <Column Name List> rank => 0
+<Gen3018 maybe> ::= <Gen3018> rank => 0
+<Gen3018 maybe> ::= rank => -1
+<Gen3021> ::= <Lex215> <Lex434> rank => 0
+            | <Lex514> <Gen3018 maybe> rank => -1
+<Updatability Clause> ::= <Lex373> <Gen3021> rank => 0
+<Order By Clause> ::= <Lex437> <Lex310> <Sort Specification List> rank => 0
+<Open Statement> ::= <Lex435> <Cursor Name> rank => 0
+<Fetch Orientation maybe> ::= <Fetch Orientation> rank => 0
+<Fetch Orientation maybe> ::= rank => -1
+<Gen3028> ::= <Fetch Orientation maybe> <Lex376> rank => 0
+<Gen3028 maybe> ::= <Gen3028> rank => 0
+<Gen3028 maybe> ::= rank => -1
+<Fetch Statement> ::= <Lex370> <Gen3028 maybe> <Cursor Name> <Lex400> <Fetch Target List> rank => 0
+<Gen3032> ::= <Lex043> rank => 0
+            | <Lex216> rank => -1
+<Fetch Orientation> ::= <Lex175> rank => 0
+                      | <Lex211> rank => -1
+                      | <Lex131> rank => -2
+                      | <Lex154> rank => -3
+                      | <Gen3032> <Simple Value Specification> rank => -4
+<Gen3039> ::= <Comma> <Target Specification> rank => 0
+<Gen3039 any> ::= <Gen3039>* rank => 0
+<Fetch Target List> ::= <Target Specification> <Gen3039 any> rank => 0
+<Close Statement> ::= <Lex320> <Cursor Name> rank => 0
+<Select Statement Single Row> ::= <Lex479> <Set Quantifier maybe> <Select List> <Lex400> <Select Target List> <Table Expression> rank => 0
+<Gen3044> ::= <Comma> <Target Specification> rank => 0
+<Gen3044 any> ::= <Gen3044>* rank => 0
+<Select Target List> ::= <Target Specification> <Gen3044 any> rank => 0
+<Delete Statement Positioned> ::= <Lex349> <Lex376> <Target Table> <Lex526> <Lex331> <Lex431> <Cursor Name> rank => 0
+<Target Table> ::= <Table Name> rank => 0
+                 | <Lex434> <Left Paren> <Table Name> <Right Paren> rank => -1
+<Gen3050> ::= <Lex526> <Search Condition> rank => 0
+<Gen3050 maybe> ::= <Gen3050> rank => 0
+<Gen3050 maybe> ::= rank => -1
+<Delete Statement Searched> ::= <Lex349> <Lex376> <Target Table> <Gen3050 maybe> rank => 0
+<Insert Statement> ::= <Lex395> <Lex400> <Insertion Target> <Insert Columns And Source> rank => 0
+<Insertion Target> ::= <Table Name> rank => 0
+<Insert Columns And Source> ::= <From Subquery> rank => 0
+                              | <From Constructor> rank => -1
+                              | <From Default> rank => -2
+<Gen3059> ::= <Left Paren> <Insert Column List> <Right Paren> rank => 0
+<Gen3059 maybe> ::= <Gen3059> rank => 0
+<Gen3059 maybe> ::= rank => -1
+<Override Clause maybe> ::= <Override Clause> rank => 0
+<Override Clause maybe> ::= rank => -1
+<From Subquery> ::= <Gen3059 maybe> <Override Clause maybe> <Query Expression> rank => 0
+<Gen3065> ::= <Left Paren> <Insert Column List> <Right Paren> rank => 0
+<Gen3065 maybe> ::= <Gen3065> rank => 0
+<Gen3065 maybe> ::= rank => -1
+<From Constructor> ::= <Gen3065 maybe> <Override Clause maybe> <Contextually Typed Table Value Constructor> rank => 0
+<Override Clause> ::= <Lex191> <Lex516> <Lex518> rank => 0
+                    | <Lex191> <Lex496> <Lex518> rank => -1
+<From Default> ::= <Lex348> <Lex519> rank => 0
+<Insert Column List> ::= <Column Name List> rank => 0
+<Gen3073> ::= <Lex297 maybe> <Merge Correlation Name> rank => 0
+<Gen3073 maybe> ::= <Gen3073> rank => 0
+<Gen3073 maybe> ::= rank => -1
+<Merge Statement> ::= <Lex414> <Lex400> <Target Table> <Gen3073 maybe> <Lex517> <Table Reference> <Lex433> <Search Condition> <Merge Operation Specification> rank => 0
+<Merge Correlation Name> ::= <Correlation Name> rank => 0
+<Merge When Clause many> ::= <Merge When Clause>+ rank => 0
+<Merge Operation Specification> ::= <Merge When Clause many> rank => 0
+<Merge When Clause> ::= <Merge When Matched Clause> rank => 0
+                      | <Merge When Not Matched Clause> rank => -1
+<Merge When Matched Clause> ::= <Lex524> <Lex161> <Lex499> <Merge Update Specification> rank => 0
+<Merge When Not Matched Clause> ::= <Lex524> <Lex428> <Lex161> <Lex499> <Merge Insert Specification> rank => 0
+<Merge Update Specification> ::= <Lex514> <Lex482> <Set Clause List> rank => 0
+<Gen3085> ::= <Left Paren> <Insert Column List> <Right Paren> rank => 0
+<Gen3085 maybe> ::= <Gen3085> rank => 0
+<Gen3085 maybe> ::= rank => -1
+<Merge Insert Specification> ::= <Lex395> <Gen3085 maybe> <Override Clause maybe> <Lex519> <Merge Insert Value List> rank => 0
+<Gen3089> ::= <Comma> <Merge Insert Value Element> rank => 0
+<Gen3089 any> ::= <Gen3089>* rank => 0
+<Merge Insert Value List> ::= <Left Paren> <Merge Insert Value Element> <Gen3089 any> <Right Paren> rank => 0
+<Merge Insert Value Element> ::= <Value Expression> rank => 0
+                               | <Contextually Typed Value Specification> rank => -1
+<Update Statement Positioned> ::= <Lex514> <Target Table> <Lex482> <Set Clause List> <Lex526> <Lex331> <Lex431> <Cursor Name> rank => 0
+<Gen3095> ::= <Lex526> <Search Condition> rank => 0
+<Gen3095 maybe> ::= <Gen3095> rank => 0
+<Gen3095 maybe> ::= rank => -1
+<Update Statement Searched> ::= <Lex514> <Target Table> <Lex482> <Set Clause List> <Gen3095 maybe> rank => 0
+<Gen3099> ::= <Comma> <Set Clause> rank => 0
+<Gen3099 any> ::= <Gen3099>* rank => 0
+<Set Clause List> ::= <Set Clause> <Gen3099 any> rank => 0
+<Set Clause> ::= <Multiple Column Assignment> rank => 0
+               | <Set Target> <Equals Operator> <Update Source> rank => -1
+<Set Target> ::= <Update Target> rank => 0
+               | <Mutated Set Clause> rank => -1
+<Multiple Column Assignment> ::= <Set Target List> <Equals Operator> <Assigned Row> rank => 0
+<Gen3107> ::= <Comma> <Set Target> rank => 0
+<Gen3107 any> ::= <Gen3107>* rank => 0
+<Set Target List> ::= <Left Paren> <Set Target> <Gen3107 any> <Right Paren> rank => 0
+<Assigned Row> ::= <Contextually Typed Row Value Expression> rank => 0
+<Update Target> ::= <Object Column> rank => 0
+                  | <Object Column> <Left Bracket Or Trigraph> <Simple Value Specification> <Right Bracket Or Trigraph> rank => -1
+<Object Column> ::= <Column Name> rank => 0
+<Mutated Set Clause> ::= <Mutated Target> <Period> <Method Name> rank => 0
+<Mutated Target> ::= <Object Column> rank => 0
+                   | <Mutated Set Clause> rank => -1
+<Update Source> ::= <Value Expression> rank => 0
+                  | <Contextually Typed Value Specification> rank => -1
+<Gen3119> ::= <Lex433> <Lex323> <Table Commit Action> <Lex474> rank => 0
+<Gen3119 maybe> ::= <Gen3119> rank => 0
+<Gen3119 maybe> ::= rank => -1
+<Temporary Table Declaration> ::= <Lex347> <Lex409> <Lex261> <Lex498> <Table Name> <Table Element List> <Gen3119 maybe> rank => 0
+<Gen3123> ::= <Comma> <Locator Reference> rank => 0
+<Gen3123 any> ::= <Gen3123>* rank => 0
+<Free Locator Statement> ::= <Lex375> <Lex158> <Locator Reference> <Gen3123 any> rank => 0
+<Locator Reference> ::= <Host Parameter Name> rank => 0
+                      | <Embedded Variable Name> rank => -1
+<Gen3128> ::= <Comma> <Locator Reference> rank => 0
+<Gen3128 any> ::= <Gen3128>* rank => 0
+<Hold Locator Statement> ::= <Lex385> <Lex158> <Locator Reference> <Gen3128 any> rank => 0
+<Call Statement> ::= <Lex311> <Routine Invocation> rank => 0
+<Return Statement> ::= <Lex467> <Return Value> rank => 0
+<Return Value> ::= <Value Expression> rank => 0
+                 | <Lex429> rank => -1
+<Gen3135> ::= <Comma> <Transaction Mode> rank => 0
+<Gen3135 any> ::= <Gen3135>* rank => 0
+<Gen3137> ::= <Transaction Mode> <Gen3135 any> rank => 0
+<Gen3137 maybe> ::= <Gen3137> rank => 0
+<Gen3137 maybe> ::= rank => -1
+<Start Transaction Statement> ::= <Lex492> <Lex264> <Gen3137 maybe> rank => 0
+<Transaction Mode> ::= <Isolation Level> rank => 0
+                     | <Transaction Access Mode> rank => -1
+                     | <Diagnostics Size> rank => -2
+<Transaction Access Mode> ::= <Lex215> <Lex434> rank => 0
+                            | <Lex215> <Lex287> rank => -1
+<Isolation Level> ::= <Lex150> <Lex156> <Level Of Isolation> rank => 0
+<Level Of Isolation> ::= <Lex215> <Lex277> rank => 0
+                       | <Lex215> <Lex086> rank => -1
+                       | <Lex217> <Lex215> rank => -2
+                       | <Lex240> rank => -3
+<Diagnostics Size> ::= <Lex118> <Lex245> <Number Of Conditions> rank => 0
+<Number Of Conditions> ::= <Simple Value Specification> rank => 0
+<Lex409 maybe> ::= <Lex409> rank => 0
+<Lex409 maybe> ::= rank => -1
+<Set Transaction Statement> ::= <Lex482> <Lex409 maybe> <Transaction Characteristics> rank => 0
+<Gen3156> ::= <Comma> <Transaction Mode> rank => 0
+<Gen3156 any> ::= <Gen3156>* rank => 0
+<Transaction Characteristics> ::= <Lex264> <Transaction Mode> <Gen3156 any> rank => 0
+<Gen3159> ::= <Lex109> rank => 0
+            | <Lex388> rank => -1
+<Set Constraints Mode Statement> ::= <Lex482> <Lex090> <Constraint Name List> <Gen3159> rank => 0
+<Gen3162> ::= <Comma> <Constraint Name> rank => 0
+<Gen3162 any> ::= <Gen3162>* rank => 0
+<Constraint Name List> ::= <Lex290> rank => 0
+                         | <Constraint Name> <Gen3162 any> rank => -1
+<Savepoint Statement> ::= <Lex475> <Savepoint Specifier> rank => 0
+<Savepoint Specifier> ::= <Savepoint Name> rank => 0
+<Release Savepoint Statement> ::= <Lex465> <Lex475> <Savepoint Specifier> rank => 0
+<Lex286 maybe> ::= <Lex286> rank => 0
+<Lex286 maybe> ::= rank => -1
+<Lex426 maybe> ::= <Lex426> rank => 0
+<Lex426 maybe> ::= rank => -1
+<Gen3173> ::= <Lex293> <Lex426 maybe> <Lex065> rank => 0
+<Gen3173 maybe> ::= <Gen3173> rank => 0
+<Gen3173 maybe> ::= rank => -1
+<Commit Statement> ::= <Lex323> <Lex286 maybe> <Gen3173 maybe> rank => 0
+<Gen3177> ::= <Lex293> <Lex426 maybe> <Lex065> rank => 0
+<Gen3177 maybe> ::= <Gen3177> rank => 0
+<Gen3177 maybe> ::= rank => -1
+<Savepoint Clause maybe> ::= <Savepoint Clause> rank => 0
+<Savepoint Clause maybe> ::= rank => -1
+<Rollback Statement> ::= <Lex471> <Lex286 maybe> <Gen3177 maybe> <Savepoint Clause maybe> rank => 0
+<Savepoint Clause> ::= <Lex504> <Lex475> <Savepoint Specifier> rank => 0
+<Connect Statement> ::= <Lex324> <Lex504> <Connection Target> rank => 0
+<Gen3185> ::= <Lex297> <Connection Name> rank => 0
+<Gen3185 maybe> ::= <Gen3185> rank => 0
+<Gen3185 maybe> ::= rank => -1
+<Gen3188> ::= <Lex516> <Connection User Name> rank => 0
+<Gen3188 maybe> ::= <Gen3188> rank => 0
+<Gen3188 maybe> ::= rank => -1
+<Connection Target> ::= <Sql Server Name> <Gen3185 maybe> <Gen3188 maybe> rank => 0
+                      | <Lex348> rank => -1
+<Set Connection Statement> ::= <Lex482> <Lex554> <Connection Object> rank => 0
+<Connection Object> ::= <Lex348> rank => 0
+                      | <Connection Name> rank => -1
+<Disconnect Statement> ::= <Lex353> <Disconnect Object> rank => 0
+<Disconnect Object> ::= <Connection Object> rank => 0
+                      | <Lex290> rank => -1
+                      | <Lex331> rank => -2
+<Set Session Characteristics Statement> ::= <Lex482> <Lex242> <Lex066> <Lex297> <Session Characteristic List> rank => 0
+<Gen3201> ::= <Comma> <Session Characteristic> rank => 0
+<Gen3201 any> ::= <Gen3201>* rank => 0
+<Session Characteristic List> ::= <Session Characteristic> <Gen3201 any> rank => 0
+<Session Characteristic> ::= <Transaction Characteristics> rank => 0
+<Set Session User Identifier Statement> ::= <Lex482> <Lex242> <Lex302> <Value Specification> rank => 0
+<Set Role Statement> ::= <Lex482> <Lex223> <Role Specification> rank => 0
+<Role Specification> ::= <Value Specification> rank => 0
+                       | <Lex427> rank => -1
+<Set Local Time Zone Statement> ::= <Lex482> <Lex500> <Lex288> <Set Time Zone Value> rank => 0
+<Set Time Zone Value> ::= <Interval Value Expression> rank => 0
+                        | <Lex409> rank => -1
+<Set Catalog Statement> ::= <Lex482> <Catalog Name Characteristic> rank => 0
+<Catalog Name Characteristic> ::= <Lex061> <Value Specification> rank => 0
+<Set Schema Statement> ::= <Lex482> <Schema Name Characteristic> rank => 0
+<Schema Name Characteristic> ::= <Lex231> <Value Specification> rank => 0
+<Set Names Statement> ::= <Lex482> <Character Set Name Characteristic> rank => 0
+<Character Set Name Characteristic> ::= <Lex173> <Value Specification> rank => 0
+<Set Path Statement> ::= <Lex482> <SQL Path Characteristic> rank => 0
+<SQL Path Characteristic> ::= <Lex201> <Value Specification> rank => 0
+<Set Transform Group Statement> ::= <Lex482> <Transform Group Characteristic> rank => 0
+<Transform Group Characteristic> ::= <Lex348> <Lex268> <Lex382> <Value Specification> rank => 0
+                                   | <Lex268> <Lex382> <Lex373> <Lex275> <Path Resolved User Defined Type Name> <Value Specification> rank => -1
+<Gen3223> ::= <Lex373> <Character Set Specification List> rank => 0
+<Gen3223 maybe> ::= <Gen3223> rank => 0
+<Gen3223 maybe> ::= rank => -1
+<Gen3226> ::= <Lex373> <Character Set Specification List> rank => 0
+<Gen3226 maybe> ::= <Gen3226> rank => 0
+<Gen3226 maybe> ::= rank => -1
+<Set Session Collation Statement> ::= <Lex482> <Lex078> <Collation Specification> <Gen3223 maybe> rank => 0
+                                    | <Lex482> <Lex426> <Lex078> <Gen3226 maybe> rank => -1
+<Gen3231> ::= <Lex013> <Character Set Specification> rank => 0
+<Gen3231 any> ::= <Gen3231>* rank => 0
+<Character Set Specification List> ::= <Character Set Specification> <Gen3231 any> rank => -1
+<Collation Specification> ::= <Value Specification> rank => 0
+<Lex488 maybe> ::= <Lex488> rank => 0
+<Lex488 maybe> ::= rank => -1
+<Gen3237> ::= <Lex529> <Lex162> <Occurrences> rank => 0
+<Gen3237 maybe> ::= <Gen3237> rank => 0
+<Gen3237 maybe> ::= rank => -1
+<Allocate Descriptor Statement> ::= <Lex291> <Lex488 maybe> <Lex117> <Descriptor Name> <Gen3237 maybe> rank => 0
+<Occurrences> ::= <Simple Value Specification> rank => 0
+<Deallocate Descriptor Statement> ::= <Lex344> <Lex488 maybe> <Lex117> <Descriptor Name> rank => 0
+<Get Descriptor Statement> ::= <Lex379> <Lex488 maybe> <Lex117> <Descriptor Name> <Get Descriptor Information> rank => 0
+<Gen3244> ::= <Comma> <Get Header Information> rank => 0
+<Gen3244 any> ::= <Gen3244>* rank => 0
+<Gen3246> ::= <Comma> <Get Item Information> rank => 0
+<Gen3246 any> ::= <Gen3246>* rank => 0
+<Get Descriptor Information> ::= <Get Header Information> <Gen3244 any> rank => 0
+                               | <Lex518> <Item Number> <Get Item Information> <Gen3246 any> rank => -1
+<Get Header Information> ::= <Simple Target Specification 1> <Equals Operator> <Header Item Name> rank => 0
+<Header Item Name> ::= <Lex098> rank => 0
+                     | <Lex153> rank => -1
+                     | <Lex121> rank => -2
+                     | <Lex122> rank => -3
+                     | <Lex263> rank => -4
+<Get Item Information> ::= <Simple Target Specification 2> <Equals Operator> <Descriptor Item Name> rank => 0
+<Item Number> ::= <Simple Value Specification> rank => 0
+<Simple Target Specification 1> ::= <Simple Target Specification> rank => 0
+<Simple Target Specification 2> ::= <Simple Target Specification> rank => 0
+<Descriptor Item Name> ::= <Lex059> rank => 0
+                         | <Lex069> rank => -1
+                         | <Lex070> rank => -2
+                         | <Lex071> rank => -3
+                         | <Lex079> rank => -4
+                         | <Lex080> rank => -5
+                         | <Lex081> rank => -6
+                         | <Lex104> rank => -7
+                         | <Lex105> rank => -8
+                         | <Lex106> rank => -9
+                         | <Lex112> rank => -10
+                         | <Lex390> rank => -11
+                         | <Lex152> rank => -12
+                         | <Lex155> rank => -13
+                         | <Lex156> rank => -14
+                         | <Lex172> rank => -15
+                         | <Lex178> rank => -16
+                         | <Lex184> rank => -17
+                         | <Lex193> rank => -18
+                         | <Lex195> rank => -19
+                         | <Lex196> rank => -20
+                         | <Lex197> rank => -21
+                         | <Lex198> rank => -22
+                         | <Lex445> rank => -23
+                         | <Lex219> rank => -24
+                         | <Lex220> rank => -25
+                         | <Lex221> rank => -26
+                         | <Lex230> rank => -27
+                         | <Lex233> rank => -28
+                         | <Lex234> rank => -29
+                         | <Lex235> rank => -30
+                         | <Lex275> rank => -31
+                         | <Lex279> rank => -32
+                         | <Lex281> rank => -33
+                         | <Lex283> rank => -34
+                         | <Lex284> rank => -35
+                         | <Lex282> rank => -36
+<Set Descriptor Statement> ::= <Lex482> <Lex488 maybe> <Lex117> <Descriptor Name> <Set Descriptor Information> rank => 0
+<Gen3298> ::= <Comma> <Set Header Information> rank => 0
+<Gen3298 any> ::= <Gen3298>* rank => 0
+<Gen3300> ::= <Comma> <Set Item Information> rank => 0
+<Gen3300 any> ::= <Gen3300>* rank => 0
+<Set Descriptor Information> ::= <Set Header Information> <Gen3298 any> rank => 0
+                               | <Lex518> <Item Number> <Set Item Information> <Gen3300 any> rank => -1
+<Set Header Information> ::= <Header Item Name> <Equals Operator> <Simple Value Specification 1> rank => 0
+<Set Item Information> ::= <Descriptor Item Name> <Equals Operator> <Simple Value Specification 2> rank => 0
+<Simple Value Specification 1> ::= <Simple Value Specification> rank => 0
+<Simple Value Specification 2> ::= <Simple Value Specification> rank => 0
+<Attributes Specification maybe> ::= <Attributes Specification> rank => 0
+<Attributes Specification maybe> ::= rank => -1
+<Prepare Statement> ::= <Lex446> <SQL Statement Name> <Attributes Specification maybe> <Lex376> <SQL Statement Variable> rank => 0
+<Attributes Specification> ::= <Lex053> <Attributes Variable> rank => 0
+<Attributes Variable> ::= <Simple Value Specification> rank => 0
+<SQL Statement Variable> ::= <Simple Value Specification> rank => 0
+<Preparable Statement> ::= <Preparable SQL Data Statement> rank => 0
+                         | <Preparable SQL Schema Statement> rank => -1
+                         | <Preparable SQL Transaction Statement> rank => -2
+                         | <Preparable SQL Control Statement> rank => -3
+                         | <Preparable SQL Session Statement> rank => -4
+<Preparable SQL Data Statement> ::= <Delete Statement Searched> rank => 0
+                                  | <Dynamic Single Row Select Statement> rank => -1
+                                  | <Insert Statement> rank => -2
+                                  | <Dynamic Select Statement> rank => -3
+                                  | <Update Statement Searched> rank => -4
+                                  | <Merge Statement> rank => -5
+                                  | <Preparable Dynamic Delete Statement Positioned> rank => -6
+                                  | <Preparable Dynamic Update Statement Positioned> rank => -7
+<Preparable SQL Schema Statement> ::= <SQL Schema Statement> rank => 0
+<Preparable SQL Transaction Statement> ::= <SQL Transaction Statement> rank => 0
+<Preparable SQL Control Statement> ::= <SQL Control Statement> rank => 0
+<Preparable SQL Session Statement> ::= <SQL Session Statement> rank => 0
+<Dynamic Select Statement> ::= <Cursor Specification> rank => 0
+<Cursor Attribute many> ::= <Cursor Attribute>+ rank => 0
+<Cursor Attributes> ::= <Cursor Attribute many> rank => 0
+<Cursor Attribute> ::= <Cursor Sensitivity> rank => 0
+                     | <Cursor Scrollability> rank => -1
+                     | <Cursor Holdability> rank => -2
+                     | <Cursor Returnability> rank => -3
+<Deallocate Prepared Statement> ::= <Lex344> <Lex446> <SQL Statement Name> rank => 0
+<Describe Statement> ::= <Describe Input Statement> rank => 0
+                       | <Describe Output Statement> rank => -1
+<Nesting Option maybe> ::= <Nesting Option> rank => 0
+<Nesting Option maybe> ::= rank => -1
+<Describe Input Statement> ::= <Lex351> <Lex393> <SQL Statement Name> <Using Descriptor> <Nesting Option maybe> rank => 0
+<Lex440 maybe> ::= <Lex440> rank => 0
+<Lex440 maybe> ::= rank => -1
+<Describe Output Statement> ::= <Lex351> <Lex440 maybe> <Described Object> <Using Descriptor> <Nesting Option maybe> rank => 0
+<Nesting Option> ::= <Lex529> <Lex174> rank => 0
+                   | <Lex531> <Lex174> rank => -1
+<Using Descriptor> ::= <Lex517> <Lex488 maybe> <Lex117> <Descriptor Name> rank => 0
+<Described Object> ::= <SQL Statement Name> rank => 0
+                     | <Lex340> <Extended Cursor Name> <Lex254> rank => -1
+<Input Using Clause> ::= <Using Arguments> rank => 0
+                       | <Using Input Descriptor> rank => -1
+<Gen3354> ::= <Comma> <Using Argument> rank => 0
+<Gen3354 any> ::= <Gen3354>* rank => 0
+<Using Arguments> ::= <Lex517> <Using Argument> <Gen3354 any> rank => 0
+<Using Argument> ::= <General Value Specification> rank => 0
+<Using Input Descriptor> ::= <Using Descriptor> rank => 0
+<Output Using Clause> ::= <Into Arguments> rank => 0
+                        | <Into Descriptor> rank => -1
+<Gen3361> ::= <Comma> <Into Argument> rank => 0
+<Gen3361 any> ::= <Gen3361>* rank => 0
+<Into Arguments> ::= <Lex400> <Into Argument> <Gen3361 any> rank => 0
+<Into Argument> ::= <Target Specification> rank => 0
+<Into Descriptor> ::= <Lex400> <Lex488 maybe> <Lex117> <Descriptor Name> rank => 0
+<Result Using Clause maybe> ::= <Result Using Clause> rank => 0
+<Result Using Clause maybe> ::= rank => -1
+<Parameter Using Clause maybe> ::= <Parameter Using Clause> rank => 0
+<Parameter Using Clause maybe> ::= rank => -1
+<Execute Statement> ::= <Lex366> <SQL Statement Name> <Result Using Clause maybe> <Parameter Using Clause maybe> rank => 0
+<Result Using Clause> ::= <Output Using Clause> rank => 0
+<Parameter Using Clause> ::= <Input Using Clause> rank => 0
+<Execute Immediate Statement> ::= <Lex366> <Lex388> <SQL Statement Variable> rank => 0
+<Dynamic Declare Cursor> ::= <Lex347> <Cursor Name> <Cursor Sensitivity maybe> <Cursor Scrollability maybe> <Lex340> <Cursor Holdability maybe> <Cursor Returnability maybe> <Lex373> <Statement Name> rank => 0
+<Allocate Cursor Statement> ::= <Lex291> <Extended Cursor Name> <Cursor Intent> rank => 0
+<Cursor Intent> ::= <Statement Cursor> rank => 0
+                  | <Result Set Cursor> rank => -1
+<Statement Cursor> ::= <Cursor Sensitivity maybe> <Cursor Scrollability maybe> <Lex340> <Cursor Holdability maybe> <Cursor Returnability maybe> <Lex373> <Extended Statement Name> rank => 0
+<Result Set Cursor> ::= <Lex373> <Lex448> <Specific Routine Designator> rank => 0
+<Input Using Clause maybe> ::= <Input Using Clause> rank => 0
+<Input Using Clause maybe> ::= rank => -1
+<Dynamic Open Statement> ::= <Lex435> <Dynamic Cursor Name> <Input Using Clause maybe> rank => 0
+<Gen3383> ::= <Fetch Orientation maybe> <Lex376> rank => 0
+<Gen3383 maybe> ::= <Gen3383> rank => 0
+<Gen3383 maybe> ::= rank => -1
+<Dynamic Fetch Statement> ::= <Lex370> <Gen3383 maybe> <Dynamic Cursor Name> <Output Using Clause> rank => 0
+<Dynamic Single Row Select Statement> ::= <Query Specification> rank => 0
+<Dynamic Close Statement> ::= <Lex320> <Dynamic Cursor Name> rank => 0
+<Dynamic Delete Statement Positioned> ::= <Lex349> <Lex376> <Target Table> <Lex526> <Lex331> <Lex431> <Dynamic Cursor Name> rank => 0
+<Dynamic Update Statement Positioned> ::= <Lex514> <Target Table> <Lex482> <Set Clause List> <Lex526> <Lex331> <Lex431> <Dynamic Cursor Name> rank => 0
+<Gen3391> ::= <Lex376> <Target Table> rank => 0
+<Gen3391 maybe> ::= <Gen3391> rank => 0
+<Gen3391 maybe> ::= rank => -1
+<Preparable Dynamic Delete Statement Positioned> ::= <Lex349> <Gen3391 maybe> <Lex526> <Lex331> <Lex431> <Scope Option maybe> <Cursor Name> rank => 0
+<Target Table maybe> ::= <Target Table> rank => 0
+<Target Table maybe> ::= rank => -1
+<Preparable Dynamic Update Statement Positioned> ::= <Lex514> <Target Table maybe> <Lex482> <Set Clause List> <Lex526> <Lex331> <Lex431> <Scope Option maybe> <Cursor Name> rank => 0
+<Embedded SQL Host Program> ::= <Embedded SQL Ada Program> rank => 0
+                              | <Embedded SQL C Program> rank => -1
+                              | <Embedded SQL Cobol Program> rank => -2
+                              | <Embedded SQL Fortran Program> rank => -3
+                              | <Embedded SQL Mumps Program> rank => -4
+                              | <Embedded SQL Pascal Program> rank => -5
+                              | <Embedded SQL Pl I Program> rank => -6
+<SQL Terminator maybe> ::= <SQL Terminator> rank => 0
+<SQL Terminator maybe> ::= rank => -1
+<Embedded SQL Statement> ::= <SQL Prefix> <Statement Or Declaration> <SQL Terminator maybe> rank => 0
+<Statement Or Declaration> ::= <Declare Cursor> rank => 0
+                             | <Dynamic Declare Cursor> rank => -1
+                             | <Temporary Table Declaration> rank => -2
+                             | <Embedded Authorization Declaration> rank => -3
+                             | <Embedded Path Specification> rank => -4
+                             | <Embedded Transform Group Specification> rank => -5
+                             | <Embedded Collation Specification> rank => -6
+                             | <Embedded Exception Declaration> rank => -7
+                             | <SQL Procedure Statement> rank => -8
+<SQL Prefix> ::= <Lex365> <Lex488> rank => 0
+               | <Ampersand> <Lex488> <Left Paren> rank => -1
+<SQL Terminator> ::= <Lex362> rank => 0
+                   | <Semicolon> rank => -1
+                   | <Right Paren> rank => -2
+<Embedded Authorization Declaration> ::= <Lex347> <Embedded Authorization Clause> rank => 0
+<Gen3423> ::= <Lex434> rank => 0
+            | <Lex293> <Lex357> rank => -1
+<Gen3425> ::= <Lex373> <Lex493> <Gen3423> rank => 0
+<Gen3425 maybe> ::= <Gen3425> rank => 0
+<Gen3425 maybe> ::= rank => -1
+<Gen3428> ::= <Lex434> rank => 0
+            | <Lex293> <Lex357> rank => -1
+<Gen3430> ::= <Lex373> <Lex493> <Gen3428> rank => 0
+<Gen3430 maybe> ::= <Gen3430> rank => 0
+<Gen3430 maybe> ::= rank => -1
+<Embedded Authorization Clause> ::= <Lex231> <Schema Name> rank => 0
+                                  | <Lex302> <Embedded Authorization Identifier> <Gen3425 maybe> rank => -1
+                                  | <Lex231> <Schema Name> <Lex302> <Embedded Authorization Identifier> <Gen3430 maybe> rank => -2
+<Embedded Authorization Identifier> ::= <Module Authorization Identifier> rank => 0
+<Embedded Path Specification> ::= <Path Specification> rank => 0
+<Embedded Transform Group Specification> ::= <Transform Group Specification> rank => 0
+<Embedded Collation Specification> ::= <Module Collations> rank => 0
+<Embedded Character Set Declaration maybe> ::= <Embedded Character Set Declaration> rank => 0
+<Embedded Character Set Declaration maybe> ::= rank => -1
+<Host Variable Definition any> ::= <Host Variable Definition>* rank => 0
+<Embedded SQL Declare Section> ::= <Embedded SQL Begin Declare> <Embedded Character Set Declaration maybe> <Host Variable Definition any> <Embedded SQL End Declare> rank => 0
+                                 | <Embedded SQL Mumps Declare> rank => -1
+<Embedded Character Set Declaration> ::= <Lex488> <Lex173> <Lex295> <Character Set Specification> rank => 0
+<Embedded SQL Begin Declare> ::= <SQL Prefix> <Lex303> <Lex347> <Lex236> <SQL Terminator maybe> rank => 0
+<Embedded SQL End Declare> ::= <SQL Prefix> <Lex361> <Lex347> <Lex236> <SQL Terminator maybe> rank => 0
+<Embedded SQL Mumps Declare> ::= <SQL Prefix> <Lex303> <Lex347> <Lex236> <Embedded Character Set Declaration maybe> <Host Variable Definition any> <Lex361> <Lex347> <Lex236> <SQL Terminator> rank => 0
+<Host Variable Definition> ::= <Ada Variable Definition> rank => 0
+                             | <C Variable Definition> rank => -1
+                             | <Cobol Variable Definition> rank => -2
+                             | <Fortran Variable Definition> rank => -3
+                             | <Mumps Variable Definition> rank => -4
+                             | <Pascal Variable Definition> rank => -5
+                             | <Pl I Variable Definition> rank => -6
+<Embedded Variable Name> ::= <Colon> <Host Identifier> rank => 0
+<Host Identifier> ::= <Ada Host Identifier> rank => 0
+                    | <C Host Identifier> rank => -1
+                    | <Cobol Host Identifier> rank => -2
+                    | <Fortran Host Identifier> rank => -3
+                    | <Mumps Host Identifier> rank => -4
+                    | <Pascal Host Identifier> rank => -5
+                    | <Pl I Host Identifier> rank => -6
+<Embedded Exception Declaration> ::= <Lex525> <Condition> <Condition Action> rank => 0
+<Condition> ::= <SQL Condition> rank => 0
+<Gen3466> ::= <Lex013> <Sqlstate Subclass Value> rank => 0
+<Gen3466 maybe> ::= <Gen3466> rank => 0
+<Gen3466 maybe> ::= rank => -1
+<Gen3469> ::= <Sqlstate Class Value> <Gen3466 maybe> rank => 0
+<SQL Condition> ::= <Major Category> rank => 0
+                  | <Lex490> <Gen3469> rank => -1
+                  | <Lex325> <Constraint Name> rank => -2
+<Major Category> ::= <Lex489> rank => 0
+                   | <Lex491> rank => -1
+                   | <Lex428> <Lex135> rank => -2
+<Sqlstate Class Value> ::= <Sqlstate Char> <Sqlstate Char> rank => 0
+<Sqlstate Subclass Value> ::= <Sqlstate Char> <Sqlstate Char> <Sqlstate Char> rank => 0
+<Sqlstate Char> ::= <Simple Latin Upper Case Letter> rank => 0
+                  | <Digit> rank => -1
+<Condition Action> ::= <Lex326> rank => 0
+                     | <Go To> rank => -1
+<Gen3482> ::= <Lex139> rank => 0
+            | <Lex138> <Lex504> rank => -1
+<Go To> ::= <Gen3482> <Goto Target> rank => 0
+<Goto Target> ::= <Unsigned Integer> rank => 0
+<Embedded SQL Ada Program> ::= <Lex365> <Lex488> rank => 0
+<Gen3487> ::= <Comma> <Ada Host Identifier> rank => 0
+<Gen3487 any> ::= <Gen3487>* rank => 0
+<Ada Initial Value maybe> ::= <Ada Initial Value> rank => 0
+<Ada Initial Value maybe> ::= rank => -1
+<Ada Variable Definition> ::= <Ada Host Identifier> <Gen3487 any> <Colon> <Ada Type Specification> <Ada Initial Value maybe> rank => 0
+<Character Representation many> ::= <Character Representation>+ rank => 0
+<Ada Initial Value> ::= <Ada Assignment Operator> <Character Representation many> rank => 0
+<Ada Assignment Operator> ::= <Colon> <Equals Operator> rank => 0
+<Underscore maybe> ::= <Underscore> rank => 0
+<Underscore maybe> ::= rank => -1
+<Gen3497> ::= <Ada Host Identifier Letter> rank => 0
+            | <Digit> rank => -1
+<Gen3499> ::= <Underscore maybe> <Gen3497> rank => 0
+<Gen3499 any> ::= <Gen3499>* rank => 0
+<Ada Host Identifier> ::= <Ada Host Identifier Letter> <Gen3499 any> rank => 0
+<Ada Host Identifier Letter> ::= <Simple Latin Letter> rank => 0
+<Ada Type Specification> ::= <Ada Qualified Type Specification> rank => 0
+                           | <Ada Unqualified Type Specification> rank => -1
+                           | <Ada Derived Type Specification> rank => -2
+<Lex401 maybe> ::= <Lex401> rank => 0
+<Lex401 maybe> ::= rank => -1
+<Gen3508> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3508 maybe> ::= <Gen3508> rank => 0
+<Gen3508 maybe> ::= rank => -1
+<Ada Qualified Type Specification> ::= <Lex555> <Period> <Lex316> <Gen3508 maybe> <Left Paren> <Lex556> <Double Period> <Length> <Right Paren> rank => 0
+                                     | <Lex555> <Period> <Lex484> rank => -1
+                                     | <Lex555> <Period> <Lex396> rank => -2
+                                     | <Lex555> <Period> <Lex305> rank => -3
+                                     | <Lex555> <Period> <Lex451> rank => -4
+                                     | <Lex555> <Period> <Lex557> rank => -5
+                                     | <Lex555> <Period> <Lex308> rank => -6
+                                     | <Lex555> <Period> <Lex558> rank => -7
+                                     | <Lex555> <Period> <Lex559> rank => -8
+<Ada Unqualified Type Specification> ::= <Lex316> <Left Paren> <Lex556> <Double Period> <Length> <Right Paren> rank => 0
+                                       | <Lex484> rank => -1
+                                       | <Lex396> rank => -2
+                                       | <Lex305> rank => -3
+                                       | <Lex451> rank => -4
+                                       | <Lex557> rank => -5
+                                       | <Lex308> rank => -6
+                                       | <Lex558> rank => -7
+                                       | <Lex559> rank => -8
+<Ada Derived Type Specification> ::= <Ada Clob Variable> rank => 0
+                                   | <Ada Clob Locator Variable> rank => -1
+                                   | <Ada Blob Variable> rank => -2
+                                   | <Ada Blob Locator Variable> rank => -3
+                                   | <Ada User Defined Type Variable> rank => -4
+                                   | <Ada User Defined Type Locator Variable> rank => -5
+                                   | <Ada Ref Variable> rank => -6
+                                   | <Ada Array Locator Variable> rank => -7
+                                   | <Ada Multiset Locator Variable> rank => -8
+<Gen3538> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3538 maybe> ::= <Gen3538> rank => 0
+<Gen3538 maybe> ::= rank => -1
+<Ada Clob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen3538 maybe> rank => 0
+<Ada Clob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
+<Ada Blob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Ada Blob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> rank => 0
+<Ada User Defined Type Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> rank => 0
+<Ada User Defined Type Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> rank => 0
+<Ada Ref Variable> ::= <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<Ada Array Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> rank => 0
+<Ada Multiset Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> rank => 0
+<Embedded SQL C Program> ::= <Lex365> <Lex488> rank => 0
+<C Storage Class maybe> ::= <C Storage Class> rank => 0
+<C Storage Class maybe> ::= rank => -1
+<C Class Modifier maybe> ::= <C Class Modifier> rank => 0
+<C Class Modifier maybe> ::= rank => -1
+<C Variable Definition> ::= <C Storage Class maybe> <C Class Modifier maybe> <C Variable Specification> <Semicolon> rank => 0
+<C Variable Specification> ::= <C Numeric Variable> rank => 0
+                             | <C Character Variable> rank => -1
+                             | <C Derived Variable> rank => -2
+<C Storage Class> ::= <Lex560> rank => 0
+                    | <Lex561> rank => -1
+                    | <Lex562> rank => -2
+<C Class Modifier> ::= <Lex563> rank => 0
+                     | <Lex564> rank => -1
+<Gen3564> ::= <Lex565> <Lex565> rank => 0
+            | <Lex565> rank => -1
+            | <Lex566> rank => -2
+            | <Lex567> rank => -3
+            | <Lex568> rank => -4
+<C Initial Value maybe> ::= <C Initial Value> rank => 0
+<C Initial Value maybe> ::= rank => -1
+<Gen3571> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3571 any> ::= <Gen3571>* rank => 0
+<C Numeric Variable> ::= <Gen3564> <C Host Identifier> <C Initial Value maybe> <Gen3571 any> rank => 0
+<Gen3574> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3574 maybe> ::= <Gen3574> rank => 0
+<Gen3574 maybe> ::= rank => -1
+<Gen3577> ::= <Comma> <C Host Identifier> <C Array Specification> <C Initial Value maybe> rank => 0
+<Gen3577 any> ::= <Gen3577>* rank => 0
+<C Character Variable> ::= <C Character Type> <Gen3574 maybe> <C Host Identifier> <C Array Specification> <C Initial Value maybe> <Gen3577 any> rank => 0
+<C Character Type> ::= <Lex569> rank => 0
+                     | <Lex570> <Lex569> rank => -1
+                     | <Lex570> <Lex566> rank => -2
+<C Array Specification> ::= <Left Bracket> <Length> <Right Bracket> rank => 0
+<C Host Identifier> ::= <Regular Identifier> rank => 0
+<C Derived Variable> ::= <C Varchar Variable> rank => 0
+                       | <C Nchar Variable> rank => -1
+                       | <C Nchar Varying Variable> rank => -2
+                       | <C Clob Variable> rank => -3
+                       | <C Nclob Variable> rank => -4
+                       | <C Blob Variable> rank => -5
+                       | <C User Defined Type Variable> rank => -6
+                       | <C Clob Locator Variable> rank => -7
+                       | <C Blob Locator Variable> rank => -8
+                       | <C Array Locator Variable> rank => -9
+                       | <C Multiset Locator Variable> rank => -10
+                       | <C User Defined Type Locator Variable> rank => -11
+                       | <C Ref Variable> rank => -12
+<Gen3598> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3598 maybe> ::= <Gen3598> rank => 0
+<Gen3598 maybe> ::= rank => -1
+<Gen3601> ::= <Comma> <C Host Identifier> <C Array Specification> <C Initial Value maybe> rank => 0
+<Gen3601 any> ::= <Gen3601>* rank => 0
+<C Varchar Variable> ::= <Lex522> <Gen3598 maybe> <C Host Identifier> <C Array Specification> <C Initial Value maybe> <Gen3601 any> rank => 0
+<Gen3604> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3604 maybe> ::= <Gen3604> rank => 0
+<Gen3604 maybe> ::= rank => -1
+<Gen3607> ::= <Comma> <C Host Identifier> <C Array Specification> <C Initial Value maybe> rank => 0
+<Gen3607 any> ::= <Gen3607>* rank => 0
+<C Nchar Variable> ::= <Lex423> <Gen3604 maybe> <C Host Identifier> <C Array Specification> <C Initial Value maybe> <Gen3607 any> rank => 0
+<Gen3610> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3610 maybe> ::= <Gen3610> rank => 0
+<Gen3610 maybe> ::= rank => -1
+<Gen3613> ::= <Comma> <C Host Identifier> <C Array Specification> <C Initial Value maybe> rank => 0
+<Gen3613 any> ::= <Gen3613>* rank => 0
+<C Nchar Varying Variable> ::= <Lex423> <Lex523> <Gen3610 maybe> <C Host Identifier> <C Array Specification> <C Initial Value maybe> <Gen3613 any> rank => 0
+<Gen3616> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3616 maybe> ::= <Gen3616> rank => 0
+<Gen3616 maybe> ::= rank => -1
+<Gen3619> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3619 any> ::= <Gen3619>* rank => 0
+<C Clob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen3616 maybe> <C Host Identifier> <C Initial Value maybe> <Gen3619 any> rank => 0
+<Gen3622> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3622 maybe> ::= <Gen3622> rank => 0
+<Gen3622 maybe> ::= rank => -1
+<Gen3625> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3625 any> ::= <Gen3625>* rank => 0
+<C Nclob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex424> <Left Paren> <Large Object Length> <Right Paren> <Gen3622 maybe> <C Host Identifier> <C Initial Value maybe> <Gen3625 any> rank => 0
+<Gen3628> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3628 any> ::= <Gen3628>* rank => 0
+<C User Defined Type Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> <C Host Identifier> <C Initial Value maybe> <Gen3628 any> rank => 0
+<Gen3631> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3631 any> ::= <Gen3631>* rank => 0
+<C Blob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> <C Host Identifier> <C Initial Value maybe> <Gen3631 any> rank => 0
+<Gen3634> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3634 any> ::= <Gen3634>* rank => 0
+<C Clob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> <C Host Identifier> <C Initial Value maybe> <Gen3634 any> rank => 0
+<Gen3637> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3637 any> ::= <Gen3637>* rank => 0
+<C Blob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> <C Host Identifier> <C Initial Value maybe> <Gen3637 any> rank => 0
+<Gen3640> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3640 any> ::= <Gen3640>* rank => 0
+<C Array Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> <C Host Identifier> <C Initial Value maybe> <Gen3640 any> rank => 0
+<Gen3643> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3643 any> ::= <Gen3643>* rank => 0
+<C Multiset Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> <C Host Identifier> <C Initial Value maybe> <Gen3643 any> rank => 0
+<Gen3646> ::= <Comma> <C Host Identifier> <C Initial Value maybe> rank => 0
+<Gen3646 any> ::= <Gen3646>* rank => 0
+<C User Defined Type Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> <C Host Identifier> <C Initial Value maybe> <Gen3646 any> rank => 0
+<C Ref Variable> ::= <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<C Initial Value> ::= <Equals Operator> <Character Representation many> rank => 0
+<Embedded SQL Cobol Program> ::= <Lex365> <Lex488> rank => 0
+<Gen3652> ::= <Lex571> rank => 0
+            | <Lex572> rank => -1
+<Cobol Variable Definition> ::= <Gen3652> <Cobol Host Identifier> <Cobol Type Specification> <Character Representation any> <Period> rank => 0
+<Gen3655> ::= <Lex009> <Cobol Subscript> <Lex010> rank => 0
+<Gen3655 any> ::= <Gen3655>* rank => 0
+<Cobol Length maybe> ::= <Cobol Length> rank => 0
+<Cobol Length maybe> ::= rank => -1
+<Gen3659> ::= <Lex009> <Cobol Leftmost Character Position> <Lex017> <Cobol Length maybe> <Lex010> rank => 0
+<Gen3659 maybe> ::= <Gen3659> rank => 0
+<Gen3659 maybe> ::= rank => -1
+<Cobol Host Identifier> ::= <Cobol Qualified Data Name> <Gen3655 any> <Gen3659 maybe> rank => 0
+<Gen3663> ::= <Lex389> rank => 0
+            | <Lex431> rank => -1
+<Gen3665> ::= <Gen3663> <Cobol Data Name> rank => 0
+<Gen3665 any> ::= <Gen3665>* rank => 0
+<Gen3667> ::= <Lex389> rank => 0
+            | <Lex431> rank => -1
+<Gen3669> ::= <Gen3667> <Cobol File Name> rank => 0
+<Gen3669 maybe> ::= <Gen3669> rank => 0
+<Gen3669 maybe> ::= rank => -1
+<Cobol Qualified Data Name> ::= <Cobol Data Name> <Gen3665 any> <Gen3669 maybe> rank => 0
+<Cobol Data Name> ::= <Cobol Alphabetic User Defined Word> rank => 0
+<Gen3674> ::= <Lex573 many> rank => 0
+<Gen3674> ::= rank => -1
+<Gen3676> ::= <Digit many> <Gen3674> rank => 0
+<Gen3676 any> ::= <Gen3676>* rank => 0
+<Digit any> ::= <Digit>* rank => 0
+<Gen3679> ::= <Lex575 many> rank => 0
+<Gen3679> ::= rank => -1
+<Gen3681> ::= <Lex576 many> <Lex577 many> rank => 0
+<Gen3681 any> ::= <Gen3681>* rank => 0
+<Cobol Alphabetic User Defined Word> ::= <Gen3676 any> <Digit any> <Lex574> <Gen3679> <Gen3681 any> rank => 0
+<Cobol File Name> ::= <Cobol Alphabetic User Defined Word> rank => 0
+<Gen3685> ::= <Lex012> rank => 0
+            | <Lex014> rank => -1
+<Gen3687> ::= <Gen3685> <Cobol Integer> rank => 0
+<Gen3687 maybe> ::= <Gen3687> rank => 0
+<Gen3687 maybe> ::= rank => -1
+<Gen3690> ::= <Lex012> rank => 0
+            | <Lex014> rank => -1
+<Gen3692> ::= <Gen3690> <Cobol Integer> rank => 0
+<Gen3692 maybe> ::= <Gen3692> rank => 0
+<Gen3692 maybe> ::= rank => -1
+<Gen3695> ::= <Cobol Integer> rank => 0
+            | <Cobol Qualified Data Name> <Gen3687 maybe> rank => -1
+            | <Cobol Index Name> <Gen3692 maybe> rank => -2
+<Gen3695 many> ::= <Gen3695>+ rank => 0
+<Cobol Subscript> ::= <Gen3695 many> rank => 0
+<Gen3700> ::= <Lex578 many> rank => 0
+<Gen3700> ::= rank => -1
+<Cobol Integer> ::= <Gen3700> <Lex579> <Digit any> rank => 0
+<Cobol Index Name> ::= <Cobol Alphabetic User Defined Word> rank => 0
+<Gen3704> ::= <Lex389> rank => 0
+            | <Lex431> rank => -1
+<Gen3706> ::= <Gen3704> <Cobol File Name> rank => 0
+<Gen3706 maybe> ::= <Gen3706> rank => 0
+<Gen3706 maybe> ::= rank => -1
+<Cobol Host Identifier> ::= <Lex580> <Gen3706 maybe> rank => -1
+<Cobol Leftmost Character Position> ::= <Cobol Arithmetic Expression> rank => 0
+<Cobol Length> ::= <Cobol Arithmetic Expression> rank => 0
+<Gen3712> ::= <Lex012> rank => 0
+            | <Lex014> rank => -1
+<Gen3714> ::= <Gen3712> <Cobol Times Div> rank => 0
+<Gen3714 any> ::= <Gen3714>* rank => 0
+<Cobol Arithmetic Expression> ::= <Cobol Times Div> <Gen3714 any> rank => 0
+<Gen3717> ::= <Lex011> rank => 0
+            | <Lex016> rank => -1
+<Gen3719> ::= <Gen3717> <Cobol Power> rank => 0
+<Gen3719 any> ::= <Gen3719>* rank => 0
+<Cobol Times Div> ::= <Cobol Power> <Gen3719 any> rank => 0
+<Gen3722> ::= <Lex012> rank => 0
+            | <Lex014> rank => -1
+<Gen3724> ::= <Gen3722> rank => 0
+<Gen3724 maybe> ::= <Gen3724> rank => 0
+<Gen3724 maybe> ::= rank => -1
+<Gen3727> ::= <Lex581> <Cobol Basis> rank => 0
+<Gen3727 any> ::= <Gen3727>* rank => 0
+<Cobol Power> ::= <Gen3724 maybe> <Cobol Basis> <Gen3727 any> rank => 0
+<Cobol Basis> ::= <Cobol Host Identifier> rank => 0
+                | <Cobol Literal> rank => -1
+                | <Lex009> <Cobol Arithmetic Expression> <Lex010> rank => -2
+<Cobol Literal> ::= <Cobol Nonnumeric> rank => 0
+                  | <Cobol Numeric> rank => -1
+                  | <Cobol Figurative Constant> rank => -2
+<Gen3736> ::= <Lex038> rank => 0
+            | <Lex005> <Lex005> rank => -1
+<Gen3736 any> ::= <Gen3736>* rank => 0
+<Gen3739> ::= <Lex533> rank => 0
+            | <Lex008> <Lex008> rank => -1
+<Gen3739 any> ::= <Gen3739>* rank => 0
+<Cobol Nonnumeric> ::= <Lex005> <Gen3736 any> <Lex005> rank => 0
+                     | <Lex008> <Gen3739 any> <Lex008> rank => -1
+                     | <Lex535> <Lex005> <Cobol Hexdigits> <Lex005> rank => -2
+                     | <Lex535> <Lex008> <Cobol Hexdigits> <Lex008> rank => -3
+<Cobol Hexdigits> ::= <Lex582 many> rank => 0
+<Gen3747> ::= <Lex012> rank => 0
+            | <Lex014> rank => -1
+<Gen3747 maybe> ::= <Gen3747> rank => 0
+<Gen3747 maybe> ::= rank => -1
+<Gen3751> ::= <Digit any> <Lex015> <Digit many> rank => 0
+            | <Digit many> rank => -1
+<Cobol Numeric> ::= <Gen3747 maybe> <Gen3751> rank => 0
+<Cobol Figurative Constant> ::= <Lex583> rank => 0
+                              | <Lex584> rank => -1
+                              | <Lex585> rank => -2
+                              | <Lex247> rank => -3
+                              | <Lex586> rank => -4
+                              | <Lex587> rank => -5
+                              | <Lex588> rank => -6
+                              | <Lex589> rank => -7
+                              | <Lex590> rank => -8
+                              | <Lex591> rank => -9
+                              | <Lex592> rank => -10
+                              | <Lex290> <Cobol Literal> rank => -11
+                              | <Lex429> rank => -12
+                              | <Lex180> rank => -13
+<Cobol Type Specification> ::= <Cobol Character Type> rank => 0
+                             | <Cobol National Character Type> rank => -1
+                             | <Cobol Numeric Type> rank => -2
+                             | <Cobol Integer Type> rank => -3
+                             | <Cobol Derived Type Specification> rank => -4
+<Cobol Derived Type Specification> ::= <Cobol Clob Variable> rank => 0
+                                     | <Cobol Nclob Variable> rank => -1
+                                     | <Cobol Blob Variable> rank => -2
+                                     | <Cobol User Defined Type Variable> rank => -3
+                                     | <Cobol Clob Locator Variable> rank => -4
+                                     | <Cobol Blob Locator Variable> rank => -5
+                                     | <Cobol Array Locator Variable> rank => -6
+                                     | <Cobol Multiset Locator Variable> rank => -7
+                                     | <Cobol User Defined Type Locator Variable> rank => -8
+                                     | <Cobol Ref Variable> rank => -9
+<Gen3783> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3783 maybe> ::= <Gen3783> rank => 0
+<Gen3783 maybe> ::= rank => -1
+<Gen3786> ::= <Lex593> rank => 0
+            | <Lex594> rank => -1
+<Gen3788> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen3788 maybe> ::= <Gen3788> rank => 0
+<Gen3788 maybe> ::= rank => -1
+<Gen3791> ::= <Lex535> <Gen3788 maybe> rank => 0
+<Gen3791 many> ::= <Gen3791>+ rank => 0
+<Cobol Character Type> ::= <Gen3783 maybe> <Gen3786> <Lex401 maybe> <Gen3791 many> rank => 0
+<Gen3794> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3794 maybe> ::= <Gen3794> rank => 0
+<Gen3794 maybe> ::= rank => -1
+<Gen3797> ::= <Lex593> rank => 0
+            | <Lex594> rank => -1
+<Gen3799> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen3799 maybe> ::= <Gen3799> rank => 0
+<Gen3799 maybe> ::= rank => -1
+<Gen3802> ::= <Lex534> <Gen3799 maybe> rank => 0
+<Gen3802 many> ::= <Gen3802>+ rank => 0
+<Cobol National Character Type> ::= <Gen3794 maybe> <Gen3797> <Lex401 maybe> <Gen3802 many> rank => 0
+<Gen3805> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3805 maybe> ::= <Gen3805> rank => 0
+<Gen3805 maybe> ::= rank => -1
+<Gen3808> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3808 maybe> ::= <Gen3808> rank => 0
+<Gen3808 maybe> ::= rank => -1
+<Cobol Clob Variable> ::= <Gen3805 maybe> <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen3808 maybe> rank => 0
+<Gen3812> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3812 maybe> ::= <Gen3812> rank => 0
+<Gen3812 maybe> ::= rank => -1
+<Gen3815> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3815 maybe> ::= <Gen3815> rank => 0
+<Gen3815 maybe> ::= rank => -1
+<Cobol Nclob Variable> ::= <Gen3812 maybe> <Lex488> <Lex275> <Lex401> <Lex424> <Left Paren> <Large Object Length> <Right Paren> <Gen3815 maybe> rank => 0
+<Gen3819> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3819 maybe> ::= <Gen3819> rank => 0
+<Gen3819 maybe> ::= rank => -1
+<Cobol Blob Variable> ::= <Gen3819 maybe> <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Gen3823> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3823 maybe> ::= <Gen3823> rank => 0
+<Gen3823 maybe> ::= rank => -1
+<Cobol User Defined Type Variable> ::= <Gen3823 maybe> <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> rank => 0
+<Gen3827> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3827 maybe> ::= <Gen3827> rank => 0
+<Gen3827 maybe> ::= rank => -1
+<Cobol Clob Locator Variable> ::= <Gen3827 maybe> <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
+<Gen3831> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3831 maybe> ::= <Gen3831> rank => 0
+<Gen3831 maybe> ::= rank => -1
+<Cobol Blob Locator Variable> ::= <Gen3831 maybe> <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> rank => 0
+<Gen3835> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3835 maybe> ::= <Gen3835> rank => 0
+<Gen3835 maybe> ::= rank => -1
+<Cobol Array Locator Variable> ::= <Gen3835 maybe> <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> rank => 0
+<Gen3839> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3839 maybe> ::= <Gen3839> rank => 0
+<Gen3839 maybe> ::= rank => -1
+<Cobol Multiset Locator Variable> ::= <Gen3839 maybe> <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> rank => 0
+<Gen3843> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3843 maybe> ::= <Gen3843> rank => 0
+<Gen3843 maybe> ::= rank => -1
+<Cobol User Defined Type Locator Variable> ::= <Gen3843 maybe> <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> rank => 0
+<Gen3847> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3847 maybe> ::= <Gen3847> rank => 0
+<Gen3847 maybe> ::= rank => -1
+<Cobol Ref Variable> ::= <Gen3847 maybe> <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<Gen3851> ::= <Lex593> rank => 0
+            | <Lex594> rank => -1
+<Gen3853> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3853 maybe> ::= <Gen3853> rank => 0
+<Gen3853 maybe> ::= rank => -1
+<Cobol Numeric Type> ::= <Gen3851> <Lex401 maybe> <Lex595> <Cobol Nines Specification> <Gen3853 maybe> <Lex596> <Lex597> <Lex406> <Lex598> rank => 0
+<Cobol Nines maybe> ::= <Cobol Nines> rank => 0
+<Cobol Nines maybe> ::= rank => -1
+<Gen3859> ::= <Lex599> <Cobol Nines maybe> rank => 0
+<Gen3859 maybe> ::= <Gen3859> rank => 0
+<Gen3859 maybe> ::= rank => -1
+<Cobol Nines Specification> ::= <Cobol Nines> <Gen3859 maybe> rank => 0
+                              | <Lex599> <Cobol Nines> rank => -1
+<Cobol Integer Type> ::= <Cobol Binary Integer> rank => 0
+<Gen3865> ::= <Lex593> rank => 0
+            | <Lex594> rank => -1
+<Gen3867> ::= <Lex280> <Lex401 maybe> rank => 0
+<Gen3867 maybe> ::= <Gen3867> rank => 0
+<Gen3867 maybe> ::= rank => -1
+<Cobol Binary Integer> ::= <Gen3865> <Lex401 maybe> <Lex595> <Cobol Nines> <Gen3867 maybe> <Lex306> rank => 0
+<Gen3871> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen3871 maybe> ::= <Gen3871> rank => 0
+<Gen3871 maybe> ::= rank => -1
+<Gen3874> ::= <Lex600> <Gen3871 maybe> rank => 0
+<Gen3874 many> ::= <Gen3874>+ rank => 0
+<Cobol Nines> ::= <Gen3874 many> rank => 0
+<Embedded SQL Fortran Program> ::= <Lex365> <Lex488> rank => 0
+<Gen3878> ::= <Comma> <Fortran Host Identifier> rank => 0
+<Gen3878 any> ::= <Gen3878>* rank => 0
+<Fortran Variable Definition> ::= <Fortran Type Specification> <Fortran Host Identifier> <Gen3878 any> rank => 0
+<Fortran Host Identifier> ::= <Regular Identifier> rank => 0
+<Gen3882> ::= <Asterisk> <Length> rank => 0
+<Gen3882 maybe> ::= <Gen3882> rank => 0
+<Gen3882 maybe> ::= rank => -1
+<Gen3885> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3885 maybe> ::= <Gen3885> rank => 0
+<Gen3885 maybe> ::= rank => -1
+<Gen3888> ::= <Lex003 many> rank => 0
+<Gen3888> ::= rank => -1
+<Gen3890> ::= <Asterisk> <Length> rank => 0
+<Gen3890 maybe> ::= <Gen3890> rank => 0
+<Gen3890 maybe> ::= rank => -1
+<Gen3893> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3893 maybe> ::= <Gen3893> rank => 0
+<Gen3893 maybe> ::= rank => -1
+<Fortran Type Specification> ::= <Lex317> <Gen3882 maybe> <Gen3885 maybe> rank => 0
+                               | <Lex317> <Lex601> <Lex020> <Lex003> <Gen3888> <Gen3890 maybe> <Gen3893 maybe> rank => -1
+                               | <Lex397> rank => -2
+                               | <Lex451> rank => -3
+                               | <Lex355> <Lex445> rank => -4
+                               | <Lex603> rank => -5
+                               | <Fortran Derived Type Specification> rank => -6
+<Fortran Derived Type Specification> ::= <Fortran Clob Variable> rank => 0
+                                       | <Fortran Blob Variable> rank => -1
+                                       | <Fortran User Defined Type Variable> rank => -2
+                                       | <Fortran Clob Locator Variable> rank => -3
+                                       | <Fortran Blob Locator Variable> rank => -4
+                                       | <Fortran User Defined Type Locator Variable> rank => -5
+                                       | <Fortran Array Locator Variable> rank => -6
+                                       | <Fortran Multiset Locator Variable> rank => -7
+                                       | <Fortran Ref Variable> rank => -8
+<Gen3912> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3912 maybe> ::= <Gen3912> rank => 0
+<Gen3912 maybe> ::= rank => -1
+<Fortran Clob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen3912 maybe> rank => 0
+<Fortran Blob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Fortran User Defined Type Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> rank => 0
+<Fortran Clob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
+<Fortran Blob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> rank => 0
+<Fortran User Defined Type Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> rank => 0
+<Fortran Array Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> rank => 0
+<Fortran Multiset Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> rank => 0
+<Fortran Ref Variable> ::= <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<Embedded SQL Mumps Program> ::= <Lex365> <Lex488> rank => 0
+<Mumps Variable Definition> ::= <Mumps Numeric Variable> <Semicolon> rank => 0
+                              | <Mumps Character Variable> <Semicolon> rank => -1
+                              | <Mumps Derived Type Specification> <Semicolon> rank => -2
+<Gen3928> ::= <Comma> <Mumps Host Identifier> <Mumps Length Specification> rank => 0
+<Gen3928 any> ::= <Gen3928>* rank => 0
+<Mumps Character Variable> ::= <Lex522> <Mumps Host Identifier> <Mumps Length Specification> <Gen3928 any> rank => 0
+<Mumps Host Identifier> ::= <Regular Identifier> rank => 0
+<Mumps Length Specification> ::= <Left Paren> <Length> <Right Paren> rank => 0
+<Gen3933> ::= <Comma> <Mumps Host Identifier> rank => 0
+<Gen3933 any> ::= <Gen3933>* rank => 0
+<Mumps Numeric Variable> ::= <Mumps Type Specification> <Mumps Host Identifier> <Gen3933 any> rank => 0
+<Gen3936> ::= <Comma> <Scale> rank => 0
+<Gen3936 maybe> ::= <Gen3936> rank => 0
+<Gen3936 maybe> ::= rank => -1
+<Gen3939> ::= <Left Paren> <Precision> <Gen3936 maybe> <Right Paren> rank => 0
+<Gen3939 maybe> ::= <Gen3939> rank => 0
+<Gen3939 maybe> ::= rank => -1
+<Mumps Type Specification> ::= <Lex396> rank => 0
+                             | <Lex345> <Gen3939 maybe> rank => -1
+                             | <Lex451> rank => -2
+<Mumps Derived Type Specification> ::= <Mumps Clob Variable> rank => 0
+                                     | <Mumps Blob Variable> rank => -1
+                                     | <Mumps User Defined Type Variable> rank => -2
+                                     | <Mumps Clob Locator Variable> rank => -3
+                                     | <Mumps Blob Locator Variable> rank => -4
+                                     | <Mumps User Defined Type Locator Variable> rank => -5
+                                     | <Mumps Array Locator Variable> rank => -6
+                                     | <Mumps Multiset Locator Variable> rank => -7
+                                     | <Mumps Ref Variable> rank => -8
+<Gen3954> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3954 maybe> ::= <Gen3954> rank => 0
+<Gen3954 maybe> ::= rank => -1
+<Mumps Clob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen3954 maybe> rank => 0
+<Mumps Blob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Mumps User Defined Type Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> rank => 0
+<Mumps Clob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
+<Mumps Blob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> rank => 0
+<Mumps User Defined Type Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> rank => 0
+<Mumps Array Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> rank => 0
+<Mumps Multiset Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> rank => 0
+<Mumps Ref Variable> ::= <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<Embedded SQL Pascal Program> ::= <Lex365> <Lex488> rank => 0
+<Gen3967> ::= <Comma> <Pascal Host Identifier> rank => 0
+<Gen3967 any> ::= <Gen3967>* rank => 0
+<Pascal Variable Definition> ::= <Pascal Host Identifier> <Gen3967 any> <Colon> <Pascal Type Specification> <Semicolon> rank => 0
+<Pascal Host Identifier> ::= <Regular Identifier> rank => 0
+<Gen3971> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3971 maybe> ::= <Gen3971> rank => 0
+<Gen3971 maybe> ::= rank => -1
+<Gen3974> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3974 maybe> ::= <Gen3974> rank => 0
+<Gen3974 maybe> ::= rank => -1
+<Pascal Type Specification> ::= <Lex604> <Lex296> <Left Bracket> <Lex556> <Double Period> <Length> <Right Bracket> <Lex431> <Lex316> <Gen3971 maybe> rank => 0
+                              | <Lex397> rank => -1
+                              | <Lex451> rank => -2
+                              | <Lex316> <Gen3974 maybe> rank => -3
+                              | <Lex308> rank => -4
+                              | <Pascal Derived Type Specification> rank => -5
+<Pascal Derived Type Specification> ::= <Pascal Clob Variable> rank => 0
+                                      | <Pascal Blob Variable> rank => -1
+                                      | <Pascal User Defined Type Variable> rank => -2
+                                      | <Pascal Clob Locator Variable> rank => -3
+                                      | <Pascal Blob Locator Variable> rank => -4
+                                      | <Pascal User Defined Type Locator Variable> rank => -5
+                                      | <Pascal Array Locator Variable> rank => -6
+                                      | <Pascal Multiset Locator Variable> rank => -7
+                                      | <Pascal Ref Variable> rank => -8
+<Gen3992> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen3992 maybe> ::= <Gen3992> rank => 0
+<Gen3992 maybe> ::= rank => -1
+<Pascal Clob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen3992 maybe> rank => 0
+<Pascal Blob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Pascal Clob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
+<Pascal User Defined Type Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> rank => 0
+<Pascal Blob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> rank => 0
+<Pascal User Defined Type Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> rank => 0
+<Pascal Array Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> rank => 0
+<Pascal Multiset Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> rank => 0
+<Pascal Ref Variable> ::= <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<Embedded SQL Pl I Program> ::= <Lex365> <Lex488> rank => 0
+<Gen4005> ::= <Lex605> rank => 0
+            | <Lex347> rank => -1
+<Gen4007> ::= <Comma> <Pl I Host Identifier> rank => 0
+<Gen4007 any> ::= <Gen4007>* rank => 0
+<Pl I Variable Definition> ::= <Gen4005> <Pl I Host Identifier> <Left Paren> <Pl I Host Identifier> <Gen4007 any> <Right Paren> <Pl I Type Specification> <Character Representation any> <Semicolon> rank => 0
+<Pl I Host Identifier> ::= <Regular Identifier> rank => 0
+<Gen4011> ::= <Lex316> rank => 0
+            | <Lex317> rank => -1
+<Lex523 maybe> ::= <Lex523> rank => 0
+<Lex523 maybe> ::= rank => -1
+<Gen4015> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen4015 maybe> ::= <Gen4015> rank => 0
+<Gen4015 maybe> ::= rank => -1
+<Gen4018> ::= <Comma> <Scale> rank => 0
+<Gen4018 maybe> ::= <Gen4018> rank => 0
+<Gen4018 maybe> ::= rank => -1
+<Gen4021> ::= <Left Paren> <Precision> <Right Paren> rank => 0
+<Gen4021 maybe> ::= <Gen4021> rank => 0
+<Gen4021 maybe> ::= rank => -1
+<Pl I Type Specification> ::= <Gen4011> <Lex523 maybe> <Left Paren> <Length> <Right Paren> <Gen4015 maybe> rank => 0
+                            | <Pl I Type Fixed Decimal> <Left Paren> <Precision> <Gen4018 maybe> <Right Paren> rank => -1
+                            | <Pl I Type Fixed Binary> <Gen4021 maybe> rank => -2
+                            | <Pl I Type Float Binary> <Left Paren> <Precision> <Right Paren> rank => -3
+                            | <Pl I Derived Type Specification> rank => -4
+<Pl I Derived Type Specification> ::= <Pl I Clob Variable> rank => 0
+                                    | <Pl I Blob Variable> rank => -1
+                                    | <Pl I User Defined Type Variable> rank => -2
+                                    | <Pl I Clob Locator Variable> rank => -3
+                                    | <Pl I Blob Locator Variable> rank => -4
+                                    | <Pl I User Defined Type Locator Variable> rank => -5
+                                    | <Pl I Array Locator Variable> rank => -6
+                                    | <Pl I Multiset Locator Variable> rank => -7
+                                    | <Pl I Ref Variable> rank => -8
+<Gen4038> ::= <Lex317> <Lex482> <Lex401 maybe> <Character Set Specification> rank => 0
+<Gen4038 maybe> ::= <Gen4038> rank => 0
+<Gen4038 maybe> ::= rank => -1
+<Pl I Clob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left Paren> <Large Object Length> <Right Paren> <Gen4038 maybe> rank => 0
+<Pl I Blob Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left Paren> <Large Object Length> <Right Paren> rank => 0
+<Pl I User Defined Type Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Predefined Type> rank => 0
+<Pl I Clob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
+<Pl I Blob Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Lex297> <Lex158> rank => 0
+<Pl I User Defined Type Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Path Resolved User Defined Type Name> <Lex297> <Lex158> rank => 0
+<Pl I Array Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Array Type> <Lex297> <Lex158> rank => 0
+<Pl I Multiset Locator Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset Type> <Lex297> <Lex158> rank => 0
+<Pl I Ref Variable> ::= <Lex488> <Lex275> <Lex401> <Reference Type> rank => 0
+<Gen4050> ::= <Lex345> rank => 0
+            | <Lex346> rank => -1
+<Gen4052> ::= <Lex345> rank => 0
+            | <Lex346> rank => -1
+<Pl I Type Fixed Decimal> ::= <Gen4050> <Lex606> rank => 0
+                            | <Lex606> <Gen4052> rank => -1
+<Gen4056> ::= <Lex607> rank => 0
+            | <Lex306> rank => -1
+<Gen4058> ::= <Lex607> rank => 0
+            | <Lex306> rank => -1
+<Pl I Type Fixed Binary> ::= <Gen4056> <Lex606> rank => 0
+                           | <Lex606> <Gen4058> rank => -1
+<Gen4062> ::= <Lex607> rank => 0
+            | <Lex306> rank => -1
+<Gen4064> ::= <Lex607> rank => 0
+            | <Lex306> rank => -1
+<Pl I Type Float Binary> ::= <Gen4062> <Lex372> rank => 0
+                           | <Lex372> <Gen4064> rank => -1
+<Direct SQL Statement> ::= <Directly Executable Statement> <Semicolon> rank => 0
+<Directly Executable Statement> ::= <Direct SQL Data Statement> rank => 0
+                                  | <SQL Schema Statement> rank => -1
+                                  | <SQL Transaction Statement> rank => -2
+                                  | <SQL Connection Statement> rank => -3
+                                  | <SQL Session Statement> rank => -4
+<Direct SQL Data Statement> ::= <Delete Statement Searched> rank => 0
+                              | <Direct Select Statement Multiple Rows> rank => -1
+                              | <Insert Statement> rank => -2
+                              | <Update Statement Searched> rank => -3
+                              | <Merge Statement> rank => -4
+                              | <Temporary Table Declaration> rank => -5
+<Direct Select Statement Multiple Rows> ::= <Cursor Specification> rank => 0
+<Get Diagnostics Statement> ::= <Lex379> <Lex118> <SQL Diagnostics Information> rank => 0
+<SQL Diagnostics Information> ::= <Statement Information> rank => 0
+                                | <Condition Information> rank => -1
+<Gen4084> ::= <Comma> <Statement Information Item> rank => 0
+<Gen4084 any> ::= <Gen4084>* rank => 0
+<Statement Information> ::= <Statement Information Item> <Gen4084 any> rank => 0
+<Statement Information Item> ::= <Simple Target Specification> <Equals Operator> <Statement Information Item Name> rank => 0
+<Statement Information Item Name> ::= <Lex181> rank => 0
+                                    | <Lex170> rank => -1
+                                    | <Lex084> rank => -2
+                                    | <Lex085> rank => -3
+                                    | <Lex121> rank => -4
+                                    | <Lex122> rank => -5
+                                    | <Lex228> rank => -6
+                                    | <Lex265> rank => -7
+                                    | <Lex266> rank => -8
+                                    | <Lex267> rank => -9
+<Gen4098> ::= <Lex125> rank => 0
+            | <Lex087> rank => -1
+<Gen4100> ::= <Comma> <Condition Information Item> rank => 0
+<Gen4100 any> ::= <Gen4100>* rank => 0
+<Condition Information> ::= <Gen4098> <Condition Number> <Condition Information Item> <Gen4100 any> rank => 0
+<Condition Information Item> ::= <Simple Target Specification> <Equals Operator> <Condition Information Item Name> rank => 0
+<Condition Information Item Name> ::= <Lex062> rank => 0
+                                    | <Lex074> rank => -1
+                                    | <Lex083> rank => -2
+                                    | <Lex088> rank => -3
+                                    | <Lex089> rank => -4
+                                    | <Lex091> rank => -5
+                                    | <Lex092> rank => -6
+                                    | <Lex093> rank => -7
+                                    | <Lex103> rank => -8
+                                    | <Lex164> rank => -9
+                                    | <Lex165> rank => -10
+                                    | <Lex166> rank => -11
+                                    | <Lex193> rank => -12
+                                    | <Lex194> rank => -13
+                                    | <Lex195> rank => -14
+                                    | <Lex222> rank => -15
+                                    | <Lex225> rank => -16
+                                    | <Lex226> rank => -17
+                                    | <Lex227> rank => -18
+                                    | <Lex232> rank => -19
+                                    | <Lex241> rank => -20
+                                    | <Lex248> rank => -21
+                                    | <Lex256> rank => -22
+                                    | <Lex260> rank => -23
+                                    | <Lex271> rank => -24
+                                    | <Lex272> rank => -25
+                                    | <Lex273> rank => -26
+<Condition Number> ::= <Simple Value Specification> rank => 0
+<Lex001> ~ [A-Z]
+<Lex002> ~ [a-z]
+<Lex003> ~ [0-9]
+<Lex003 many> ~ [0-9]*
+<Lex004> ~ [\s]
+<Lex005> ~ '"'
+<Lex006> ~ '%'
+<Lex007> ~ '&'
+<Lex008> ~ [']
+<Lex009> ~ '('
+<Lex010> ~ ')'
+<Lex011> ~ '*'
+<Lex012> ~ '+'
+<Lex013> ~ ','
+<Lex014> ~ '-'
+<Lex015> ~ '.'
+<Lex016> ~ '/'
+<Lex017> ~ ':'
+<Lex018> ~ ';'
+<Lex019> ~ '<'
+<Lex020> ~ '='
+<Lex021> ~ '>'
+<Lex022> ~ '?'
+<Lex023> ~ '['
+<Lex024> ::= '?':i '?':i '(':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex025> ~ ']'
+<Lex026> ::= '?':i '?':i ')':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex027> ~ '^'
+<Lex028> ~ '_'
+<Lex029> ~ '|'
+<Lex030> ~ '{'
+<Lex031> ~ '}'
+<Lex032> ~ 'K'
+<Lex033> ~ 'M'
+<Lex034> ~ 'G'
+<Lex035> ~ 'U'
+<Lex036> ::= 'U':i 'E':i 'S':i 'C':i 'A':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex037> ~ [\x{1b}]
+<Lex038> ~ [^\"]
+<Lex039> ::= '"':i '"':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex040> ~ [\n]
+<Lex041> ~ 'A'
+<Lex042> ::= 'A':i 'B':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex043> ::= 'A':i 'B':i 'S':i 'O':i 'L':i 'U':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex044> ::= 'A':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex045> ::= 'A':i 'D':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex046> ::= 'A':i 'D':i 'M':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex047> ::= 'A':i 'F':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex048> ::= 'A':i 'L':i 'W':i 'A':i 'Y':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex049> ::= 'A':i 'S':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex050> ::= 'A':i 'S':i 'S':i 'E':i 'R':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex051> ::= 'A':i 'S':i 'S':i 'I':i 'G':i 'N':i 'M':i 'E':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex052> ::= 'A':i 'T':i 'T':i 'R':i 'I':i 'B':i 'U':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex053> ::= 'A':i 'T':i 'T':i 'R':i 'I':i 'B':i 'U':i 'T':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex054> ::= 'A':i 'V':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex055> ::= 'B':i 'E':i 'F':i 'O':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex056> ::= 'B':i 'E':i 'R':i 'N':i 'O':i 'U':i 'L':i 'L':i 'I':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex057> ::= 'B':i 'R':i 'E':i 'A':i 'D':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex058> ~ 'C'
+<Lex059> ::= 'C':i 'A':i 'R':i 'D':i 'I':i 'N':i 'A':i 'L':i 'I':i 'T':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex060> ::= 'C':i 'A':i 'S':i 'C':i 'A':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex061> ::= 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex062> ::= 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex063> ::= 'C':i 'E':i 'I':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex064> ::= 'C':i 'E':i 'I':i 'L':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex065> ::= 'C':i 'H':i 'A':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex066> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i 'I':i 'S':i 'T':i 'I':i 'C':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex067> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex068> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex069> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i '_':i 'S':i 'E':i 'T':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex070> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i '_':i 'S':i 'E':i 'T':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex071> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i '_':i 'S':i 'E':i 'T':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex072> ::= 'C':i 'H':i 'A':i 'R':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex073> ::= 'C':i 'H':i 'E':i 'C':i 'K':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex074> ::= 'C':i 'L':i 'A':i 'S':i 'S':i '_':i 'O':i 'R':i 'I':i 'G':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex075> ::= 'C':i 'O':i 'A':i 'L':i 'E':i 'S':i 'C':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex076> ::= 'C':i 'O':i 'B':i 'O':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex077> ::= 'C':i 'O':i 'D':i 'E':i '_':i 'U':i 'N':i 'I':i 'T':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex078> ::= 'C':i 'O':i 'L':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex079> ::= 'C':i 'O':i 'L':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex080> ::= 'C':i 'O':i 'L':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex081> ::= 'C':i 'O':i 'L':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex082> ::= 'C':i 'O':i 'L':i 'L':i 'E':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex083> ::= 'C':i 'O':i 'L':i 'U':i 'M':i 'N':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex084> ::= 'C':i 'O':i 'M':i 'M':i 'A':i 'N':i 'D':i '_':i 'F':i 'U':i 'N':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex085> ::= 'C':i 'O':i 'M':i 'M':i 'A':i 'N':i 'D':i '_':i 'F':i 'U':i 'N':i 'C':i 'T':i 'I':i 'O':i 'N':i '_':i 'C':i 'O':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex086> ::= 'C':i 'O':i 'M':i 'M':i 'I':i 'T':i 'T':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex087> ::= 'C':i 'O':i 'N':i 'D':i 'I':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex088> ::= 'C':i 'O':i 'N':i 'D':i 'I':i 'T':i 'I':i 'O':i 'N':i '_':i 'N':i 'U':i 'M':i 'B':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex089> ::= 'C':i 'O':i 'N':i 'N':i 'E':i 'C':i 'T':i 'I':i 'O':i 'N':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex090> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'A':i 'I':i 'N':i 'T':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex091> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'A':i 'I':i 'N':i 'T':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex092> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'A':i 'I':i 'N':i 'T':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex093> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'A':i 'I':i 'N':i 'T':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex094> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'U':i 'C':i 'T':i 'O':i 'R':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex095> ::= 'C':i 'O':i 'N':i 'T':i 'A':i 'I':i 'N':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex096> ::= 'C':i 'O':i 'N':i 'V':i 'E':i 'R':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex097> ::= 'C':i 'O':i 'R':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex098> ::= 'C':i 'O':i 'U':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex099> ::= 'C':i 'O':i 'V':i 'A':i 'R':i '_':i 'P':i 'O':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex100> ::= 'C':i 'O':i 'V':i 'A':i 'R':i '_':i 'S':i 'A':i 'M':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex101> ::= 'C':i 'U':i 'M':i 'E':i '_':i 'D':i 'I':i 'S':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex102> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'C':i 'O':i 'L':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex103> ::= 'C':i 'U':i 'R':i 'S':i 'O':i 'R':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex104> ::= 'D':i 'A':i 'T':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex105> ::= 'D':i 'A':i 'T':i 'E':i 'T':i 'I':i 'M':i 'E':i '_':i 'I':i 'N':i 'T':i 'E':i 'R':i 'V':i 'A':i 'L':i '_':i 'C':i 'O':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex106> ::= 'D':i 'A':i 'T':i 'E':i 'T':i 'I':i 'M':i 'E':i '_':i 'I':i 'N':i 'T':i 'E':i 'R':i 'V':i 'A':i 'L':i '_':i 'P':i 'R':i 'E':i 'C':i 'I':i 'S':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex107> ::= 'D':i 'E':i 'F':i 'A':i 'U':i 'L':i 'T':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex108> ::= 'D':i 'E':i 'F':i 'E':i 'R':i 'R':i 'A':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex109> ::= 'D':i 'E':i 'F':i 'E':i 'R':i 'R':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex110> ::= 'D':i 'E':i 'F':i 'I':i 'N':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex111> ::= 'D':i 'E':i 'F':i 'I':i 'N':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex112> ::= 'D':i 'E':i 'G':i 'R':i 'E':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex113> ::= 'D':i 'E':i 'N':i 'S':i 'E':i '_':i 'R':i 'A':i 'N':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex114> ::= 'D':i 'E':i 'P':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex115> ::= 'D':i 'E':i 'R':i 'I':i 'V':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex116> ::= 'D':i 'E':i 'S':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex117> ::= 'D':i 'E':i 'S':i 'C':i 'R':i 'I':i 'P':i 'T':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex118> ::= 'D':i 'I':i 'A':i 'G':i 'N':i 'O':i 'S':i 'T':i 'I':i 'C':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex119> ::= 'D':i 'I':i 'S':i 'P':i 'A':i 'T':i 'C':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex120> ::= 'D':i 'O':i 'M':i 'A':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex121> ::= 'D':i 'Y':i 'N':i 'A':i 'M':i 'I':i 'C':i '_':i 'F':i 'U':i 'N':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex122> ::= 'D':i 'Y':i 'N':i 'A':i 'M':i 'I':i 'C':i '_':i 'F':i 'U':i 'N':i 'C':i 'T':i 'I':i 'O':i 'N':i '_':i 'C':i 'O':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex123> ::= 'E':i 'Q':i 'U':i 'A':i 'L':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex124> ::= 'E':i 'V':i 'E':i 'R':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex125> ::= 'E':i 'X':i 'C':i 'E':i 'P':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex126> ::= 'E':i 'X':i 'C':i 'L':i 'U':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex127> ::= 'E':i 'X':i 'C':i 'L':i 'U':i 'D':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex128> ::= 'E':i 'X':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex129> ::= 'E':i 'X':i 'T':i 'R':i 'A':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex130> ::= 'F':i 'I':i 'N':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex131> ::= 'F':i 'I':i 'R':i 'S':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex132> ::= 'F':i 'L':i 'O':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex133> ::= 'F':i 'O':i 'L':i 'L':i 'O':i 'W':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex134> ::= 'F':i 'O':i 'R':i 'T':i 'R':i 'A':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex135> ::= 'F':i 'O':i 'U':i 'N':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex136> ::= 'F':i 'U':i 'S':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex137> ::= 'G':i 'E':i 'N':i 'E':i 'R':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex138> ::= 'G':i 'O':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex139> ::= 'G':i 'O':i 'T':i 'O':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex140> ::= 'G':i 'R':i 'A':i 'N':i 'T':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex141> ::= 'H':i 'I':i 'E':i 'R':i 'A':i 'R':i 'C':i 'H':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex142> ::= 'I':i 'M':i 'P':i 'L':i 'E':i 'M':i 'E':i 'N':i 'T':i 'A':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex143> ::= 'I':i 'N':i 'C':i 'L':i 'U':i 'D':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex144> ::= 'I':i 'N':i 'C':i 'R':i 'E':i 'M':i 'E':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex145> ::= 'I':i 'N':i 'I':i 'T':i 'I':i 'A':i 'L':i 'L':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex146> ::= 'I':i 'N':i 'S':i 'T':i 'A':i 'N':i 'C':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex147> ::= 'I':i 'N':i 'S':i 'T':i 'A':i 'N':i 'T':i 'I':i 'A':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex148> ::= 'I':i 'N':i 'T':i 'E':i 'R':i 'S':i 'E':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex149> ::= 'I':i 'N':i 'V':i 'O':i 'K':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex150> ::= 'I':i 'S':i 'O':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex151> ::= 'K':i 'E':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex152> ::= 'K':i 'E':i 'Y':i '_':i 'M':i 'E':i 'M':i 'B':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex153> ::= 'K':i 'E':i 'Y':i '_':i 'T':i 'Y':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex154> ::= 'L':i 'A':i 'S':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex155> ::= 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex156> ::= 'L':i 'E':i 'V':i 'E':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex157> ::= 'L':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex158> ::= 'L':i 'O':i 'C':i 'A':i 'T':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex159> ::= 'L':i 'O':i 'W':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex160> ::= 'M':i 'A':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex161> ::= 'M':i 'A':i 'T':i 'C':i 'H':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex162> ::= 'M':i 'A':i 'X':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex163> ::= 'M':i 'A':i 'X':i 'V':i 'A':i 'L':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex164> ::= 'M':i 'E':i 'S':i 'S':i 'A':i 'G':i 'E':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex165> ::= 'M':i 'E':i 'S':i 'S':i 'A':i 'G':i 'E':i '_':i 'O':i 'C':i 'T':i 'E':i 'T':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex166> ::= 'M':i 'E':i 'S':i 'S':i 'A':i 'G':i 'E':i '_':i 'T':i 'E':i 'X':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex167> ::= 'M':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex168> ::= 'M':i 'I':i 'N':i 'V':i 'A':i 'L':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex169> ::= 'M':i 'O':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex170> ::= 'M':i 'O':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex171> ::= 'M':i 'U':i 'M':i 'P':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex172> ::= 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex173> ::= 'N':i 'A':i 'M':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex174> ::= 'N':i 'E':i 'S':i 'T':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex175> ::= 'N':i 'E':i 'X':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex176> ::= 'N':i 'O':i 'R':i 'M':i 'A':i 'L':i 'I':i 'Z':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex177> ::= 'N':i 'O':i 'R':i 'M':i 'A':i 'L':i 'I':i 'Z':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex178> ::= 'N':i 'U':i 'L':i 'L':i 'A':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex179> ::= 'N':i 'U':i 'L':i 'L':i 'I':i 'F':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex180> ::= 'N':i 'U':i 'L':i 'L':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex181> ::= 'N':i 'U':i 'M':i 'B':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex182> ::= 'O':i 'B':i 'J':i 'E':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex183> ::= 'O':i 'C':i 'T':i 'E':i 'T':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex184> ::= 'O':i 'C':i 'T':i 'E':i 'T':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex185> ::= 'O':i 'P':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex186> ::= 'O':i 'P':i 'T':i 'I':i 'O':i 'N':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex187> ::= 'O':i 'R':i 'D':i 'E':i 'R':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex188> ::= 'O':i 'R':i 'D':i 'I':i 'N':i 'A':i 'L':i 'I':i 'T':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex189> ::= 'O':i 'T':i 'H':i 'E':i 'R':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex190> ::= 'O':i 'V':i 'E':i 'R':i 'L':i 'A':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex191> ::= 'O':i 'V':i 'E':i 'R':i 'R':i 'I':i 'D':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex192> ::= 'P':i 'A':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex193> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i '_':i 'M':i 'O':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex194> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex195> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i '_':i 'O':i 'R':i 'D':i 'I':i 'N':i 'A':i 'L':i '_':i 'P':i 'O':i 'S':i 'I':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex196> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i '_':i 'S':i 'P':i 'E':i 'C':i 'I':i 'F':i 'I':i 'C':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex197> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i '_':i 'S':i 'P':i 'E':i 'C':i 'I':i 'F':i 'I':i 'C':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex198> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i '_':i 'S':i 'P':i 'E':i 'C':i 'I':i 'F':i 'I':i 'C':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex199> ::= 'P':i 'A':i 'R':i 'T':i 'I':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex200> ::= 'P':i 'A':i 'S':i 'C':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex201> ::= 'P':i 'A':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex202> ::= 'P':i 'E':i 'R':i 'C':i 'E':i 'N':i 'T':i 'I':i 'L':i 'E':i '_':i 'C':i 'O':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex203> ::= 'P':i 'E':i 'R':i 'C':i 'E':i 'N':i 'T':i 'I':i 'L':i 'E':i '_':i 'D':i 'I':i 'S':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex204> ::= 'P':i 'E':i 'R':i 'C':i 'E':i 'N':i 'T':i '_':i 'R':i 'A':i 'N':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex205> ::= 'P':i 'L':i 'A':i 'C':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex206> ::= 'P':i 'L':i 'I':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex207> ::= 'P':i 'O':i 'S':i 'I':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex208> ::= 'P':i 'O':i 'W':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex209> ::= 'P':i 'R':i 'E':i 'C':i 'E':i 'D':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex210> ::= 'P':i 'R':i 'E':i 'S':i 'E':i 'R':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex211> ::= 'P':i 'R':i 'I':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex212> ::= 'P':i 'R':i 'I':i 'V':i 'I':i 'L':i 'E':i 'G':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex213> ::= 'P':i 'U':i 'B':i 'L':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex214> ::= 'R':i 'A':i 'N':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex215> ::= 'R':i 'E':i 'A':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex216> ::= 'R':i 'E':i 'L':i 'A':i 'T':i 'I':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex217> ::= 'R':i 'E':i 'P':i 'E':i 'A':i 'T':i 'A':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex218> ::= 'R':i 'E':i 'S':i 'T':i 'A':i 'R':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex219> ::= 'R':i 'E':i 'T':i 'U':i 'R':i 'N':i 'E':i 'D':i '_':i 'C':i 'A':i 'R':i 'D':i 'I':i 'N':i 'A':i 'L':i 'I':i 'T':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex220> ::= 'R':i 'E':i 'T':i 'U':i 'R':i 'N':i 'E':i 'D':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex221> ::= 'R':i 'E':i 'T':i 'U':i 'R':i 'N':i 'E':i 'D':i '_':i 'O':i 'C':i 'T':i 'E':i 'T':i '_':i 'L':i 'E':i 'N':i 'G':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex222> ::= 'R':i 'E':i 'T':i 'U':i 'R':i 'N':i 'E':i 'D':i '_':i 'S':i 'Q':i 'L':i 'S':i 'T':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex223> ::= 'R':i 'O':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex224> ::= 'R':i 'O':i 'U':i 'T':i 'I':i 'N':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex225> ::= 'R':i 'O':i 'U':i 'T':i 'I':i 'N':i 'E':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex226> ::= 'R':i 'O':i 'U':i 'T':i 'I':i 'N':i 'E':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex227> ::= 'R':i 'O':i 'U':i 'T':i 'I':i 'N':i 'E':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex228> ::= 'R':i 'O':i 'W':i '_':i 'C':i 'O':i 'U':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex229> ::= 'R':i 'O':i 'W':i '_':i 'N':i 'U':i 'M':i 'B':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex230> ::= 'S':i 'C':i 'A':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex231> ::= 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex232> ::= 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex233> ::= 'S':i 'C':i 'O':i 'P':i 'E':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex234> ::= 'S':i 'C':i 'O':i 'P':i 'E':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex235> ::= 'S':i 'C':i 'O':i 'P':i 'E':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex236> ::= 'S':i 'E':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex237> ::= 'S':i 'E':i 'C':i 'U':i 'R':i 'I':i 'T':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex238> ::= 'S':i 'E':i 'L':i 'F':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex239> ::= 'S':i 'E':i 'Q':i 'U':i 'E':i 'N':i 'C':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex240> ::= 'S':i 'E':i 'R':i 'I':i 'A':i 'L':i 'I':i 'Z':i 'A':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex241> ::= 'S':i 'E':i 'R':i 'V':i 'E':i 'R':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex242> ::= 'S':i 'E':i 'S':i 'S':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex243> ::= 'S':i 'E':i 'T':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex244> ::= 'S':i 'I':i 'M':i 'P':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex245> ::= 'S':i 'I':i 'Z':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex246> ::= 'S':i 'O':i 'U':i 'R':i 'C':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex247> ::= 'S':i 'P':i 'A':i 'C':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex248> ::= 'S':i 'P':i 'E':i 'C':i 'I':i 'F':i 'I':i 'C':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex249> ::= 'S':i 'Q':i 'R':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex250> ::= 'S':i 'T':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex251> ::= 'S':i 'T':i 'A':i 'T':i 'E':i 'M':i 'E':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex252> ::= 'S':i 'T':i 'D':i 'D':i 'E':i 'V':i '_':i 'P':i 'O':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex253> ::= 'S':i 'T':i 'D':i 'D':i 'E':i 'V':i '_':i 'S':i 'A':i 'M':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex254> ::= 'S':i 'T':i 'R':i 'U':i 'C':i 'T':i 'U':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex255> ::= 'S':i 'T':i 'Y':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex256> ::= 'S':i 'U':i 'B':i 'C':i 'L':i 'A':i 'S':i 'S':i '_':i 'O':i 'R':i 'I':i 'G':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex257> ::= 'S':i 'U':i 'B':i 'S':i 'T':i 'R':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex258> ::= 'S':i 'U':i 'M':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex259> ::= 'T':i 'A':i 'B':i 'L':i 'E':i 'S':i 'A':i 'M':i 'P':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex260> ::= 'T':i 'A':i 'B':i 'L':i 'E':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex261> ::= 'T':i 'E':i 'M':i 'P':i 'O':i 'R':i 'A':i 'R':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex262> ::= 'T':i 'I':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex263> ::= 'T':i 'O':i 'P':i '_':i 'L':i 'E':i 'V':i 'E':i 'L':i '_':i 'C':i 'O':i 'U':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex264> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'A':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex265> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'A':i 'C':i 'T':i 'I':i 'O':i 'N':i 'S':i '_':i 'C':i 'O':i 'M':i 'M':i 'I':i 'T':i 'T':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex266> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'A':i 'C':i 'T':i 'I':i 'O':i 'N':i 'S':i '_':i 'R':i 'O':i 'L':i 'L':i 'E':i 'D':i '_':i 'B':i 'A':i 'C':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex267> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'A':i 'C':i 'T':i 'I':i 'O':i 'N':i '_':i 'A':i 'C':i 'T':i 'I':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex268> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'F':i 'O':i 'R':i 'M':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex269> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'F':i 'O':i 'R':i 'M':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex270> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'L':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex271> ::= 'T':i 'R':i 'I':i 'G':i 'G':i 'E':i 'R':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex272> ::= 'T':i 'R':i 'I':i 'G':i 'G':i 'E':i 'R':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex273> ::= 'T':i 'R':i 'I':i 'G':i 'G':i 'E':i 'R':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex274> ::= 'T':i 'R':i 'I':i 'M':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex275> ::= 'T':i 'Y':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex276> ::= 'U':i 'N':i 'B':i 'O':i 'U':i 'N':i 'D':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex277> ::= 'U':i 'N':i 'C':i 'O':i 'M':i 'M':i 'I':i 'T':i 'T':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex278> ::= 'U':i 'N':i 'D':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex279> ::= 'U':i 'N':i 'N':i 'A':i 'M':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex280> ::= 'U':i 'S':i 'A':i 'G':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex281> ::= 'U':i 'S':i 'E':i 'R':i '_':i 'D':i 'E':i 'F':i 'I':i 'N':i 'E':i 'D':i '_':i 'T':i 'Y':i 'P':i 'E':i '_':i 'C':i 'A':i 'T':i 'A':i 'L':i 'O':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex282> ::= 'U':i 'S':i 'E':i 'R':i '_':i 'D':i 'E':i 'F':i 'I':i 'N':i 'E':i 'D':i '_':i 'T':i 'Y':i 'P':i 'E':i '_':i 'C':i 'O':i 'D':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex283> ::= 'U':i 'S':i 'E':i 'R':i '_':i 'D':i 'E':i 'F':i 'I':i 'N':i 'E':i 'D':i '_':i 'T':i 'Y':i 'P':i 'E':i '_':i 'N':i 'A':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex284> ::= 'U':i 'S':i 'E':i 'R':i '_':i 'D':i 'E':i 'F':i 'I':i 'N':i 'E':i 'D':i '_':i 'T':i 'Y':i 'P':i 'E':i '_':i 'S':i 'C':i 'H':i 'E':i 'M':i 'A':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex285> ::= 'V':i 'I':i 'E':i 'W':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex286> ::= 'W':i 'O':i 'R':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex287> ::= 'W':i 'R':i 'I':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex288> ::= 'Z':i 'O':i 'N':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex289> ::= 'A':i 'D':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex290> ::= 'A':i 'L':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex291> ::= 'A':i 'L':i 'L':i 'O':i 'C':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex292> ::= 'A':i 'L':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex293> ::= 'A':i 'N':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex294> ::= 'A':i 'N':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex295> ::= 'A':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex296> ::= 'A':i 'R':i 'R':i 'A':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex297> ::= 'A':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex298> ::= 'A':i 'S':i 'E':i 'N':i 'S':i 'I':i 'T':i 'I':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex299> ::= 'A':i 'S':i 'Y':i 'M':i 'M':i 'E':i 'T':i 'R':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex300> ::= 'A':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex301> ::= 'A':i 'T':i 'O':i 'M':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex302> ::= 'A':i 'U':i 'T':i 'H':i 'O':i 'R':i 'I':i 'Z':i 'A':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex303> ::= 'B':i 'E':i 'G':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex304> ::= 'B':i 'E':i 'T':i 'W':i 'E':i 'E':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex305> ::= 'B':i 'I':i 'G':i 'I':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex306> ::= 'B':i 'I':i 'N':i 'A':i 'R':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex307> ::= 'B':i 'L':i 'O':i 'B':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex308> ::= 'B':i 'O':i 'O':i 'L':i 'E':i 'A':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex309> ::= 'B':i 'O':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex310> ::= 'B':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex311> ::= 'C':i 'A':i 'L':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex312> ::= 'C':i 'A':i 'L':i 'L':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex313> ::= 'C':i 'A':i 'S':i 'C':i 'A':i 'D':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex314> ::= 'C':i 'A':i 'S':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex315> ::= 'C':i 'A':i 'S':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex316> ::= 'C':i 'H':i 'A':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex317> ::= 'C':i 'H':i 'A':i 'R':i 'A':i 'C':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex318> ::= 'C':i 'H':i 'E':i 'C':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex319> ::= 'C':i 'L':i 'O':i 'B':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex320> ::= 'C':i 'L':i 'O':i 'S':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex321> ::= 'C':i 'O':i 'L':i 'L':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex322> ::= 'C':i 'O':i 'L':i 'U':i 'M':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex323> ::= 'C':i 'O':i 'M':i 'M':i 'I':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex324> ::= 'C':i 'O':i 'N':i 'N':i 'E':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex325> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'A':i 'I':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex326> ::= 'C':i 'O':i 'N':i 'T':i 'I':i 'N':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex327> ::= 'C':i 'O':i 'R':i 'R':i 'E':i 'S':i 'P':i 'O':i 'N':i 'D':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex328> ::= 'C':i 'R':i 'E':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex329> ::= 'C':i 'R':i 'O':i 'S':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex330> ::= 'C':i 'U':i 'B':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex331> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex332> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'D':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex333> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'D':i 'E':i 'F':i 'A':i 'U':i 'L':i 'T':i '_':i 'T':i 'R':i 'A':i 'N':i 'S':i 'F':i 'O':i 'R':i 'M':i '_':i 'G':i 'R':i 'O':i 'U':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex334> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'P':i 'A':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex335> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'R':i 'O':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex336> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'T':i 'I':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex337> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'T':i 'I':i 'M':i 'E':i 'S':i 'T':i 'A':i 'M':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex338> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'T':i 'R':i 'A':i 'N':i 'S':i 'F':i 'O':i 'R':i 'M':i '_':i 'G':i 'R':i 'O':i 'U':i 'P':i '_':i 'F':i 'O':i 'R':i '_':i 'T':i 'Y':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex339> ::= 'C':i 'U':i 'R':i 'R':i 'E':i 'N':i 'T':i '_':i 'U':i 'S':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex340> ::= 'C':i 'U':i 'R':i 'S':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex341> ::= 'C':i 'Y':i 'C':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex342> ::= 'D':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex343> ::= 'D':i 'A':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex344> ::= 'D':i 'E':i 'A':i 'L':i 'L':i 'O':i 'C':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex345> ::= 'D':i 'E':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex346> ::= 'D':i 'E':i 'C':i 'I':i 'M':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex347> ::= 'D':i 'E':i 'C':i 'L':i 'A':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex348> ::= 'D':i 'E':i 'F':i 'A':i 'U':i 'L':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex349> ::= 'D':i 'E':i 'L':i 'E':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex350> ::= 'D':i 'E':i 'R':i 'E':i 'F':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex351> ::= 'D':i 'E':i 'S':i 'C':i 'R':i 'I':i 'B':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex352> ::= 'D':i 'E':i 'T':i 'E':i 'R':i 'M':i 'I':i 'N':i 'I':i 'S':i 'T':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex353> ::= 'D':i 'I':i 'S':i 'C':i 'O':i 'N':i 'N':i 'E':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex354> ::= 'D':i 'I':i 'S':i 'T':i 'I':i 'N':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex355> ::= 'D':i 'O':i 'U':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex356> ::= 'D':i 'R':i 'O':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex357> ::= 'D':i 'Y':i 'N':i 'A':i 'M':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex358> ::= 'E':i 'A':i 'C':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex359> ::= 'E':i 'L':i 'E':i 'M':i 'E':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex360> ::= 'E':i 'L':i 'S':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex361> ::= 'E':i 'N':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex362> ::= 'E':i 'N':i 'D':i '-':i 'E':i 'X':i 'E':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex363> ::= 'E':i 'S':i 'C':i 'A':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex364> ::= 'E':i 'X':i 'C':i 'E':i 'P':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex365> ::= 'E':i 'X':i 'E':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex366> ::= 'E':i 'X':i 'E':i 'C':i 'U':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex367> ::= 'E':i 'X':i 'I':i 'S':i 'T':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex368> ::= 'E':i 'X':i 'T':i 'E':i 'R':i 'N':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex369> ::= 'F':i 'A':i 'L':i 'S':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex370> ::= 'F':i 'E':i 'T':i 'C':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex371> ::= 'F':i 'I':i 'L':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex372> ::= 'F':i 'L':i 'O':i 'A':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex373> ::= 'F':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex374> ::= 'F':i 'O':i 'R':i 'E':i 'I':i 'G':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex375> ::= 'F':i 'R':i 'E':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex376> ::= 'F':i 'R':i 'O':i 'M':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex377> ::= 'F':i 'U':i 'L':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex378> ::= 'F':i 'U':i 'N':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex379> ::= 'G':i 'E':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex380> ::= 'G':i 'L':i 'O':i 'B':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex381> ::= 'G':i 'R':i 'A':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex382> ::= 'G':i 'R':i 'O':i 'U':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex383> ::= 'G':i 'R':i 'O':i 'U':i 'P':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex384> ::= 'H':i 'A':i 'V':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex385> ::= 'H':i 'O':i 'L':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex386> ::= 'H':i 'O':i 'U':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex387> ::= 'I':i 'D':i 'E':i 'N':i 'T':i 'I':i 'T':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex388> ::= 'I':i 'M':i 'M':i 'E':i 'D':i 'I':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex389> ::= 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex390> ::= 'I':i 'N':i 'D':i 'I':i 'C':i 'A':i 'T':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex391> ::= 'I':i 'N':i 'N':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex392> ::= 'I':i 'N':i 'O':i 'U':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex393> ::= 'I':i 'N':i 'P':i 'U':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex394> ::= 'I':i 'N':i 'S':i 'E':i 'N':i 'S':i 'I':i 'T':i 'I':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex395> ::= 'I':i 'N':i 'S':i 'E':i 'R':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex396> ::= 'I':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex397> ::= 'I':i 'N':i 'T':i 'E':i 'G':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex398> ::= 'I':i 'N':i 'T':i 'E':i 'R':i 'S':i 'E':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex399> ::= 'I':i 'N':i 'T':i 'E':i 'R':i 'V':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex400> ::= 'I':i 'N':i 'T':i 'O':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex401> ::= 'I':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex402> ::= 'J':i 'O':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex403> ::= 'L':i 'A':i 'N':i 'G':i 'U':i 'A':i 'G':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex404> ::= 'L':i 'A':i 'R':i 'G':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex405> ::= 'L':i 'A':i 'T':i 'E':i 'R':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex406> ::= 'L':i 'E':i 'A':i 'D':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex407> ::= 'L':i 'E':i 'F':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex408> ::= 'L':i 'I':i 'K':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex409> ::= 'L':i 'O':i 'C':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex410> ::= 'L':i 'O':i 'C':i 'A':i 'L':i 'T':i 'I':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex411> ::= 'L':i 'O':i 'C':i 'A':i 'L':i 'T':i 'I':i 'M':i 'E':i 'S':i 'T':i 'A':i 'M':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex412> ::= 'M':i 'A':i 'T':i 'C':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex413> ::= 'M':i 'E':i 'M':i 'B':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex414> ::= 'M':i 'E':i 'R':i 'G':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex415> ::= 'M':i 'E':i 'T':i 'H':i 'O':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex416> ::= 'M':i 'I':i 'N':i 'U':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex417> ::= 'M':i 'O':i 'D':i 'I':i 'F':i 'I':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex418> ::= 'M':i 'O':i 'D':i 'U':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex419> ::= 'M':i 'O':i 'N':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex420> ::= 'M':i 'U':i 'L':i 'T':i 'I':i 'S':i 'E':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex421> ::= 'N':i 'A':i 'T':i 'I':i 'O':i 'N':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex422> ::= 'N':i 'A':i 'T':i 'U':i 'R':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex423> ::= 'N':i 'C':i 'H':i 'A':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex424> ::= 'N':i 'C':i 'L':i 'O':i 'B':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex425> ::= 'N':i 'E':i 'W':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex426> ::= 'N':i 'O':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex427> ::= 'N':i 'O':i 'N':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex428> ::= 'N':i 'O':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex429> ::= 'N':i 'U':i 'L':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex430> ::= 'N':i 'U':i 'M':i 'E':i 'R':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex431> ::= 'O':i 'F':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex432> ::= 'O':i 'L':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex433> ::= 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex434> ::= 'O':i 'N':i 'L':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex435> ::= 'O':i 'P':i 'E':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex436> ::= 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex437> ::= 'O':i 'R':i 'D':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex438> ::= 'O':i 'U':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex439> ::= 'O':i 'U':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex440> ::= 'O':i 'U':i 'T':i 'P':i 'U':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex441> ::= 'O':i 'V':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex442> ::= 'O':i 'V':i 'E':i 'R':i 'L':i 'A':i 'P':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex443> ::= 'P':i 'A':i 'R':i 'A':i 'M':i 'E':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex444> ::= 'P':i 'A':i 'R':i 'T':i 'I':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex445> ::= 'P':i 'R':i 'E':i 'C':i 'I':i 'S':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex446> ::= 'P':i 'R':i 'E':i 'P':i 'A':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex447> ::= 'P':i 'R':i 'I':i 'M':i 'A':i 'R':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex448> ::= 'P':i 'R':i 'O':i 'C':i 'E':i 'D':i 'U':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex449> ::= 'R':i 'A':i 'N':i 'G':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex450> ::= 'R':i 'E':i 'A':i 'D':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex451> ::= 'R':i 'E':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex452> ::= 'R':i 'E':i 'C':i 'U':i 'R':i 'S':i 'I':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex453> ::= 'R':i 'E':i 'F':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex454> ::= 'R':i 'E':i 'F':i 'E':i 'R':i 'E':i 'N':i 'C':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex455> ::= 'R':i 'E':i 'F':i 'E':i 'R':i 'E':i 'N':i 'C':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex456> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'A':i 'V':i 'G':i 'X':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex457> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'A':i 'V':i 'G':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex458> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'C':i 'O':i 'U':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex459> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'I':i 'N':i 'T':i 'E':i 'R':i 'C':i 'E':i 'P':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex460> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'R':i '2':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex461> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'S':i 'L':i 'O':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex462> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'S':i 'X':i 'X':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex463> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'S':i 'X':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex464> ::= 'R':i 'E':i 'G':i 'R':i '_':i 'S':i 'Y':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex465> ::= 'R':i 'E':i 'L':i 'E':i 'A':i 'S':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex466> ::= 'R':i 'E':i 'S':i 'U':i 'L':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex467> ::= 'R':i 'E':i 'T':i 'U':i 'R':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex468> ::= 'R':i 'E':i 'T':i 'U':i 'R':i 'N':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex469> ::= 'R':i 'E':i 'V':i 'O':i 'K':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex470> ::= 'R':i 'I':i 'G':i 'H':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex471> ::= 'R':i 'O':i 'L':i 'L':i 'B':i 'A':i 'C':i 'K':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex472> ::= 'R':i 'O':i 'L':i 'L':i 'U':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex473> ::= 'R':i 'O':i 'W':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex474> ::= 'R':i 'O':i 'W':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex475> ::= 'S':i 'A':i 'V':i 'E':i 'P':i 'O':i 'I':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex476> ::= 'S':i 'C':i 'R':i 'O':i 'L':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex477> ::= 'S':i 'E':i 'A':i 'R':i 'C':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex478> ::= 'S':i 'E':i 'C':i 'O':i 'N':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex479> ::= 'S':i 'E':i 'L':i 'E':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex480> ::= 'S':i 'E':i 'N':i 'S':i 'I':i 'T':i 'I':i 'V':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex481> ::= 'S':i 'E':i 'S':i 'S':i 'I':i 'O':i 'N':i '_':i 'U':i 'S':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex482> ::= 'S':i 'E':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex483> ::= 'S':i 'I':i 'M':i 'I':i 'L':i 'A':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex484> ::= 'S':i 'M':i 'A':i 'L':i 'L':i 'I':i 'N':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex485> ::= 'S':i 'O':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex486> ::= 'S':i 'P':i 'E':i 'C':i 'I':i 'F':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex487> ::= 'S':i 'P':i 'E':i 'C':i 'I':i 'F':i 'I':i 'C':i 'T':i 'Y':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex488> ::= 'S':i 'Q':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex489> ::= 'S':i 'Q':i 'L':i 'E':i 'X':i 'C':i 'E':i 'P':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex490> ::= 'S':i 'Q':i 'L':i 'S':i 'T':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex491> ::= 'S':i 'Q':i 'L':i 'W':i 'A':i 'R':i 'N':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex492> ::= 'S':i 'T':i 'A':i 'R':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex493> ::= 'S':i 'T':i 'A':i 'T':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex494> ::= 'S':i 'U':i 'B':i 'M':i 'U':i 'L':i 'T':i 'I':i 'S':i 'E':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex495> ::= 'S':i 'Y':i 'M':i 'M':i 'E':i 'T':i 'R':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex496> ::= 'S':i 'Y':i 'S':i 'T':i 'E':i 'M':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex497> ::= 'S':i 'Y':i 'S':i 'T':i 'E':i 'M':i '_':i 'U':i 'S':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex498> ::= 'T':i 'A':i 'B':i 'L':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex499> ::= 'T':i 'H':i 'E':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex500> ::= 'T':i 'I':i 'M':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex501> ::= 'T':i 'I':i 'M':i 'E':i 'S':i 'T':i 'A':i 'M':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex502> ::= 'T':i 'I':i 'M':i 'E':i 'Z':i 'O':i 'N':i 'E':i '_':i 'H':i 'O':i 'U':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex503> ::= 'T':i 'I':i 'M':i 'E':i 'Z':i 'O':i 'N':i 'E':i '_':i 'M':i 'I':i 'N':i 'U':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex504> ::= 'T':i 'O':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex505> ::= 'T':i 'R':i 'A':i 'I':i 'L':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex506> ::= 'T':i 'R':i 'A':i 'N':i 'S':i 'L':i 'A':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex507> ::= 'T':i 'R':i 'E':i 'A':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex508> ::= 'T':i 'R':i 'I':i 'G':i 'G':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex509> ::= 'T':i 'R':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex510> ::= 'U':i 'N':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex511> ::= 'U':i 'N':i 'I':i 'Q':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex512> ::= 'U':i 'N':i 'K':i 'N':i 'O':i 'W':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex513> ::= 'U':i 'N':i 'N':i 'E':i 'S':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex514> ::= 'U':i 'P':i 'D':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex515> ::= 'U':i 'P':i 'P':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex516> ::= 'U':i 'S':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex517> ::= 'U':i 'S':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex518> ::= 'V':i 'A':i 'L':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex519> ::= 'V':i 'A':i 'L':i 'U':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex520> ::= 'V':i 'A':i 'R':i '_':i 'P':i 'O':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex521> ::= 'V':i 'A':i 'R':i '_':i 'S':i 'A':i 'M':i 'P':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex522> ::= 'V':i 'A':i 'R':i 'C':i 'H':i 'A':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex523> ::= 'V':i 'A':i 'R':i 'Y':i 'I':i 'N':i 'G':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex524> ::= 'W':i 'H':i 'E':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex525> ::= 'W':i 'H':i 'E':i 'N':i 'E':i 'V':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex526> ::= 'W':i 'H':i 'E':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex527> ::= 'W':i 'I':i 'D':i 'T':i 'H':i '_':i 'B':i 'U':i 'C':i 'K':i 'E':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex528> ::= 'W':i 'I':i 'N':i 'D':i 'O':i 'W':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex529> ::= 'W':i 'I':i 'T':i 'H':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex530> ::= 'W':i 'I':i 'T':i 'H':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex531> ::= 'W':i 'I':i 'T':i 'H':i 'O':i 'U':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex532> ::= 'Y':i 'E':i 'A':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex533> ~ [^\']
+<Lex534> ~ 'N'
+<Lex535> ~ 'X'
+<Lex536> ~ 'B'
+<Lex537> ~ 'D'
+<Lex538> ~ 'E'
+<Lex539> ~ 'F'
+<Lex540> ~ 'a'
+<Lex541> ~ 'b'
+<Lex542> ~ 'c'
+<Lex543> ~ 'd'
+<Lex544> ~ 'e'
+<Lex545> ~ 'f'
+<Lex546 many> ~ [\d]+
+<Lex547> ::= 'S':i 'C':i 'O':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex548> ~ [^\[\]\(\)\|\^\-\+\*_\%\?\{\\]
+<Lex549> ~ [\x{5c}]
+<Lex550> ~ [\[\]\(\)\|\^\-\+\*_\%\?\{\\]
+<Lex551> ::= 'C':i 'O':i 'N':i 'S':i 'T':i 'R':i 'U':i 'C':i 'T':i 'O':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex552> ::= 'R':i 'E':i 'S':i 'T':i 'R':i 'I':i 'C':i 'T':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex553> ::= 'G':i 'E':i 'N':i 'E':i 'R':i 'A':i 'T':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex554> ::= 'C':i 'O':i 'N':i 'N':i 'E':i 'C':i 'T':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex555> ::= 'I':i 'n':i 't':i 'e':i 'r':i 'f':i 'a':i 'c':i 'e':i 's':i '.':i 'S':i 'Q':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex556> ~ '1'
+<Lex557> ::= 'D':i 'O':i 'U':i 'B':i 'L':i 'E':i '_':i 'P':i 'R':i 'E':i 'C':i 'I':i 'S':i 'I':i 'O':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex558> ::= 'S':i 'Q':i 'L':i 'S':i 'T':i 'A':i 'T':i 'E':i '_':i 'T':i 'Y':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex559> ::= 'I':i 'N':i 'D':i 'I':i 'C':i 'A':i 'T':i 'O':i 'R':i '_':i 'T':i 'Y':i 'P':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex560> ::= 'a':i 'u':i 't':i 'o':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex561> ::= 'e':i 'x':i 't':i 'e':i 'r':i 'n':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex562> ::= 's':i 't':i 'a':i 't':i 'i':i 'c':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex563> ::= 'c':i 'o':i 'n':i 's':i 't':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex564> ::= 'v':i 'o':i 'l':i 'a':i 't':i 'i':i 'l':i 'e':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex565> ::= 'l':i 'o':i 'n':i 'g':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex566> ::= 's':i 'h':i 'o':i 'r':i 't':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex567> ::= 'f':i 'l':i 'o':i 'a':i 't':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex568> ::= 'd':i 'o':i 'u':i 'b':i 'l':i 'e':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex569> ::= 'c':i 'h':i 'a':i 'r':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex570> ::= 'u':i 'n':i 's':i 'i':i 'g':i 'n':i 'e':i 'd':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex571> ::= '0':i '1':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex572> ::= '7':i '7':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex573 many> ~ [\-]*
+<Lex574> ~ [A-Za-z]
+<Lex575 many> ~ [A-Za-z0-9]*
+<Lex576 many> ~ [\-]+
+<Lex577 many> ~ [A-Za-z0-9]+
+<Lex578 many> ~ [0]*
+<Lex579> ~ [1-9]
+<Lex580> ::= 'L':i 'I':i 'N':i 'A':i 'G':i 'E':i '-':i 'C':i 'O':i 'U':i 'N':i 'T':i 'E':i 'R':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex581> ::= '*':i '*':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex582 many> ~ [0-9A-Fa-f]+
+<Lex583> ::= 'Z':i 'E':i 'R':i 'O':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex584> ::= 'Z':i 'E':i 'R':i 'O':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex585> ::= 'Z':i 'E':i 'R':i 'O':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex586> ::= 'S':i 'P':i 'A':i 'C':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex587> ::= 'H':i 'I':i 'G':i 'H':i '-':i 'V':i 'A':i 'L':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex588> ::= 'H':i 'I':i 'G':i 'H':i '-':i 'V':i 'A':i 'L':i 'U':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex589> ::= 'L':i 'O':i 'W':i '-':i 'V':i 'A':i 'L':i 'U':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex590> ::= 'L':i 'O':i 'W':i '-':i 'V':i 'A':i 'L':i 'U':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex591> ::= 'Q':i 'U':i 'O':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex592> ::= 'Q':i 'U':i 'O':i 'T':i 'E':i 'S':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex593> ::= 'P':i 'I':i 'C':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex594> ::= 'P':i 'I':i 'C':i 'T':i 'U':i 'R':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex595> ~ 'S'
+<Lex596> ::= 'D':i 'I':i 'S':i 'P':i 'L':i 'A':i 'Y':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex597> ::= 'S':i 'I':i 'G':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex598> ::= 'S':i 'E':i 'P':i 'A':i 'R':i 'A':i 'T':i 'E':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex599> ~ 'V'
+<Lex600> ~ '9'
+<Lex601> ::= 'K':i 'I':i 'N':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex603> ::= 'L':i 'O':i 'G':i 'I':i 'C':i 'A':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex604> ::= 'P':i 'A':i 'C':i 'K':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex605> ::= 'D':i 'C':i 'L':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex606> ::= 'F':i 'I':i 'X':i 'E':i 'D':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+<Lex607> ::= 'B':i 'I':i 'N':i action => fakedLexeme # Faked lexeme - LATM handling the ambiguities
+
+_WS ~ [\s]+
+:discard ~ _WS
+
+_COMMENT_EVERYYHERE_START ~ '--'
+_COMMENT_EVERYYHERE_END ~ [^\n]*
+_COMMENT ~ _COMMENT_EVERYYHERE_START _COMMENT_EVERYYHERE_END
+:discard ~ _COMMENT
+
+############################################################################
+# Discard of a C comment, c.f. https://gist.github.com/jeffreykegler/5015057
+############################################################################
+<C style comment> ~ '/*' <comment interior> '*/'
+<comment interior> ~
+    <optional non stars>
+    <optional star prefixed segments>
+    <optional pre final stars>
+<optional non stars> ~ [^*]*
+<optional star prefixed segments> ~ <star prefixed segment>*
+<star prefixed segment> ~ <stars> [^/*] <optional star free text>
+<stars> ~ [*]+
+<optional star free text> ~ [^*]*
+<optional pre final stars> ~ [*]*
+:discard ~ <C style comment>
 
-#
-# References: http://savage.net.au/SQL/sql-2003-1.bnf, http://savage.net.au/SQL/sql-2003-2.bnf
-#
-
-:start ::= <sqlStartSequence>
-:discard ~ <__separator>
-#
-# For the empty statements, or statements ending with ';' while this is not in the grammar
-#
-:discard ~ <__semicolon>
-
-<sqlStartSequence>  ::= <sqlStart>+
-
-<sqlStart>  ::= <preparableStatement>
-              | <directSqlStatement>
-              | <embeddedSqlDeclareSection>
-              | <embeddedSqlHostProgram>
-              | <embeddedSqlStatement>
-              | <sqlClientModuleDefinition>
-
-# -----------------------------------------------------------------------------------
-# Lexemes are always: <CONSTANT> or <_something>
-# Any rule starting with <__XXX> is internal to G0 and cannot be exported as a lexeme
-# -----------------------------------------------------------------------------------
-
-<_simple Latin letter> ~ <__simple Latin upper case letter> | <__simple Latin lower case letter>
-
-<__simple Latin upper case letter> ~ [A-Z]
-<_simple Latin upper case letter> ~ <__simple Latin upper case letter>
-
-<__simple Latin lower case letter> ~ [a-z]
-
-<__digit>     ~ [0-9]
-<_digit>      ~ <__digit>
-<__digit many> ~ <__digit>+
-
-<_space> ~ [\N{U+0020}]
-
-<__double quote>  ~ '"'
-
-<_percent> ~ '%'
-
-<__ampersand> ~ '&'
-<_ampersand>  ~ <__ampersand>
-
-<__quote> ~ [']
-
-<_left paren> ~ '('
-
-<_right paren> ~ ')'
-
-<__asterisk> ~ '*'
-<_asterisk>  ~ <__asterisk>
-
-<__plus sign> ~ '+'
-<_plus sign> ~ <__plus sign>
-
-<_comma> ~ ','
-
-<__minus sign> ~ '-'
-<_minus sign>  ~ <__minus sign>
-
-<__period> ~ '.'
-<_period> ~ <__period>
-
-<__solidus> ~ '/'
-<_solidus>  ~ <__solidus>
-
-<__colon> ~ ':'
-<_colon> ~ <__colon>
-
-<__semicolon> ~ ';'
-<_semicolon> ~ <__semicolon>
-
-<__less than operator> ~ '<'
-<_less than operator> ~ <__less than operator>
-
-<__equals operator> ~ '='
-<_equals operator> ~ <__equals operator>
-
-<__greater than operator> ~ '>'
-<_greater than operator> ~ <__greater than operator>
-
-<_question mark> ~ '?'
-
-<__left bracket> ~ '['
-<_left bracket>  ~ <__left bracket>
-
-<__left bracket trigraph> ~ '??('
-
-<_left bracket or trigraph> ~ <__left bracket> | <__left bracket trigraph>
-
-<__right bracket> ~ ']'
-<_right bracket>  ~ <__right bracket>
-
-<__right bracket trigraph> ~ '??)'
-
-<_right bracket or trigraph> ~ <__right bracket> | <__right bracket trigraph>
-
-<_circumflex> ~ '^'
-
-<__underscore> ~ '_'
-<_underscore> ~ <__underscore>
-
-<__vertical bar> ~ '|'
-<_vertical bar> ~ <__vertical bar>
-
-<_left brace> ~ '{'
-
-<_right brace> ~ '}'
-
-<_regular identifier> ~ <__identifier body>
-
-<__identifier body> ~ <__identifier start>
-                    | <__identifier body> <__identifier part>
-
-<__identifier part> ~ <__identifier start> | <__identifier extend>
-
-<__identifier start> ~ [\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}]
-
-<__identifier extend> ~ [\N{U+00B7}\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}]
-
-<__multiplier> ~ [KMG]
-<_multiplier>  ~ <__multiplier>
-
-<_large object length token> ~ <__digit many> <__multiplier>
-
-<_delimited identifier> ~ <__double quote> <_delimited identifier body> <__double quote>
-
-<_delimited identifier part> ~ <_nondoublequote character> | <_doublequote symbol>
-
-<_delimited identifier body> ~ <_delimited identifier part>+
-
-<__Unicode escape character> ~ [^A-Fa-f0-9\-\+\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]
-
-<_Unicode identifier part> ~ <_delimited identifier part> | <__Unicode escape value>
-
-<__Unicode escape value> ~ <_Unicode 4 digit escape value>
-                        | <_Unicode 6 digit escape value>
-                        | <_Unicode character escape value>
-
-<__Unicode escape specifier> ~ <__UESCAPE><__separator><__quote><__Unicode escape character><__quote>
-
-<_Unicode delimiter body> ~ <_Unicode identifier part>+
-
-<_Unicode delimited identifier> ~ <__U><__ampersand><__double quote><_Unicode delimiter body><__double quote>
-                                | <__U><__ampersand><__double quote><_Unicode delimiter body><__double quote><__separator><__Unicode escape specifier>
-
-<_Unicode 4 digit escape value> ~ <__Unicode escape character><__hexit><__hexit><__hexit><__hexit>
-
-<_Unicode 6 digit escape value> ~ <__Unicode escape character><__plus sign><__hexit><__hexit><__hexit><__hexit><__hexit><__hexit>
-
-<_Unicode character escape value> ~ <__Unicode escape character><__Unicode escape character>
-
-<_nondoublequote character> ~ [^"]
-
-<_doublequote symbol> ~ <__double quote> <__double quote>
-
-<_not equals operator> ~ <__less than operator> <__greater than operator>
-
-<_greater than or equals operator> ~ <__greater than operator> <__equals operator>
-
-<_less than or equals operator> ~ <__less than operator> <__equals operator>
-
-<_concatenation operator> ~ <__vertical bar> <__vertical bar>
-
-<_right arrow> ~ <__minus sign> <__greater than operator>
-
-<_double colon> ~ <__colon> <__colon>
-
-<_white space> ~ [\p{Zs}\p{Zl}\p{Zp}\N{U+0009}\N{U+000A}\N{U+000B}\N{U+000C}\N{U+000D}\N{U+0085}]
-
-<_separator unit> ~ <_comment> | <_white space>
-
-<__separator> ~ <_separator unit>+
-
-<_comment> ~ <_simple comment> | <_bracketed comment>
-
-#
-# <__comment character> seems wrong to me: <__nonquote character> | <_quote character> will eat
-# everything
-#
-<_not_newline> ~ [^\N{U+000A}\N{U+000D}]
-<_comment character many> ~ <_not_newline>+
-
-<_simple comment> ~ <_simple comment introducer> <_newline>
-                  | <_simple comment introducer> <_comment character many> <_newline>
-
-<_simple comment introducer> ~ <__minus sign><__minus sign>
-
-<_bracketed comment> ~ <_bracketed comment introducer> <_bracketed comment contents> <_bracketed comment terminator>
-
-<_bracketed comment introducer> ~ <__solidus> <__asterisk>
-
-<_bracketed comment terminator> ~ <__asterisk> <__solidus>
-
-<_bracketed comment contents unit> ~ <__comment character> | <__separator>
-
-<_bracketed comment contents> ~ <_bracketed comment contents unit>*
-
-<__comment character> ~ <__nonquote character> | <__quote>
-#
-# NOTE 93 — newline is typically represented by U+000A (“Line Feed”) and/or U+000D (“Carriage Return”); however,
-# this representation is not required by ISO/IEC 9075.
-#
-<_newline> ~ [\N{U+000A}] [\N{U+000D}] | [\N{U+000D}] [\N{U+000A}] | [\N{U+000A}] | [\N{U+000D}]
-
-<literal> ::= <signedNumericLiteral> | <generalLiteral>
-
-<unsignedLiteral> ::= <unsignedNumericLiteral> | <generalLiteral>
-
-<generalLiteral> ::= <_character string literal>
-                    | <_national character string literal>
-                    | <_Unicode character string literal>
-                    | <_binary string literal>
-                    | <_hex string literal>
-                    | <datetimeLiteral>
-                    | <intervalLiteral>
-                    | <_boolean literal>
-
-<__character representation any> ~ <__character representation>*
-
-<__introducer character set specification maybe> ~ <_introducer><__character set specification>
-
-<__character string literal> ~ <__introducer character set specification maybe> <__quote> <__character representation any> <__quote>
-                             | <__quote> <__character representation any> <__quote>
-                             | <__character string literal> <__separator> <__quote> <__character representation any> <__quote>
-
-<_character string literal> ~ <__character string literal>
-
-<_introducer> ~ <__underscore>
-
-<__character representation> ~ <_nonquote character> | <_quote symbol>
-<_character representation> ~ <__character representation>
-
-<__nonquote character> ~ [^']
-<_nonquote character> ~ <__nonquote character>
-
-<__quote symbol> ~ <__quote><__quote>
-<_quote symbol> ~ <__quote symbol>
-
-<__national character string literal> ~ <__N> <__quote> <__character representation any> <__quote>
-                                      | <__national character string literal> <__separator> <__quote> <__character representation any> <__quote>
-
-<_national character string literal> ~ <__national character string literal>
-
-<__Unicode representation any> ~  <_Unicode representation>*
-
-<__separator AND quote AND Unicode representation any AND quote> ~ <__separator> <__quote> <__Unicode representation any> <__quote>
-
-<__separator AND quote AND Unicode representation any AND quote any> ~ <__separator AND quote AND Unicode representation any AND quote>*
-
-<_ESCAPE escape character> ~ <__ESCAPE> <__escape character>
-
-<_ESCAPE escape character maybe> ~ <_ESCAPE escape character>
-<_ESCAPE escape character maybe> ~
-
-<_Unicode character string literal> ~ <__U><__ampersand><__quote><__Unicode representation any> <__quote> <__separator AND quote AND Unicode representation any AND quote any> <_ESCAPE escape character maybe>
-                                    | <_introducer><__character set specification>
-                                      <__U><__ampersand><__quote><__Unicode representation any> <__quote> <__separator AND quote AND Unicode representation any AND quote any> <_ESCAPE escape character maybe>
-
-<_Unicode representation> ~ <__character representation> | <__Unicode escape value>
-
-<__hexit AND hexit> ~ <__hexit> <__hexit>
-
-<__hexit AND hexit any> ~ <__hexit AND hexit>*
-
-<__hexit any> ~ <__hexit>*
-
-<__separator AND quote AND hexit AND hexit any AND quote> ~  <__separator> <__quote> <__hexit AND hexit any> <__quote>
-
-<__separator AND quote AND hexit AND hexit any AND quote any> ~ <__separator AND quote AND hexit AND hexit any AND quote>*
-
-<__separator AND quote AND hexit any AND quote> ~  <__separator> <__quote> <__hexit any> <__quote>
-
-<__separator AND quote AND hexit any AND quote any> ~ <__separator AND quote AND hexit any AND quote>*
-
-<_hex string literal> ~
-		<__X> <__quote> <__hexit any> <__quote>
-		<__separator AND quote AND hexit any AND quote any>
-		<_ESCAPE escape character maybe>
-
-<_binary string literal> ~
-		<__X> <__quote> <__hexit AND hexit any> <__quote>
-		<__separator AND quote AND hexit AND hexit any AND quote any>
-		<_ESCAPE escape character maybe>
-
-<__hexit> ~ <__digit> | [A-Fa-f]
-
-<signedNumericLiteral> ::= <unsignedNumericLiteral>
-                         | <_sign> <unsignedNumericLiteral>
-
-<unsignedNumericLiteral> ::= <_exact numeric literal> | <_approximate numeric literal>
-
-<__exact numeric literal> ~
-        		<__unsigned integer>
-	       |	<__unsigned integer> <__period>
-	       |	<__unsigned integer> <__period> <__unsigned integer>
-	       |	<__period> <__unsigned integer>
-
-<_exact numeric literal> ~ <__exact numeric literal>
-
-<__sign> ~ <__plus sign> | <__minus sign>
-<_sign> ~ <__sign>
-
-<_approximate numeric literal> ~ <_mantissa> <__E> <_exponent>
-
-<_mantissa> ~ <__exact numeric literal>
-
-<_exponent> ~ <_signed integer>
-
-<_signed integer> ~ <__unsigned integer>
-                  | <__sign> <__unsigned integer>
-
-<__unsigned integer> ~ <__digit>+
-<_unsigned integer> ~ <__unsigned integer>
-
-<datetimeLiteral> ::= <dateLiteral> | <timeLiteral> | <timestampLiteral>
-
-<dateLiteral> ::= <DATE> <_date string>
-
-<timeLiteral> ::= <TIME> <_time string>
-
-<timestampLiteral> ::= <TIMESTAMP> <_timestamp string>
-
-<_date string> ~ <__quote> <_unquoted date string> <__quote>
-
-<_time string> ~ <__quote> <_unquoted time string> <__quote>
-
-<_timestamp string> ~ <__quote> <_unquoted timestamp string> <__quote>
-
-<_time zone interval> ~ <__sign> <_hours value> <__colon> <_minutes value>
-
-<_date value> ~ <_years value> <__minus sign> <_months value> <__minus sign> <_days value>
-
-<_time value> ~ <_hours value> <__colon> <_minutes value> <__colon> <_seconds value>
-
-<intervalLiteral> ::= <INTERVAL>         <_interval string> <intervalQualifier>
-                     | <INTERVAL> <_sign> <_interval string> <intervalQualifier>
-
-<_interval string> ~ <__quote> <_unquoted interval string> <__quote>
-
-<_unquoted date string> ~ <_date value>
-
-<_unquoted time string> ~ <_time value>
-                       | <_time value> <_time zone interval>
-
-<_unquoted timestamp string> ~ <_unquoted date string> <_space> <_unquoted time string>
-
-<_unquoted interval string> ~ <_year_month literal>
-                           | <_day_time literal>
-                           | <__sign> <_year_month literal>
-                           | <__sign> <_day_time literal>
-
-<_year_month literal> ~ <_years value>
-                     | <_months value>
-                     | <_years value> <__minus sign> <_months value>
-
-<_day_time literal> ~ <_day_time interval>
-                   | <_time interval>
-
-<_day_time interval> ~
-		<_days value>
-	|	<_days value> <_space> <_hours value>
-	|	<_days value> <_space> <_hours value> <__colon> <_minutes value>
-	|	<_days value> <_space> <_hours value> <__colon> <_minutes value> <__colon> <_seconds value>
-
-<_time interval> ~
-		<_hours value>
-	|	<_hours value> <__colon> <_minutes value>
-	|	<_hours value> <__colon> <_minutes value> <__colon> <_seconds value>
-	|	<_minutes value>
-	|	<_minutes value> <__colon> <_seconds value>
-	|	<_seconds value>
-
-<_years value> ~ <_datetime value>
-
-<_months value> ~ <_datetime value>
-
-<_days value> ~ <_datetime value>
-
-<_hours value> ~ <_datetime value>
-
-<_minutes value> ~ <_datetime value>
-
-<_seconds value> ~ <_seconds integer value>
-                | <_seconds integer value> <__period>
-                | <_seconds integer value> <__period> <_seconds fraction>
-
-<_seconds integer value> ~ <__unsigned integer>
-
-<_seconds fraction> ~ <__unsigned integer>
-
-<_datetime value> ~ <__unsigned integer>
-
-<_boolean literal> ~ <__TRUE> | <__FALSE> | <__UNKNOWN>
-
-<__identifier> ~ <__actual identifier>
-
-<_identifier> ~ <__identifier>
-
-<__actual identifier> ~ <_regular identifier>
-                      | <_delimited identifier>
-                      | <_Unicode delimited identifier>
-
-
-<_SQL language identifier> ~ <_SQL language identifier start>
-                          | <_SQL language identifier> <__underscore>
-                          | <_SQL language identifier> <_SQL language identifier part>
-
-<_SQL language identifier start> ~ <_simple Latin letter>
-
-<_SQL language identifier part> ~ <_simple Latin letter> | <__digit>
-
-<_authorization identifier> ~ <__role name> | <_user identifier>
-
-<_table name> ~ <_local or schema qualified name>
-
-<_domain name> ~ <_schema qualified name>
-
-<__schema name> ~ <_unqualified schema name>
-                | <_catalog name> <__period> <_unqualified schema name>
-<_schema name> ~ <__schema name>
-
-<_unqualified schema name> ~ <__identifier>
-
-<_catalog name> ~ <__identifier>
-
-<_schema qualified name> ~ <__qualified identifier>
-                         | <__schema name> <__period> <__qualified identifier>
-
-<_local or schema qualified name> ~ <__qualified identifier>
-                                 | <_local or schema qualifier> <__period> <__qualified identifier>
-
-<_local or schema qualifier> ~ <__schema name> | <__MODULE>
-
-<__qualified identifier> ~ <__identifier>
-<_qualified identifier> ~ <__qualified identifier>
-
-<__column name> ~ <__identifier>
-<_column name> ~ <__column name>
-
-<_correlation name> ~ <__identifier>
-
-<_query name> ~ <__identifier>
-
-<_SQL_client module name> ~ <__identifier>
-
-<_procedure name> ~ <__identifier>
-
-<_schema qualified routine name> ~ <_schema qualified name>
-
-<_method name> ~ <__identifier>
-
-<_specific name> ~ <_schema qualified name>
-
-<_cursor name> ~ <_local qualified name>
-
-<_local qualified name> ~ <__qualified identifier>
-                       | <_local qualifier> <__period> <__qualified identifier>
-
-<_local qualifier> ~ <__MODULE>
-
-<_host parameter name> ~ <__colon> <__identifier>
-
-<_SQL parameter name> ~ <__identifier>
-
-<_constraint name> ~ <_schema qualified name>
-
-<_external routine name> ~ <__identifier> | <__character string literal>
-
-<_trigger name> ~ <_schema qualified name>
-
-<_collation name> ~ <_schema qualified name>
-
-<__character set name> ~ <_SQL language identifier>
-                       | <__schema name> <__period> <_SQL language identifier>
-
-<_character set name> ~ <__character set name>
-
-<transliterationName> ~ <_schema qualified name>
-
-<transcodingName> ~ <_schema qualified name>
-
-<__user_defined type name> ~ <schemaQualifiedTypeName>
-<_user_defined type name> ~ <__user_defined type name>
-
-<schemaResolvedUserDefinedTypeName> ~ <__user_defined type name>
-
-<schemaQualifiedTypeName> ~ <__qualified identifier>
-                             | <__schema name> <__period> <__qualified identifier>
-
-<attributeName> ~ <__identifier>
-
-<fieldName> ~ <__identifier>
-
-<savepointName> ~ <__identifier>
-
-<sequenceGeneratorName> ~ <_schema qualified name>
-
-<__role name> ~ <__identifier>
-<_role name> ~ <__role name>
-
-<_user identifier> ~ <__identifier>
-
-<connectionName> ::= <simpleValueSpecification>
-
-<sqlServerName> ::= <simpleValueSpecification>
-
-<connectionUserName> ::= <simpleValueSpecification>
-
-<sqlStatementName> ::= <statementName> | <extendedStatementName>
-
-<statementName> ::= <_identifier>
-
-<extendedStatementName> ::= <simpleValueSpecification>
-                          | <scopeOption> <simpleValueSpecification>
-
-<dynamicCursorName> ::= <_cursor name> | <extendedCursorName>
-
-<extendedCursorName> ::= <simpleValueSpecification>
-                       | <scopeOption> <simpleValueSpecification>
-
-<descriptorName> ::= <simpleValueSpecification>
-                  | <scopeOption> <simpleValueSpecification>
-
-<scopeOption> ~ <__GLOBAL> | <__LOCAL>
-
-<_window name> ~ <__identifier>
-
-#
-# G1 Scalar expressions
-# ---------------------
-<dataType> ::=
-		<predefinedType>                         rank =>  0
-	|	<rowType>                                rank => -1
-	|	<pathResolvedUserDefinedTypeName>        rank => -2
-	|	<referenceType>                          rank => -3
-	|	<collectionType>                         rank => -4
-
-<predefinedType> ::=
-		<characterStringType>
-	|	<characterStringType> <collateClause>
-	|	<characterStringType> <CHARACTER> <SET> <_character set specification>
-	|	<characterStringType> <CHARACTER> <SET> <_character set specification> <collateClause>
-	|	<nationalCharacterStringType>
-	|	<nationalCharacterStringType>  <collateClause>
-	|	<binaryLargeObjectStringType>
-	|	<numericType>
-	|	<booleanType>
-	|	<datetimeType>
-	|	<intervalType>
-
-<characterStringType> ::=
-		<CHARACTER>
-	|	<CHARACTER> <_left paren> <length> <_right paren>
-	|	<CHAR>
-	|	<CHAR> <_left paren> <length> <_right paren>
-	|	<CHARACTER> <VARYING> <_left paren> <length> <_right paren>
-	|	<CHAR> <VARYING> <_left paren> <length> <_right paren>
-	|	<VARCHAR> <_left paren> <length> <_right paren>
-	|	<CHARACTER> <LARGE> <OBJECT>
-	|	<CHARACTER> <LARGE> <OBJECT> <_left paren> <largeObjectLength> <_right paren>
-	|	<CHAR> <LARGE> <OBJECT>
-	|	<CHAR> <LARGE> <OBJECT> <_left paren> <largeObjectLength> <_right paren>
-	|	<CLOB>
-	|	<CLOB> <_left paren> <largeObjectLength> <_right paren>
-
-<nationalCharacterStringType> ::=
-		<NATIONAL> <CHARACTER>
-	|	<NATIONAL> <CHARACTER> <_left paren> <length> <_right paren>
-	|	<NATIONAL> <CHAR>
-	|	<NATIONAL> <CHAR> <_left paren> <length> <_right paren>
-	|	<NCHAR>
-	|	<NCHAR> <_left paren> <length> <_right paren>
-	|	<NATIONAL> <CHARACTER> <VARYING> <_left paren> <length> <_right paren>
-	|	<NATIONAL> <CHAR> <VARYING> <_left paren> <length> <_right paren>
-	|	<NCHAR> <VARYING> <_left paren> <length> <_right paren>
-	|	<NATIONAL> <CHARACTER> <LARGE> <OBJECT>
-	|	<NATIONAL> <CHARACTER> <LARGE> <OBJECT> <_left paren> <largeObjectLength> <_right paren>
-	|	<NCHAR> <LARGE> <OBJECT>
-	|	<NCHAR> <LARGE> <OBJECT> <_left paren> <largeObjectLength> <_right paren>
-	|	<NCLOB>
-	|	<NCLOB> <_left paren> <largeObjectLength> <_right paren>
-
-<binaryLargeObjectStringType> ::=
-		<BINARY> <LARGE> <OBJECT>
-	|	<BINARY> <LARGE> <OBJECT> <_left paren> <largeObjectLength> <_right paren>
-	|	<BLOB>
-	|	<BLOB> <_left paren> <largeObjectLength> <_right paren>
-
-<numericType> ::= <exactNumericType> | <approximateNumericType>
-
-<exactNumericType> ::=
-		<NUMERIC>
-	|	<NUMERIC> <_left paren> <precision>  <_right paren>
-	|	<NUMERIC> <_left paren> <precision> <_comma> <scale> <_right paren>
-	|	<DECIMAL>
-	|	<DECIMAL> <_left paren> <precision> <_right paren>
-	|	<DECIMAL> <_left paren> <precision> <_comma> <scale> <_right paren>
-	|	<DEC>
-	|	<DEC> <_left paren> <precision> <_right paren>
-	|	<DEC> <_left paren> <precision> <_comma> <scale> <_right paren>
-	|	<SMALLINT>
-	|	<INTEGER>
-	|	<INT>
-	|	<BIGINT>
-
-<approximateNumericType> ::=
-		<FLOAT>
-	|	<FLOAT> <_left paren> <precision> <_right paren>
-	|	<REAL>
-	|	<DOUBLE> <PRECISION>
-
-<length> ::= <_unsigned integer>
-
-<largeObjectLength> ::=
-		<_unsigned integer>
-	|	<_unsigned integer> <charLengthUnits>
-	|	<_unsigned integer> <_multiplier>
-	|	<_unsigned integer> <_multiplier> <charLengthUnits>
-	|	<_large object length token>
-	|	<_large object length token> <charLengthUnits>
-
-<charLengthUnits> ::= <CHARACTERS> | <CODE_UNITS> | <OCTETS>
-
-<precision> ::= <_unsigned integer>
-
-<scale> ::= <_unsigned integer>
-
-<booleanType> ::= <BOOLEAN>
-
-<datetimeType> ::=
-		<DATE>
-	|	<TIME>
-	|	<TIME> <withOrWithoutTimeZone>
-	|	<TIME> <_left paren> <timePrecision> <_right paren>
-	|	<TIME> <_left paren> <timePrecision> <_right paren> <withOrWithoutTimeZone>
-	|	<TIMESTAMP>
-	|	<TIMESTAMP> <withOrWithoutTimeZone>
-	|	<TIMESTAMP> <_left paren> <timestampPrecision> <_right paren>
-	|	<TIMESTAMP> <_left paren> <timestampPrecision> <_right paren> <withOrWithoutTimeZone>
-
-<withOrWithoutTimeZone> ::= <WITH> <TIME> <ZONE> | <WITHOUT> <TIME> <ZONE>
-
-<timePrecision> ::= <timeFractionalSecondsPrecision>
-
-<timestampPrecision> ::= <timeFractionalSecondsPrecision>
-
-<timeFractionalSecondsPrecision> ::= <_unsigned integer>
-
-<intervalType> ::= <INTERVAL> <intervalQualifier>
-
-<rowType> ::= <ROW> <rowTypeBody>
-
-<fieldDefinitions> ::= <fieldDefinition>
-                      | <fieldDefinitions> <_comma> <fieldDefinition>
-
-<rowTypeBody> ::= <_left paren> <fieldDefinitions> <_right paren>
-
-<referenceType> ::= <REF> <_left paren> <referencedType> <_right paren>
-                   | <REF> <_left paren> <referencedType> <_right paren> <scopeClause>
-
-<scopeClause> ::= <SCOPE> <_table name>
-
-<referencedType> ::= <pathResolvedUserDefinedTypeName>
-
-<pathResolvedUserDefinedTypeName> ::= <_user_defined type name>
-
-<collectionType> ::= <arrayType> | <multisetType>
-
-<arrayType> ::= <dataType> <ARRAY>
-               | <dataType> <ARRAY> <_left bracket or trigraph> <_unsigned integer> <_right bracket or trigraph>
-
-<multisetType> ::= <dataType> <MULTISET>
-
-<fieldDefinition> ::= <fieldName> <dataType>
-                     | <fieldName> <dataType> <referenceScopeCheck>
-
-<valueExpressionPrimary> ::=
-		<parenthesizedValueExpression>
-	|	<nonparenthesizedValueExpressionPrimary>
-
-<parenthesizedValueExpression> ::= <_left paren> <valueExpression> <_right paren>
-
-<nonparenthesizedValueExpressionPrimary> ::=
-		<columnReference>                      rank =>   0
-	|	<unsignedValueSpecification>           rank =>  -1
-	|	<setFunctionSpecification>             rank =>  -2
-	|	<windowFunction>                       rank =>  -3
-	|	<scalarSubquery>                       rank =>  -4
-	|	<caseExpression>                       rank =>  -5
-	|	<castSpecification>                    rank =>  -6
-	|	<fieldReference>                       rank =>  -7
-	|	<subtypeTreatment>                     rank =>  -8
-	|	<methodInvocation>                     rank =>  -9
-	|	<staticMethodInvocation>               rank => -10
-	|	<newSpecification>                     rank => -11
-	|	<attributeOrMethodReference>           rank => -12
-	|	<referenceResolution>                  rank => -13
-	|	<collectionValueConstructor>           rank => -14
-	|	<arrayElementReference>                rank => -15
-	|	<multisetElementReference>             rank => -16
-	|	<routineInvocation>                    rank => -17
-	|	<nextValueExpression>                  rank => -18
-
-<valueSpecification> ::= <literal> | <generalValueSpecification>
-
-<unsignedValueSpecification> ::= <unsignedLiteral> | <generalValueSpecification>
-
-<generalValueSpecification> ::=
-		<hostParameterSpecification>                                              rank =>   0
-	|	<sqlParameterReference>                                                   rank =>  -1
-	|	<dynamicParameterSpecification>                                           rank =>  -2
-	|	<embeddedVariableSpecification>                                           rank =>  -3
-	|	<currentCollationSpecification>                                           rank =>  -4
-	|	<CURRENT_DEFAULT_TRANSFORM_GROUP>                                         rank =>  -5
-	|	<CURRENT_PATH>                                                            rank =>  -6
-	|	<CURRENT_ROLE>                                                            rank =>  -7
-	|	<CURRENT_TRANSFORM_GROUP_FOR_TYPE> <pathResolvedUserDefinedTypeName>      rank =>  -8
-	|	<CURRENT_USER>                                                            rank =>  -9
-	|	<SESSION_USER>                                                            rank => -10
-	|	<SYSTEM_USER>                                                             rank => -11
-	|	<USER>                                                                    rank => -12
-	|	<VALUE>                                                                   rank => -13
-
-<simpleValueSpecification> ::=
-		<literal>
-	|	<_host parameter name>
-	|	<sqlParameterReference>
-	|	<_embedded variable name>
-
-<targetSpecification> ::=
-		<hostParameterSpecification>
-	|	<sqlParameterReference>
-	|	<columnReference>
-	|	<targetArrayElementSpecification>
-	|	<dynamicParameterSpecification>
-	|	<embeddedVariableSpecification>
-
-<simpleTargetSpecification> ::=
-		<hostParameterSpecification>
-	|	<sqlParameterReference>
-	|	<columnReference>
-	|	<_embedded variable name>
-
-<hostParameterSpecification> ::= <_host parameter name>
-                                 | <_host parameter name> <indicatorParameter>
-
-<dynamicParameterSpecification> ::= <_question mark>
-
-<embeddedVariableSpecification> ::= <_embedded variable name>
-                                    | <_embedded variable name> <indicatorVariable>
-
-<indicatorVariable> ::= <_embedded variable name>
-                       | <INDICATOR> <_embedded variable name>
-
-<indicatorParameter> ::= <_host parameter name>
-                        | <INDICATOR> <_host parameter name>
-
-<targetArrayElementSpecification> ::=
-		<targetArrayReference> <_left bracket or trigraph> <simpleValueSpecification> <_right bracket or trigraph> 
-
-<targetArrayReference> ::= <sqlParameterReference> | <columnReference>
-
-<currentCollationSpecification> ::= <CURRENT_COLLATION> <_left paren> <stringValueExpression> <_right paren>
-
-<contextuallyTypedValueSpecification> ::=
-		<implicitlyTypedValueSpecification> | <defaultSpecification>
-
-<implicitlyTypedValueSpecification> ::= <nullSpecification> | <emptySpecification>
-
-<nullSpecification> ::= <NULL>
-
-<emptySpecification> ::=
-		<ARRAY> <_left bracket or trigraph> <_right bracket or trigraph>
-	|	<MULTISET> <_left bracket or trigraph> <_right bracket or trigraph>
-
-<defaultSpecification> ::= <DEFAULT>
-
-<__identifier chain> ~ <__identifier>
-                     | <__identifier chain> <__period> <__identifier>
-
-<__basic identifier chain> ~ <__identifier chain>
-<_basic identifier chain> ~ <__basic identifier chain>
-
-<columnReference> ~
-		<__basic identifier chain>
-	|	<__MODULE> <__period> <__qualified identifier> <__period> <__column name>
-
-<sqlParameterReference> ::= <_basic identifier chain>
-
-<setFunctionSpecification> ::= <aggregateFunction> | <groupingOperation>
-
-<columnReferenceChain> ::= <columnReference>
-                           | <columnReferenceChain> <_comma> <columnReference>
-<groupingOperation> ::= <GROUPING> <_left paren> <columnReferenceChain> <_right paren>
-
-<windowFunction> ::= <windowFunctionType> <OVER> <windowNameOrSpecification>
-
-<windowFunctionType> ::=
-		<rankFunctionType> <_left paren> <_right paren>
-	|	<ROW_NUMBER> <_left paren> <_right paren>
-	|	<aggregateFunction>
-
-<rankFunctionType> ::= <RANK> | <DENSE_RANK> | <PERCENT_RANK> | <CUME_DIST>
-
-<windowNameOrSpecification> ::= <_window name> | <inLineWindowSpecification>
-
-<inLineWindowSpecification> ::= <windowSpecification>
-
-<caseExpression> ::= <caseAbbreviation> | <caseSpecification>
-
-<commaAndValueExpression> ::= <_comma> <valueExpression>
-
-<commaAndValueExpressionMany> ::= <commaAndValueExpression>+
-
-<caseAbbreviation> ::=
-		<NULLIF> <_left paren> <valueExpression> <_comma> <valueExpression> <_right paren>
-	|	<COALESCE> <_left paren> <valueExpression> <commaAndValueExpressionMany> <_right paren>
-
-<caseSpecification> ::= <simpleCase> | <searchedCase>
-
-<simpleWhenClauseMany> ::= <simpleWhenClause>+
-
-<simpleCase> ::= <CASE> <caseOperand> <simpleWhenClauseMany> <END>
-                | <CASE> <caseOperand> <simpleWhenClauseMany> <elseClause> <END>
-
-<searchedWhenClauseMany> ::= <searchedWhenClause>+
-
-<searchedCase> ::= <CASE> <searchedWhenClauseMany> <END>
-                  | <CASE> <searchedWhenClauseMany> <elseClause> <END>
-
-<simpleWhenClause> ::= <WHEN> <whenOperand> <THEN> <result>
-
-<searchedWhenClause> ::= <WHEN> <searchCondition> <THEN> <result>
-
-<elseClause> ::= <ELSE> <result>
-
-<caseOperand> ::= <rowValuePredicand> | <overlapsPredicatePart1>
-
-<whenOperand> ::=
-		<rowValuePredicand>
-	|	<comparisonPredicatePart2>
-	|	<betweenPredicatePart2>
-	|	<inPredicatePart2>
-	|	<characterLikePredicatePart2>
-	|	<octetLikePredicatePart2>
-	|	<similarPredicatePart2>
-	|	<nullPredicatePart2>
-	|	<quantifiedComparisonPredicatePart2>
-	|	<matchPredicatePart2>
-	|	<overlapsPredicatePart2>
-	|	<distinctPredicatePart2>
-	|	<memberPredicatePart2>
-	|	<submultisetPredicatePart2>
-	|	<setPredicatePart2>
-	|	<typePredicatePart2>
-
-<result> ::= <resultExpression> | <NULL>
-
-<resultExpression> ::= <valueExpression>
-
-<castSpecification> ::= <CAST> <_left paren> <castOperand> <AS> <castTarget> <_right paren>
-
-<castOperand> ::= <valueExpression> | <implicitlyTypedValueSpecification>
-
-<castTarget> ::= <_domain name> | <dataType>
-
-<nextValueExpression> ::= <NEXT> <VALUE> <FOR> <sequenceGeneratorName>
-
-<fieldReference> ::= <valueExpressionPrimary> <_period> <fieldName>
-
-<subtypeTreatment> ::=	<TREAT> <_left paren> <subtypeOperand> <AS> <targetSubtype> <_right paren>
-
-<subtypeOperand> ::= <valueExpression>
-
-<targetSubtype> ::=
-		<pathResolvedUserDefinedTypeName>
-	|	<referenceType>
-
-<methodInvocation> ::= <directInvocation> | <generalizedInvocation>
-
-<directInvocation> ::=	<valueExpressionPrimary> <_period> <_method name>
-                      | <valueExpressionPrimary> <_period> <_method name> <sqlArgumentList>
-
-<generalizedInvocation> ::= <_left paren> <valueExpressionPrimary> <AS> <dataType> <_right paren> <_period> <_method name>
-                           | <_left paren> <valueExpressionPrimary> <AS> <dataType> <_right paren> <_period> <_method name> <sqlArgumentList>
-
-<staticMethodInvocation> ::= <pathResolvedUserDefinedTypeName> <_double colon> <_method name>
-                             | <pathResolvedUserDefinedTypeName> <_double colon> <_method name> <sqlArgumentList>
-
-<newSpecification> ::= <NEW> <routineInvocation>
-
-<attributeOrMethodReference> ::= <valueExpressionPrimary> <dereferenceOperator> <_qualified identifier>
-                                  | <valueExpressionPrimary> <dereferenceOperator> <_qualified identifier> <sqlArgumentList>
-
-<dereferenceOperator> ::= <_right arrow>
-
-<referenceResolution> ::= <DEREF> <_left paren> <referenceValueExpression> <_right paren>
-
-<arrayElementReference> ::= <arrayValueExpression> <_left bracket or trigraph> <numericValueExpression> <_right bracket or trigraph> 
-
-<multisetElementReference> ::= <ELEMENT> <_left paren> <multisetValueExpression> <_right paren>
-
-#
-# <commonValueExpression> is a also big source of ambiguities.
-# We give it explicit lower precedence, and explicit higher precedences to the others.
-#
-<valueExpression> ::=
-		<booleanValueExpression>              rank =>  0
-	|	<rowValueExpression>                  rank => -1
-	|	<commonValueExpression>               rank => -2
-
-#
-# <collectionValueExpression> is a also big source of ambiguities, since it is a collection we give it latest
-# precedence, and explicit higher precedences to all others, ordered by appearance in the grammar
-#
-<commonValueExpression> ::=
-		<numericValueExpression>              rank =>  0
-	|	<stringValueExpression>               rank => -1
-	|	<datetimeValueExpression>             rank => -2
-	|	<intervalValueExpression>             rank => -3
-	|	<userDefinedTypeValueExpression>      rank => -4
-	|	<referenceValueExpression>            rank => -5
-	|	<collectionValueExpression>           rank => -6
-
-<userDefinedTypeValueExpression> ::= <valueExpressionPrimary>
-
-<referenceValueExpression> ::= <valueExpressionPrimary>
-
-<collectionValueExpression> ::= <arrayValueExpression> | <multisetValueExpression>
-
-<collectionValueConstructor> ::= <arrayValueConstructor> | <multisetValueConstructor>
-
-<numericValueExpression> ::=
-		<term>
-	|	<numericValueExpression> <_plus sign> <term>
-	|	<numericValueExpression> <_minus sign> <term>
-
-<term> ::=
-		<factor>
-	|	<term> <_asterisk> <factor>
-	|	<term> <_solidus> <factor>
-
-<factor> ::= <numericPrimary>
-           | <_sign> <numericPrimary>
-
-<numericPrimary> ::=
-		<valueExpressionPrimary>
-	|	<numericValueFunction>
-
-<numericValueFunction> ::=
-		<positionExpression>
-	|	<extractExpression>
-	|	<lengthExpression>
-	|	<cardinalityExpression>
-	|	<absoluteValueExpression>
-	|	<modulusExpression>
-	|	<naturalLogarithm>
-	|	<exponentialFunction>
-	|	<powerFunction>
-	|	<squareRoot>
-	|	<floorFunction>
-	|	<ceilingFunction>
-	|	<widthBucketFunction>
-
-<positionExpression> ::=
-		<stringPositionExpression>
-	|	<blobPositionExpression>
-
-<stringPositionExpression> ::= <POSITION> <_left paren> <stringValueExpression> <IN> <stringValueExpression>                             <_right paren>
-                               | <POSITION> <_left paren> <stringValueExpression> <IN> <stringValueExpression> <USING> <charLengthUnits> <_right paren>
-
-<blobPositionExpression> ::= <POSITION> <_left paren> <blobValueExpression> <IN> <blobValueExpression> <_right paren>
-
-<lengthExpression> ::=
-		<charLengthExpression>
-	|	<octetLengthExpression>
-
-<charLengthExpression> ::= <CHAR_LENGTH>      <_left paren> <stringValueExpression>                             <_right paren>
-                           | <CHAR_LENGTH>      <_left paren> <stringValueExpression> <USING> <charLengthUnits> <_right paren>
-                           | <CHARACTER_LENGTH> <_left paren> <stringValueExpression>                             <_right paren>
-                           | <CHARACTER_LENGTH> <_left paren> <stringValueExpression> <USING> <charLengthUnits> <_right paren>
-
-<octetLengthExpression> ::= <OCTET_LENGTH> <_left paren> <stringValueExpression> <_right paren>
-
-<extractExpression> ::= <EXTRACT> <_left paren> <extractField> <FROM> <extractSource> <_right paren>
-
-<extractField> ::= <primaryDatetimeField> | <timeZoneField>
-
-<timeZoneField> ::= <TIMEZONE_HOUR> | <TIMEZONE_MINUTE>
-
-<extractSource> ::= <datetimeValueExpression> | <intervalValueExpression>
-
-<cardinalityExpression> ::= <CARDINALITY> <_left paren> <collectionValueExpression> <_right paren>
-
-<absoluteValueExpression> ::= <ABS> <_left paren> <numericValueExpression> <_right paren>
-
-<modulusExpression> ::= <MOD> <_left paren> <numericValueExpressionDividend> <_comma> <numericValueExpressionDivisor><_right paren>
-
-<numericValueExpressionDividend> ::= <numericValueExpression>
-
-<numericValueExpressionDivisor> ::= <numericValueExpression>
-
-<naturalLogarithm> ::= <LN> <_left paren> <numericValueExpression> <_right paren>
-
-<exponentialFunction> ::= <EXP> <_left paren> <numericValueExpression> <_right paren>
-
-<powerFunction> ::= <POWER> <_left paren> <numericValueExpressionBase> <_comma> <numericValueExpressionExponent> <_right paren>
-
-<numericValueExpressionBase> ::= <numericValueExpression>
-
-<numericValueExpressionExponent> ::= <numericValueExpression>
-
-<squareRoot> ::= <SQRT> <_left paren> <numericValueExpression> <_right paren>
-
-<floorFunction> ::= <FLOOR> <_left paren> <numericValueExpression> <_right paren>
-
-<ceilingFunction> ::= <CEIL>    <_left paren> <numericValueExpression> <_right paren>
-                     | <CEILING> <_left paren> <numericValueExpression> <_right paren>
-
-<widthBucketFunction> ::= <WIDTH_BUCKET> <_left paren> <widthBucketOperand> <_comma> <widthBucketBound1> <_comma> <widthBucketBound2> <_comma> <widthBucketCount> <_right paren>
-
-<widthBucketOperand> ::= <numericValueExpression>
-
-<widthBucketBound1> ::= <numericValueExpression>
-
-<widthBucketBound2> ::= <numericValueExpression>
-
-<widthBucketCount> ::= <numericValueExpression>
-
-<stringValueExpression> ::= <characterValueExpression> | <blobValueExpression>
-
-<characterValueExpression> ::= <concatenation> | <characterFactor>
-
-<concatenation> ::= <characterValueExpression> <_concatenation operator> <characterFactor>
-
-<characterFactor> ::= <characterPrimary>
-                     | <characterPrimary> <collateClause>
-
-<characterPrimary> ::= <valueExpressionPrimary> | <stringValueFunction>
-
-<blobValueExpression> ::= <blobConcatenation> | <blobFactor>
-
-<blobFactor> ::= <blobPrimary>
-
-<blobPrimary> ::= <valueExpressionPrimary> | <stringValueFunction>
-
-<blobConcatenation> ::= <blobValueExpression> <_concatenation operator> <blobFactor>
-
-<stringValueFunction> ::= <characterValueFunction> | <blobValueFunction>
-
-<characterValueFunction> ::=
-		<characterSubstringFunction>
-	|	<regularExpressionSubstringFunction>
-	|	<fold>
-	|	<transcoding>
-	|	<characterTransliteration>
-	|	<trimFunction>
-	|	<characterOverlayFunction>
-	|	<normalizeFunction>
-	|	<specificTypeMethod>
-
-<characterSubstringFunction> ::= <SUBSTRING> <_left paren> <characterValueExpression> <FROM> <startPosition> <_right paren>
-                                 | <SUBSTRING> <_left paren> <characterValueExpression> <FROM> <startPosition> <FOR> <stringLength> <_right paren>
-                                 | <SUBSTRING> <_left paren> <characterValueExpression> <FROM> <startPosition> <USING> <charLengthUnits> <_right paren>
-                                 | <SUBSTRING> <_left paren> <characterValueExpression> <FROM> <startPosition> <FOR> <stringLength> <USING> <charLengthUnits> <_right paren>
-
-<regularExpressionSubstringFunction> ::=
-		<SUBSTRING> <_left paren> <characterValueExpression>
-		<SIMILAR> <characterValueExpression> <ESCAPE> <_escape character> <_right paren>
-
-<fold> ::= <UPPER> <_left paren> <characterValueExpression> <_right paren>
-         | <LOWER> <_left paren> <characterValueExpression> <_right paren>
-
-<transcoding> ::= <CONVERT> <_left paren> <characterValueExpression> <USING> <transcodingName> <_right paren>
-
-<characterTransliteration> ::= <TRANSLATE> <_left paren> <characterValueExpression> <USING> <transliterationName> <_right paren>
-
-<trimFunction> ::= <TRIM> <_left paren> <trimOperands> <_right paren>
-
-<trimOperands> ::= <trimSource>
-                  | <FROM> <trimSource>
-                  | <trimSpecification> <FROM> <trimSource>
-                  | <trimCharacter> <FROM> <trimSource>
-                  | <trimSpecification> <trimCharacter> <FROM> <trimSource>
-
-<trimSource> ::= <characterValueExpression>
-
-<trimSpecification> ::= <LEADING> | <TRAILING> | <BOTH>
-
-<trimCharacter> ::= <characterValueExpression>
-
-<characterOverlayFunction> ::=
-    <OVERLAY> <_left paren> <characterValueExpression> <PLACING> <characterValueExpression> <FROM> <startPosition>                                                   <_right paren>
- |  <OVERLAY> <_left paren> <characterValueExpression> <PLACING> <characterValueExpression> <FROM> <startPosition> <FOR> <stringLength>                             <_right paren>
- |  <OVERLAY> <_left paren> <characterValueExpression> <PLACING> <characterValueExpression> <FROM> <startPosition>                       <USING> <charLengthUnits> <_right paren>
- |  <OVERLAY> <_left paren> <characterValueExpression> <PLACING> <characterValueExpression> <FROM> <startPosition> <FOR> <stringLength> <USING> <charLengthUnits> <_right paren>
-
-<normalizeFunction> ::= <NORMALIZE> <_left paren> <characterValueExpression> <_right paren>
-
-<specificTypeMethod> ::= <userDefinedTypeValueExpression> <_period> <SPECIFICTYPE>
-
-<blobValueFunction> ::=
-		<blobSubstringFunction>
-	|	<blobTrimFunction>
-	|	<blobOverlayFunction>
-
-<blobSubstringFunction> ::=
-		<SUBSTRING> <_left paren> <blobValueExpression> <FROM> <startPosition>                       <_right paren>
-	|	<SUBSTRING> <_left paren> <blobValueExpression> <FROM> <startPosition> <FOR> <stringLength> <_right paren>
-
-<blobTrimFunction> ::= <TRIM> <_left paren> <blobTrimOperands> <_right paren>
-
-<blobTrimOperands> ::=                                          <blobTrimSource>
-                       |                                   <FROM> <blobTrimSource>
-                       | <trimSpecification>              <FROM> <blobTrimSource>
-                       |                      <trimOctet> <FROM> <blobTrimSource>
-                       | <trimSpecification> <trimOctet> <FROM> <blobTrimSource>
-
-<blobTrimSource> ::= <blobValueExpression>
-
-<trimOctet> ::= <blobValueExpression>
-
-<blobOverlayFunction> ::=
-		<OVERLAY> <_left paren> <blobValueExpression> <PLACING> <blobValueExpression> <FROM> <startPosition> <FOR> <stringLength> <_right paren>
-	|	<OVERLAY> <_left paren> <blobValueExpression> <PLACING> <blobValueExpression> <FROM> <startPosition>                       <_right paren>
-
-<startPosition> ::= <numericValueExpression>
-
-<stringLength> ::= <numericValueExpression>
-
-<datetimeValueExpression> ::=
-		<datetimeTerm>
-	|	<intervalValueExpression> <_plus sign> <datetimeTerm>
-	|	<datetimeValueExpression> <_plus sign> <intervalTerm>
-	|	<datetimeValueExpression> <_minus sign> <intervalTerm>
-
-<datetimeTerm> ::= <datetimeFactor>
-
-<datetimeFactor> ::= <datetimePrimary>
-                    | <datetimePrimary> <timeZone>
-
-<datetimePrimary> ::= <valueExpressionPrimary> | <datetimeValueFunction>
-
-<timeZone> ::= <AT> <timeZoneSpecifier>
-
-<timeZoneSpecifier> ::= <LOCAL> | <TIME> <ZONE> <intervalPrimary>
-
-<datetimeValueFunction> ::=
-		<currentDateValueFunction>
-	|	<currentTimeValueFunction>
-	|	<currentTimestampValueFunction>
-	|	<currentLocalTimeValueFunction>
-	|	<currentLocalTimestampValueFunction>
-
-<currentDateValueFunction> ::= <CURRENT_DATE>
-
-<currentTimeValueFunction> ::= <CURRENT_TIME>
-                                | <CURRENT_TIME> <_left paren> <timePrecision> <_right paren>
-
-<currentLocalTimeValueFunction> ::= <LOCALTIME>
-                                      | <LOCALTIME> <_left paren> <timePrecision> <_right paren>
-
-<currentTimestampValueFunction> ::= <CURRENT_TIMESTAMP>
-                                     | <CURRENT_TIMESTAMP> <_left paren> <timestampPrecision> <_right paren>
-
-<currentLocalTimestampValueFunction> ::= <LOCALTIMESTAMP>
-                                           | <LOCALTIMESTAMP> <_left paren> <timestampPrecision> <_right paren>
-
-<intervalValueExpression> ::=
-		<intervalTerm>
-	|	<intervalValueExpression1> <_plus sign> <intervalTerm1>
-	|	<intervalValueExpression1> <_minus sign> <intervalTerm1>
-	|	<_left paren> <datetimeValueExpression> <_minus sign> <datetimeTerm> <_right paren> <intervalQualifier>
-
-<intervalTerm> ::=
-		<intervalFactor>
-	|	<intervalTerm2> <_asterisk> <factor>
-	|	<intervalTerm2> <_solidus> <factor>
-	|	<term> <_asterisk> <intervalFactor>
-
-<intervalFactor> ::= <intervalPrimary>
-                    | <_sign> <intervalPrimary>
-
-<intervalPrimary> ::=
-		<valueExpressionPrimary>
-	|	<valueExpressionPrimary> <intervalQualifier>
-	|	<intervalValueFunction>
-
-<intervalValueExpression1> ::= <intervalValueExpression>
-
-<intervalTerm1> ::= <intervalTerm>
-
-<intervalTerm2> ::= <intervalTerm>
-
-<intervalValueFunction> ::= <intervalAbsoluteValueFunction>
-
-<intervalAbsoluteValueFunction> ::= <ABS> <_left paren> <intervalValueExpression> <_right paren>
-
-<booleanValueExpression> ::=
-		<booleanTerm>
-	|	<booleanValueExpression> <OR> <booleanTerm>
-
-<booleanTerm> ::=
-		<booleanFactor>
-	|	<booleanTerm> <AND> <booleanFactor>
-
-<booleanFactor> ::= <booleanTest>
-                   | <NOT> <booleanTest>
-
-<booleanTest> ::= <booleanPrimary>
-                 | <booleanPrimary> <IS> <truthValue>
-                 | <booleanPrimary> <IS> <NOT> <truthValue>
-
-<truthValue> ::= <TRUE> | <FALSE> | <UNKNOWN>
-
-<booleanPrimary> ::= <predicate> | <booleanPredicand>
-
-<booleanPredicand> ::=
-		<parenthesizedBooleanValueExpression>
-	|	<nonparenthesizedValueExpressionPrimary>
-
-<parenthesizedBooleanValueExpression> ::= <_left paren> <booleanValueExpression> <_right paren>
-
-<arrayValueExpression> ::= <arrayConcatenation> | <arrayFactor>
-
-<arrayConcatenation> ::= <arrayValueExpression1> <_concatenation operator> <arrayFactor>
-
-<arrayValueExpression1> ::= <arrayValueExpression>
-
-<arrayFactor> ::= <valueExpressionPrimary>
-
-<arrayValueConstructor> ::=
-		<arrayValueConstructorByEnumeration>
-	|	<arrayValueConstructorByQuery>
-
-<arrayValueConstructorByEnumeration> ::=
-		<ARRAY> <_left bracket or trigraph> <arrayElementList> <_right bracket or trigraph>
-
-<arrayElementList> ::= <arrayElement>
-                       | <arrayElementList> <_comma> <arrayElement>
-
-<arrayElement> ::= <valueExpression>
-
-<arrayValueConstructorByQuery> ::= <ARRAY> <_left paren> <queryExpression> <_right paren>
-                                     | <ARRAY> <_left paren> <queryExpression> <orderByClause> <_right paren>
-
-<multisetValueExpression> ::=
-		<multisetTerm>
-	|	<multisetValueExpression> <MULTISET> <UNION>             <multisetTerm>
-	|	<multisetValueExpression> <MULTISET> <UNION> <ALL>       <multisetTerm>
-	|	<multisetValueExpression> <MULTISET> <UNION> <DISTINCT>  <multisetTerm>
-	|	<multisetValueExpression> <MULTISET> <EXCEPT>            <multisetTerm>
-	|	<multisetValueExpression> <MULTISET> <EXCEPT> <ALL>      <multisetTerm>
-	|	<multisetValueExpression> <MULTISET> <EXCEPT> <DISTINCT> <multisetTerm>
-
-<multisetTerm> ::=
-		<multisetPrimary>
-	|	<multisetTerm> <MULTISET> <INTERSECT>            <multisetPrimary>
-	|	<multisetTerm> <MULTISET> <INTERSECT> <ALL>      <multisetPrimary>
-	|	<multisetTerm> <MULTISET> <INTERSECT> <DISTINCT> <multisetPrimary>
-
-<multisetPrimary> ::= <multisetValueFunction> | <valueExpressionPrimary>
-
-<multisetValueFunction> ::= <multisetSetFunction>
-
-<multisetSetFunction> ::= <SET> <_left paren> <multisetValueExpression> <_right paren>
-
-<multisetValueConstructor> ::=
-		<multisetValueConstructorByEnumeration>
-	|	<multisetValueConstructorByQuery>
-	|	<tableValueConstructorByQuery>
-
-<multisetValueConstructorByEnumeration> ::= <MULTISET> <_left bracket or trigraph> <multisetElementList> <_right bracket or trigraph>
-
-<multisetElementList> ::= <multisetElement>
-                          | <multisetElementList> <_comma> <multisetElement>
-
-<multisetElement> ::= <valueExpression>
-
-<multisetValueConstructorByQuery> ::= <MULTISET> <_left paren> <queryExpression> <_right paren>
-
-<tableValueConstructorByQuery> ::= <TABLE> <_left paren> <queryExpression> <_right paren>
-
-#
-# <commonValueExpression> generates ambiguities
-#
-<rowValueConstructor> ::=
-		<booleanValueExpression>                  rank =>  0
-	|	<explicitRowValueConstructor>             rank => -1
-	|	<commonValueExpression>                   rank => -2
-
-<explicitRowValueConstructor> ::=
-		<_left paren> <rowValueConstructorElement> <_comma> <rowValueConstructorElementList> <_right paren>
-	|	<ROW> <_left paren> <rowValueConstructorElementList> <_right paren>
-	|	<rowSubquery>
-
-<rowValueConstructorElementList> ::= <rowValueConstructorElement>
-                                   | <rowValueConstructorElementList> <_comma> <rowValueConstructorElement>
-
-<rowValueConstructorElement> ::= <valueExpression>
-
-#
-# <commonValueExpression> generates ambiguities
-#
-<contextuallyTypedRowValueConstructor> ::=
-		<booleanValueExpression>                    rank =>  0
-	|	<contextuallyTypedValueSpecification>       rank => -1
-	|	<_left paren> <contextuallyTypedRowValueConstructorElement> <_comma> <contextuallyTypedRowValueConstructorElementList> <_right paren> rank => -2
-	|	<ROW> <_left paren> <contextuallyTypedRowValueConstructorElementList> <_right paren> rank => -3
-	|	<commonValueExpression>                     rank => -4
-
-<contextuallyTypedRowValueConstructorElementList> ::= <contextuallyTypedRowValueConstructorElement>
-                                                          | <contextuallyTypedRowValueConstructorElementList> <_comma> <contextuallyTypedRowValueConstructorElement>
-
-<contextuallyTypedRowValueConstructorElement> ::=
-		<valueExpression>                           rank =>  0
-	|	<contextuallyTypedValueSpecification>       rank => -1
-
-<rowValueConstructorPredicand> ::=
-		<booleanPredicand>                          rank =>  0
-	|	<explicitRowValueConstructor>               rank => -1
-	|	<commonValueExpression>                     rank => -2
-
-<rowValueExpression> ::=
-		<rowValueSpecialCase>                       rank =>  0
-	|	<explicitRowValueConstructor>               rank => -1
-
-<tableRowValueExpression> ::=
-		<rowValueSpecialCase>                       rank =>  0
-	|	<rowValueConstructor>                       rank => -1
-
-<contextuallyTypedRowValueExpression> ::=
-		<rowValueSpecialCase>                       rank =>  0
-	|	<contextuallyTypedRowValueConstructor>      rank => -1
-
-<rowValuePredicand> ::=
-		<rowValueSpecialCase>                       rank =>  0
-	|	<rowValueConstructorPredicand>              rank => -1
-
-<rowValueSpecialCase> ::= <nonparenthesizedValueExpressionPrimary>
-
-<tableValueConstructor> ::= <VALUES> <rowValueExpressionList>
-
-<rowValueExpressionList> ::= <tableRowValueExpression>
-                           | <rowValueExpressionList> <_comma> <tableRowValueExpression>
-
-<contextuallyTypedTableValueConstructor> ::= <VALUES> <contextuallyTypedRowValueExpressionList>
-
-<contextuallyTypedRowValueExpressionList> ::= <contextuallyTypedRowValueExpression>
-                                            | <contextuallyTypedRowValueExpressionList> <_comma> <contextuallyTypedRowValueExpression>
-
-<tableExpression> ::= <fromClause>
-	|	<fromClause> <whereClause>
-	|	<fromClause> <whereClause> <groupByClause>
-	|	<fromClause> <whereClause> <groupByClause> <havingClause>
-	|	<fromClause> <whereClause> <groupByClause> <havingClause> <windowClause>
-	|	<fromClause> <whereClause> <groupByClause> <windowClause>
-	|	<fromClause> <whereClause> <havingClause>
-	|	<fromClause> <whereClause> <havingClause> <windowClause>
-	|	<fromClause> <whereClause> <windowClause>
-	|	<fromClause> <groupByClause>
-	|	<fromClause> <groupByClause> <havingClause>
-	|	<fromClause> <groupByClause> <havingClause> <windowClause>
-	|	<fromClause> <groupByClause> <windowClause>
-	|	<fromClause> <havingClause>
-	|	<fromClause> <havingClause> <windowClause>
-	|	<fromClause> <windowClause>
-
-<fromClause> ::= <FROM> <tableReferenceList>
-
-<tableReferenceList> ::= <tableReference>
-                         | <tableReferenceList> <_comma> <tableReference>
-
-<tableReference> ::= <tablePrimaryOrJoinedTable>
-                    | <tablePrimaryOrJoinedTable> <sampleClause>
-
-<tablePrimaryOrJoinedTable> ::= <tablePrimary> | <joinedTable>
-
-<sampleClause> ::= <TABLESAMPLE> <sampleMethod> <_left paren> <samplePercentage> <_right paren>
-                  | <TABLESAMPLE> <sampleMethod> <_left paren> <samplePercentage> <_right paren> <repeatableClause>
-
-<sampleMethod> ::= <BERNOULLI> | <SYSTEM>
-
-<repeatableClause> ::= <REPEATABLE> <_left paren> <repeatArgument> <_right paren>
-
-<samplePercentage> ::= <numericValueExpression>
-
-<repeatArgument> ::= <numericValueExpression>
-
-<tablePrimary> ::=
-		<tableOrQueryName>
-	|	<tableOrQueryName>      <_correlation name>
-	|	<tableOrQueryName>      <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<tableOrQueryName> <AS> <_correlation name>
-	|	<tableOrQueryName> <AS> <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<derivedTable>      <_correlation name>
-	|	<derivedTable>      <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<derivedTable> <AS> <_correlation name>
-	|	<derivedTable> <AS> <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<lateralDerivedTable>      <_correlation name>
-	|	<lateralDerivedTable>      <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<lateralDerivedTable> <AS> <_correlation name>
-	|	<lateralDerivedTable> <AS> <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<collectionDerivedTable>      <_correlation name>
-	|	<collectionDerivedTable>      <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<collectionDerivedTable> <AS> <_correlation name>
-	|	<collectionDerivedTable> <AS> <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<tableFunctionDerivedTable>      <_correlation name>
-	|	<tableFunctionDerivedTable>      <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<tableFunctionDerivedTable> <AS> <_correlation name>
-	|	<tableFunctionDerivedTable> <AS> <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<onlySpec>
-	|	<onlySpec>      <_correlation name>
-	|	<onlySpec>      <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<onlySpec> <AS> <_correlation name>
-	|	<onlySpec> <AS> <_correlation name> <_left paren> <derivedColumnList> <_right paren>
-	|	<_left paren> <joinedTable> <_right paren>
-
-<onlySpec> ::= <ONLY> <_left paren> <tableOrQueryName> <_right paren>
-
-<lateralDerivedTable> ::= <LATERAL> <tableSubquery>
-
-<collectionDerivedTable> ::= <UNNEST> <_left paren> <collectionValueExpression> <_right paren>
-                             | <UNNEST> <_left paren> <collectionValueExpression> <_right paren> <WITH> <ORDINALITY>
-
-<tableFunctionDerivedTable> ::= <TABLE> <_left paren> <collectionValueExpression> <_right paren>
-
-<derivedTable> ::= <tableSubquery>
-
-<tableOrQueryName> ::= <_table name> | <_query name>
-
-<derivedColumnList> ::= <columnNameList>
-
-<columnNameList> ::= <_column name>
-                     | <columnNameList> <_comma> <_column name>
-
-<joinedTable> ::=
-		<crossJoin>
-	|	<qualifiedJoin>
-	|	<naturalJoin>
-	|	<unionJoin>
-
-<crossJoin> ::= <tableReference> <CROSS> <JOIN> <tablePrimary>
-
-<qualifiedJoin> ::= <tableReference>             <JOIN> <tableReference> <joinSpecification>
-                   | <tableReference> <joinType> <JOIN> <tableReference> <joinSpecification>
-
-<naturalJoin> ::= <tableReference> <NATURAL>             <JOIN> <tablePrimary>
-                 | <tableReference> <NATURAL> <joinType> <JOIN> <tablePrimary>
-
-<unionJoin> ::= <tableReference> <UNION> <JOIN> <tablePrimary>
-
-<joinSpecification> ::= <joinCondition> | <namedColumnsJoin>
-
-<joinCondition> ::= <ON> <searchCondition>
-
-<namedColumnsJoin> ::= <USING> <_left paren> <joinColumnList> <_right paren>
-
-<joinType> ::= <INNER>
-              | <outerJoinType>
-              | <outerJoinType> <OUTER>
-
-<outerJoinType> ::= <LEFT> | <RIGHT> | <FULL>
-
-<joinColumnList> ::= <columnNameList>
-
-<whereClause> ::= <WHERE> <searchCondition>
-
-<groupByClause> ::= <GROUP> <BY>                  <groupingElementList>
-                    | <GROUP> <BY> <setQuantifier> <groupingElementList>
-
-<groupingElementList> ::= <groupingElement>
-                          | <groupingElementList> <_comma> <groupingElement>
-
-<groupingElement> ::=
-		<ordinaryGroupingSet>
-	|	<rollupList>
-	|	<cubeList>
-	|	<groupingSetsSpecification>
-	|	<emptyGroupingSet>
-
-<ordinaryGroupingSet> ::=
-		<groupingColumnReference>
-	|	<_left paren> <groupingColumnReferenceList> <_right paren>
-
-<groupingColumnReference> ::= <columnReference>
-                              | <columnReference> <collateClause>
-
-<groupingColumnReferenceList> ::= <groupingColumnReference>
-                                   | <groupingColumnReferenceList> <_comma> <groupingColumnReference>
-
-<rollupList> ::= <ROLLUP> <_left paren> <ordinaryGroupingSetList> <_right paren>
-
-<ordinaryGroupingSetList> ::= <ordinaryGroupingSet>
-                               | <ordinaryGroupingSetList> <_comma> <ordinaryGroupingSet>
-
-<cubeList> ::= <CUBE> <_left paren> <ordinaryGroupingSetList> <_right paren>
-
-<groupingSetsSpecification> ::= <GROUPING> <SETS> <_left paren> <groupingSetList> <_right paren>
-
-<groupingSetList> ::= <groupingSet>
-                      | <groupingSetList> <_comma> <groupingSet>
-
-<groupingSet> ::=
-		<ordinaryGroupingSet>
-	|	<rollupList>
-	|	<cubeList>
-	|	<groupingSetsSpecification>
-	|	<emptyGroupingSet>
-
-<emptyGroupingSet> ::= <_left paren> <_right paren>
-
-<havingClause> ::= <HAVING> <searchCondition>
-
-<windowClause> ::= <WINDOW> <windowDefinitionList>
-
-<windowDefinitionList> ::= <windowDefinition>
-                           | <windowDefinitionList> <_comma> <windowDefinition>
-
-<windowDefinition> ::= <newWindowName> <AS> <windowSpecification>
-
-<newWindowName> ::= <_window name>
-
-#
-# Little grammar deviation: I make <windowSpecificationDetails> explicitely optional in <windowSpecification> 
-#
-<windowSpecification> ::= <_left paren> <_right paren>
-                         | <_left paren> <windowSpecificationDetails> <_right paren>
-
-<windowSpecificationDetails> ::=
-		<existingWindowName>
-	|	<existingWindowName> <windowPartitionClause>
-	|	<existingWindowName> <windowPartitionClause> <windowOrderClause>
-	|	<existingWindowName> <windowPartitionClause> <windowOrderClause> <windowFrameClause>
-	|	<existingWindowName> <windowPartitionClause> <windowFrameClause>
-	|	<existingWindowName> <windowOrderClause>
-	|	<existingWindowName> <windowOrderClause> <windowFrameClause>
-	|	<existingWindowName> <windowFrameClause>
-	|	<windowPartitionClause>
-	|	<windowPartitionClause> <windowOrderClause>
-	|	<windowPartitionClause> <windowOrderClause> <windowFrameClause>
-	|	<windowPartitionClause> <windowFrameClause>
-	|	<windowOrderClause>
-	|	<windowOrderClause> <windowFrameClause>
-	|	<windowFrameClause>
-
-<existingWindowName> ::= <_window name>
-
-<windowPartitionClause> ::= <PARTITION> <BY> <windowPartitionColumnReferenceList>
-
-<windowPartitionColumnReferenceList> ::= <windowPartitionColumnReference>
-                                           | <windowPartitionColumnReferenceList> <_comma> <windowPartitionColumnReference>
-
-<windowPartitionColumnReference> ::= <columnReference>
-                                      | <columnReference> <collateClause>
-
-<windowOrderClause> ::= <ORDER> <BY> <sortSpecificationList>
-
-<windowFrameClause> ::= <windowFrameUnits> <windowFrameExtent>
-                        | <windowFrameUnits> <windowFrameExtent> <windowFrameExclusion>
-
-<windowFrameUnits> ::= <ROWS> | <RANGE>
-
-<windowFrameExtent> ::= <windowFrameStart> | <windowFrameBetween>
-
-<windowFrameStart> ::= <UNBOUNDED> <PRECEDING> | <windowFramePreceding> | <CURRENT> <ROW>
-
-<windowFramePreceding> ::= <unsignedValueSpecification> <PRECEDING>
-
-<windowFrameBetween> ::= <BETWEEN> <windowFrameBound1> <AND> <windowFrameBound2>
-
-<windowFrameBound1> ::= <windowFrameBound>
-
-<windowFrameBound2> ::= <windowFrameBound>
-
-<windowFrameBound> ::=
-		<windowFrameStart>
-	|	<UNBOUNDED> <FOLLOWING>
-	|	<windowFrameFollowing>
-
-<windowFrameFollowing> ::= <unsignedValueSpecification> <FOLLOWING>
-
-<windowFrameExclusion> ::=
-		<EXCLUDE> <CURRENT> <ROW>
-	|	<EXCLUDE> <GROUP>
-	|	<EXCLUDE> <TIES>
-	|	<EXCLUDE> <NO> <OTHERS>
-
-<querySpecification> ::= <SELECT>                  <selectList> <tableExpression>
-                        | <SELECT> <setQuantifier> <selectList> <tableExpression>
-
-#
-# I create a <selectSublistList> explicit sequence here
-#
-<selectSublistList> ::= <selectSublist>
-                        | <selectSublistList> <_comma> <selectSublist>
-
-<selectList> ::= <_asterisk> | <selectSublistList>
-
-<selectSublist> ::= <derivedColumn> | <qualifiedAsterisk>
-
-<qualifiedAsterisk> ::=
-		<asteriskedIdentifierChain> <_period> <_asterisk>
-	|	<allFieldsReference>
-
-<asteriskedIdentifierChain> ::= <asteriskedIdentifier>
-                                | <asteriskedIdentifierChain> <_period> <asteriskedIdentifier>
-
-<asteriskedIdentifier> ::= <_identifier>
-
-<derivedColumn> ::= <valueExpression>
-                   | <valueExpression> <asClause>
-
-<asClause> ::=      <_column name>
-              | <AS> <_column name>
-
-<allFieldsReference> ::= <valueExpressionPrimary> <_period> <_asterisk>
-                         | <valueExpressionPrimary> <_period> <_asterisk> <AS> <_left paren> <allFieldsColumnNameList> <_right paren>
-
-<allFieldsColumnNameList> ::= <columnNameList>
-
-<queryExpression> ::=               <queryExpressionBody>
-                     | <withClause> <queryExpressionBody>
-
-<withClause> ::= <WITH>             <withList>
-                | <WITH> <RECURSIVE> <withList>
-
-<withList> ::= <withListElement>
-              | <withList> <_comma> <withListElement>
-
-<withListElement> ::= <_query name>                                               <AS> <_left paren> <queryExpression> <_right paren>
-                      | <_query name>                                               <AS> <_left paren> <queryExpression> <_right paren> <searchOrCycleClause>
-                      | <_query name> <_left paren> <withColumnList> <_right paren> <AS> <_left paren> <queryExpression> <_right paren>
-                      | <_query name> <_left paren> <withColumnList> <_right paren> <AS> <_left paren> <queryExpression> <_right paren> <searchOrCycleClause>
-
-<withColumnList> ::= <columnNameList>
-
-<queryExpressionBody> ::= <nonJoinQueryExpression> | <joinedTable>
-
-<nonJoinQueryExpression> ::=
-		<nonJoinQueryTerm>
-	|	<queryExpressionBody> <UNION>                                  <queryTerm>
-	|	<queryExpressionBody> <UNION>             <correspondingSpec> <queryTerm>
-	|	<queryExpressionBody> <UNION>  <ALL>                           <queryTerm>
-	|	<queryExpressionBody> <UNION>  <ALL>      <correspondingSpec> <queryTerm>
-	|	<queryExpressionBody> <UNION>  <DISTINCT>                      <queryTerm>
-	|	<queryExpressionBody> <UNION>  <DISTINCT> <correspondingSpec> <queryTerm>
-	|	<queryExpressionBody> <EXCEPT>                                 <queryTerm>
-	|	<queryExpressionBody> <EXCEPT>            <correspondingSpec> <queryTerm>
-	|	<queryExpressionBody> <EXCEPT> <ALL>                           <queryTerm>
-	|	<queryExpressionBody> <EXCEPT> <ALL>      <correspondingSpec> <queryTerm>
-	|	<queryExpressionBody> <EXCEPT> <DISTINCT>                      <queryTerm>
-	|	<queryExpressionBody> <EXCEPT> <DISTINCT> <correspondingSpec> <queryTerm>
-
-<queryTerm> ::= <nonJoinQueryTerm> | <joinedTable>
-
-<nonJoinQueryTerm> ::=
-		<nonJoinQueryPrimary>
-	|	<queryTerm> <INTERSECT>                                  <queryPrimary>
-	|	<queryTerm> <INTERSECT>             <correspondingSpec> <queryPrimary>
-	|	<queryTerm> <INTERSECT>  <ALL>                           <queryPrimary>
-	|	<queryTerm> <INTERSECT>  <ALL>      <correspondingSpec> <queryPrimary>
-	|	<queryTerm> <INTERSECT>  <DISTINCT>                      <queryPrimary>
-	|	<queryTerm> <INTERSECT>  <DISTINCT> <correspondingSpec> <queryPrimary>
-
-<queryPrimary> ::= <nonJoinQueryPrimary> | <joinedTable>
-
-<nonJoinQueryPrimary> ::= <simpleTable> | <_left paren> <nonJoinQueryExpression> <_right paren>
-
-<simpleTable> ::=
-		<querySpecification>
-	|	<tableValueConstructor>
-	|	<explicitTable>
-
-<explicitTable> ::= <TABLE> <tableOrQueryName>
-
-<correspondingSpec> ::= <CORRESPONDING>
-                       | <CORRESPONDING> <BY> <_left paren> <correspondingColumnList> <_right paren>
-
-<correspondingColumnList> ::= <columnNameList>
-
-<searchOrCycleClause> ::=
-		<searchClause>
-	|	<cycleClause>
-	|	<searchClause> <cycleClause>
-
-<searchClause> ::= <SEARCH> <recursiveSearchOrder> <SET> <sequenceColumn>
-
-<recursiveSearchOrder> ::=
-		<DEPTH> <FIRST> <BY> <sortSpecificationList>
-	|	<BREADTH> <FIRST> <BY> <sortSpecificationList>
-
-<sequenceColumn> ::= <_column name>
-
-<cycleClause> ::=
-		<CYCLE> <cycleColumnList>
-		<SET> <cycleMarkColumn> <TO> <cycleMarkValue>
-		<DEFAULT> <nonCycleMarkValue>
-		<USING> <pathColumn>
-
-<cycleColumnList> ::= <cycleColumn>
-                      | <cycleColumnList> <_comma> <cycleColumn>
-
-<cycleColumn> ::= <_column name>
-
-<cycleMarkColumn> ::= <_column name>
-
-<pathColumn> ::= <_column name>
-
-<cycleMarkValue> ::= <valueExpression>
-
-<nonCycleMarkValue> ::= <valueExpression>
-
-<scalarSubquery> ::= <subquery>
-
-<rowSubquery> ::= <subquery>
-
-<tableSubquery> ::= <subquery>
-
-<subquery> ::= <_left paren> <queryExpression> <_right paren>
-
-<predicate> ::=
-		<comparisonPredicate>
-	|	<betweenPredicate>
-	|	<inPredicate>
-	|	<likePredicate>
-	|	<similarPredicate>
-	|	<nullPredicate>
-	|	<quantifiedComparisonPredicate>
-	|	<existsPredicate>
-	|	<uniquePredicate>
-	|	<normalizedPredicate>
-	|	<matchPredicate>
-	|	<overlapsPredicate>
-	|	<distinctPredicate>
-	|	<memberPredicate>
-	|	<submultisetPredicate>
-	|	<setPredicate>
-	|	<typePredicate>
-
-<comparisonPredicate> ::= <rowValuePredicand> <comparisonPredicatePart2>
-
-<comparisonPredicatePart2> ::= <compOp> <rowValuePredicand>
-
-<compOp> ::=
-		<_equals operator>
-	|	<_not equals operator>
-	|	<_less than operator>
-	|	<_greater than operator>
-	|	<_less than or equals operator>
-	|	<_greater than or equals operator>
-
-<betweenPredicate> ::= <rowValuePredicand> <betweenPredicatePart2>
-
-<betweenPredicatePart2> ::=       <BETWEEN>              <rowValuePredicand> <AND> <rowValuePredicand>
-                             |       <BETWEEN> <ASYMMETRIC> <rowValuePredicand> <AND> <rowValuePredicand>
-                             |       <BETWEEN> <SYMMETRIC>  <rowValuePredicand> <AND> <rowValuePredicand>
-                             | <NOT> <BETWEEN>              <rowValuePredicand> <AND> <rowValuePredicand>
-                             | <NOT> <BETWEEN> <ASYMMETRIC> <rowValuePredicand> <AND> <rowValuePredicand>
-                             | <NOT> <BETWEEN> <SYMMETRIC>  <rowValuePredicand> <AND> <rowValuePredicand>
-
-<inPredicate> ::= <rowValuePredicand> <inPredicatePart2> 
-
-<inPredicatePart2> ::= <IN> <inPredicateValue>
-                        | <NOT> <IN> <inPredicateValue>
-
-<inPredicateValue> ::=
-		<tableSubquery>
-	|	<_left paren> <inValueList> <_right paren>
-
-<inValueList> ::= <rowValueExpression>
-                  | <inValueList> <_comma> <rowValueExpression>
-
-<likePredicate> ::= <characterLikePredicate> | <octetLikePredicate>
-
-<characterLikePredicate> ::= <rowValuePredicand> <characterLikePredicatePart2>
-
-<characterLikePredicatePart2> ::=       <LIKE> <characterPattern>
-                                    |       <LIKE> <characterPattern> <ESCAPE> <_escape character>
-                                    | <NOT> <LIKE> <characterPattern>
-                                    | <NOT> <LIKE> <characterPattern> <ESCAPE> <_escape character>
-
-<characterPattern> ::= <characterValueExpression>
-
-#
-# Disgression from the standard: in the BNF there is
-# <_escape character> ::= <characterValueExpression>
-# and in reality this is always in the form 'X'
-#
-<__any character but quote> ~ [^']
-<__escape character> ~ <__quote><__any character but quote><__quote>
-                     | <__quote><__quote symbol><__quote>
-<_escape character> ~ <__escape character>
-
-<octetLikePredicate> ::= <rowValuePredicand> <octetLikePredicatePart2>
-
-<octetLikePredicatePart2> ::=       <LIKE> <octetPattern>
-                                |       <LIKE> <octetPattern> <ESCAPE> <escapeOctet>
-                                | <NOT> <LIKE> <octetPattern>
-                                | <NOT> <LIKE> <octetPattern> <ESCAPE> <escapeOctet>
-
-<octetPattern> ::= <blobValueExpression>
-
-<escapeOctet> ::= <blobValueExpression>
-
-<similarPredicate> ::= <rowValuePredicand> <similarPredicatePart2>
-
-<similarPredicatePart2> ::=       <SIMILAR> <TO> <similarPattern>
-                             |       <SIMILAR> <TO> <similarPattern> <ESCAPE> <_escape character>
-                             | <NOT> <SIMILAR> <TO> <similarPattern>
-                             | <NOT> <SIMILAR> <TO> <similarPattern> <ESCAPE> <_escape character>
-
-<similarPattern> ::= <regularExpression>
-
-<regularExpression> ::=
-		<regularTerm>
-	|	<regularExpression> <_vertical bar> <regularTerm>
-
-<regularTerm> ::=
-		<regularFactor>
-	|	<regularTerm> <regularFactor>
-
-<regularFactor> ::=
-		<regularPrimary>
-	|	<regularPrimary> <_asterisk>
-	|	<regularPrimary> <_plus sign>
-	|	<regularPrimary> <_question mark>
-	|	<regularPrimary> <repeatFactor>
-
-<repeatFactor> ::= <_left brace> <lowValue> <_right brace>
-                  | <_left brace> <lowValue> <upperLimit> <_right brace>
-
-<upperLimit> ::= <_comma>
-                | <_comma> <highValue>
-
-<lowValue> ::= <_unsigned integer>
-
-<highValue> ::= <_unsigned integer>
-
-<regularPrimary> ::=
-		<characterSpecifier>
-	|	<_percent>
-	|	<regularCharacterSet>
-	|	<_left paren> <regularExpression> <_right paren>
-
-<characterSpecifier> ::= <nonEscapedCharacter> | <escapedCharacter>
-
-#
-# This is the only disgression to the grammar:even if the ESCAPE lexeme in the rhs is supported
-# it is ignored, always defaulting to '\'. Why ESCAPE is specified after the affected other
-# rules? To support this feature, this would require going back in the stream and apply the
-# escaped character that is defined... after.
-#
-
-<nonEscapedCharacter> ~ [^\[\]\(\)\|\^\-\+\*_%\?\{\\]
-
-<escapedCharacter> ~ '\' [\[\]\(\)\|\^\-\+\*_%\?\{\\]
-
-<characterEnumerationMany> ::= <characterEnumeration>+
-
-<characterEnumerationIncludeMany> ::= <characterEnumerationInclude>+
-
-<characterEnumerationExcludeMany> ::= <characterEnumerationExclude>+
-
-<regularCharacterSet> ::=
-		<_underscore>
-	|	<_left bracket> <characterEnumerationMany> <_right bracket>
-	|	<_left bracket> <_circumflex> <characterEnumerationMany> <_right bracket>
-	|	<_left bracket> <characterEnumerationIncludeMany>  <_circumflex> <characterEnumerationExcludeMany> <_right bracket>
-
-<characterEnumerationInclude> ::= <characterEnumeration>
-
-<characterEnumerationExclude> ::= <characterEnumeration>
-
-<characterEnumeration> ::=
-		<characterSpecifier>
-	|	<characterSpecifier> <_minus sign> <characterSpecifier>
-	|	<_left bracket> <_colon> <regularCharacterSetIdentifier> <_colon> <_right bracket>
-
-<regularCharacterSetIdentifier> ::= <_identifier>
-
-<nullPredicate> ::= <rowValuePredicand> <nullPredicatePart2>
-
-<nullPredicatePart2> ::= <IS> <NULL>
-                          | <IS> <NOT> <NULL>
-
-<quantifiedComparisonPredicate> ::= <rowValuePredicand> <quantifiedComparisonPredicatePart2>
-
-<quantifiedComparisonPredicatePart2> ::= <compOp> <quantifier> <tableSubquery>
-
-<quantifier> ::= <all> | <some>
-
-<all> ::= <ALL>
-
-<some> ::= <SOME> | <ANY>
-
-<existsPredicate> ::= <EXISTS> <tableSubquery>
-
-<uniquePredicate> ::= <UNIQUE> <tableSubquery>
-
-<normalizedPredicate> ::= <stringValueExpression> <IS> <NORMALIZED>
-                         | <stringValueExpression> <IS> <NOT> <NORMALIZED>
-
-<matchPredicate> ::= <rowValuePredicand> <matchPredicatePart2>
-
-<matchPredicatePart2> ::= <MATCH>                    <tableSubquery>
-                           | <MATCH>          <SIMPLE>  <tableSubquery>
-                           | <MATCH>          <PARTIAL> <tableSubquery>
-                           | <MATCH>          <FULL>    <tableSubquery>
-                           | <MATCH> <UNIQUE>           <tableSubquery>
-                           | <MATCH> <UNIQUE> <SIMPLE>  <tableSubquery>
-                           | <MATCH> <UNIQUE> <PARTIAL> <tableSubquery>
-                           | <MATCH> <UNIQUE> <FULL>    <tableSubquery>
-
-<overlapsPredicate> ::= <overlapsPredicatePart1> <overlapsPredicatePart2>
-
-<overlapsPredicatePart1> ::= <rowValuePredicand1>
-
-<overlapsPredicatePart2> ::= <OVERLAPS> <rowValuePredicand2>
-
-<rowValuePredicand1> ::= <rowValuePredicand>
-
-<rowValuePredicand2> ::= <rowValuePredicand>
-
-<distinctPredicate> ::= <rowValuePredicand3> <distinctPredicatePart2>
-
-<distinctPredicatePart2> ::= <IS> <DISTINCT> <FROM> <rowValuePredicand4>
-
-<rowValuePredicand3> ::= <rowValuePredicand>
-
-<rowValuePredicand4> ::= <rowValuePredicand>
-
-<memberPredicate> ::= <rowValuePredicand> <memberPredicatePart2>
-
-<memberPredicatePart2> ::=       <MEMBER>      <multisetValueExpression>
-                            |       <MEMBER> <OF> <multisetValueExpression>
-                            | <NOT> <MEMBER>      <multisetValueExpression>
-                            | <NOT> <MEMBER> <OF> <multisetValueExpression>
-
-<submultisetPredicate> ::= <rowValuePredicand> <submultisetPredicatePart2>
-
-<submultisetPredicatePart2> ::=       <SUBMULTISET>      <multisetValueExpression>
-                                 |       <SUBMULTISET> <OF> <multisetValueExpression>
-                                 | <NOT> <SUBMULTISET>      <multisetValueExpression>
-                                 | <NOT> <SUBMULTISET> <OF> <multisetValueExpression>
-
-<setPredicate> ::= <rowValuePredicand> <setPredicatePart2>
-
-<setPredicatePart2> ::= <IS>       <A> <SET>
-                         | <IS> <NOT> <A> <SET>
-
-<typePredicate> ::= <rowValuePredicand> <typePredicatePart2>
-
-<typePredicatePart2> ::= <IS>       <OF> <_left paren> <typeList> <_right paren>
-                          | <IS> <NOT> <OF> <_left paren> <typeList> <_right paren>
-
-<typeList> ::= <userDefinedTypeSpecification>
-              | <typeList> <_comma> <userDefinedTypeSpecification>
-
-<userDefinedTypeSpecification> ::=
-		<inclusiveUserDefinedTypeSpecification>
-	|	<exclusiveUserDefinedTypeSpecification>
-
-<inclusiveUserDefinedTypeSpecification> ::= <pathResolvedUserDefinedTypeName>
-
-<exclusiveUserDefinedTypeSpecification> ::= <ONLY> <pathResolvedUserDefinedTypeName>
-
-<searchCondition> ::= <booleanValueExpression>
-
-<intervalQualifier> ::=
-		<startField> <TO> <endField>
-	|	<singleDatetimeField>
-
-<startField> ::= <nonSecondPrimaryDatetimeField>
-                | <nonSecondPrimaryDatetimeField> <_left paren> <intervalLeadingFieldPrecision> <_right paren>
-
-<endField> ::=
-		<nonSecondPrimaryDatetimeField>
-	|	<SECOND>
-	|	<SECOND> <_left paren> <intervalFractionalSecondsPrecision> <_right paren>
-
-<singleDatetimeField> ::=
-		<nonSecondPrimaryDatetimeField>
-	|	<nonSecondPrimaryDatetimeField> <_left paren> <intervalLeadingFieldPrecision> <_right paren>
-	|	<SECOND>
-	|	<SECOND> <_left paren> <intervalLeadingFieldPrecision> <_right paren>
-	|	<SECOND> <_left paren> <intervalLeadingFieldPrecision> <_comma> <intervalFractionalSecondsPrecision> <_right paren>
-
-<primaryDatetimeField> ::=
-		<nonSecondPrimaryDatetimeField>
-	|	<SECOND>
-
-<nonSecondPrimaryDatetimeField> ::= <YEAR> | <MONTH> | <DAY> | <HOUR> | <MINUTE>
-
-<intervalFractionalSecondsPrecision> ::= <_unsigned integer>
-
-<intervalLeadingFieldPrecision> ::= <_unsigned integer>
-
-<languageClause> ::= <LANGUAGE> <languageName>
-
-<languageName> ::= <C> | <SQL>
-
-<pathSpecification> ::= <PATH> <schemaNameList>
-
-<schemaNameList> ::= <_schema name>
-                     | <schemaNameList> <_comma> <_schema name>
-
-<routineInvocation> ::= <routineName> <sqlArgumentList>
-
-<routineName> ::= <_qualified identifier>
-                 | <_schema name> <_period> <_qualified identifier>
-
-<sqlArguments> ::= <sqlArgument>
-                  | <sqlArguments> <_comma> <sqlArgument>
-
-<sqlArgumentList> ::= <_left paren> <_right paren>
-                      | <_left paren> <sqlArguments> <_right paren>
-
-<sqlArgument> ::=
-		<valueExpression>
-	|	<generalizedExpression>
-	|	<targetSpecification>
-
-<generalizedExpression> ::= <valueExpression> <AS> <pathResolvedUserDefinedTypeName>
-
-<__character set specification> ~
-		<_standard character set name>
-	|	<_implementation_defined character set name>
-	|	<_user_defined character set name>
-
-<_character set specification> ~ <__character set specification>
-
-<_standard character set name> ~ <__character set name>
-
-<_implementation_defined character set name> ~ <__character set name>
-
-<_user_defined character set name> ~ <__character set name>
-
-<specificRoutineDesignator> ::=
-		<SPECIFIC> <routineType> <_specific name>
-	|	<routineType> <memberName>
-	|	<routineType> <memberName> <FOR> <schemaResolvedUserDefinedTypeName>
-
-<routineType> ::=
-		<ROUTINE>
-	|	<FUNCTION>
-	|	<PROCEDURE>
-	|	<METHOD>
-	|	<INSTANCE> <METHOD>
-	|	<STATIC> <METHOD>
-	|	<CONSTRUCTOR> <METHOD>
-
-<memberName> ::= <memberNameAlternatives>
-                | <memberNameAlternatives> <dataTypeList>
-
-<memberNameAlternatives> ::= <_schema qualified routine name> | <_method name>
-
-<dataTypes> ::= <dataType>
-               | <dataTypes> <_comma> <dataType>
-
-<dataTypeList> ::= <_left paren> <_right paren>
-                   | <_left paren> <dataTypes> <_right paren>
-
-<collateClause> ::= <COLLATE> <_collation name>
-
-<constraintNameDefinition> ::= <CONSTRAINT> <_constraint name>
-
-<constraintCharacteristics> ::=
-		<constraintCheckTime>
-	|	<constraintCheckTime>       <DEFERRABLE>
-	|	<constraintCheckTime> <NOT> <DEFERRABLE>
-	|	      <DEFERRABLE>
-	|	      <DEFERRABLE> <constraintCheckTime>
-	|	<NOT> <DEFERRABLE>
-	|	<NOT> <DEFERRABLE> <constraintCheckTime>
-
-<constraintCheckTime> ::= <INITIALLY> <DEFERRED> | <INITIALLY> <IMMEDIATE>
-
-<aggregateFunction> ::=
-		<COUNT> <_left paren> <_asterisk> <_right paren>
-	|	<COUNT> <_left paren> <_asterisk> <_right paren> <filterClause>
-	|	<generalSetFunction>
-	|	<generalSetFunction> <filterClause>
-	|	<binarySetFunction>
-	|	<binarySetFunction> <filterClause>
-	|	<orderedSetFunction>
-	|	<orderedSetFunction> <filterClause>
-
-<generalSetFunction> ::= <setFunctionType> <_left paren> <valueExpression> <_right paren>
-                         | <setFunctionType> <_left paren> <setQuantifier> <valueExpression> <_right paren>
-
-<setFunctionType> ::= <computationalOperation>
-
-<computationalOperation> ::=
-		<AVG> | <MAX> | <MIN> | <SUM>
-	|	<EVERY> | <ANY> | <SOME>
-	|	<COUNT>
-	|	<STDDEV_POP> | <STDDEV_SAMP> | <VAR_SAMP> | <VAR_POP>
-	|	<COLLECT> | <FUSION> | <INTERSECTION>
-
-<setQuantifier> ::= <DISTINCT> | <ALL>
-
-<filterClause> ::= <FILTER> <_left paren> <WHERE> <searchCondition> <_right paren>
-
-<binarySetFunction> ::= <binarySetFunctionType> <_left paren> <dependentVariableExpression> <_comma> <independentVariableExpression> <_right paren>
-
-<binarySetFunctionType> ::=
-		<COVAR_POP> | <COVAR_SAMP> | <CORR> | <REGR_SLOPE>
-	|	<REGR_INTERCEPT> | <REGR_COUNT> | <REGR_R2> | <REGR_AVGX> | <REGR_AVGY>
-	|	<REGR_SXX> | <REGR_SYY> | <REGR_SXY>
-
-<dependentVariableExpression> ::= <numericValueExpression>
-
-<independentVariableExpression> ::= <numericValueExpression>
-
-<orderedSetFunction> ::= <hypotheticalSetFunction> | <inverseDistributionFunction>
-
-<hypotheticalSetFunction> ::= <rankFunctionType> <_left paren> <hypotheticalSetFunctionValueExpressionList> <_right paren> <withinGroupSpecification>
-
-<withinGroupSpecification> ::= <WITHIN> <GROUP> <_left paren> <ORDER> <BY> <sortSpecificationList> <_right paren>
-
-<hypotheticalSetFunctionValueExpressionList> ::= <valueExpression>
-                                                    | <hypotheticalSetFunctionValueExpressionList> <_comma> <valueExpression>
-
-<inverseDistributionFunction> ::= <inverseDistributionFunctionType> <_left paren> <inverseDistributionFunctionArgument> <_right paren> <withinGroupSpecification>
-
-<inverseDistributionFunctionArgument> ::= <numericValueExpression>
-
-<inverseDistributionFunctionType> ::= <PERCENTILE_CONT> | <PERCENTILE_DISC>
-
-<sortSpecificationList> ::= <sortSpecification>
-                            | <sortSpecificationList> <_comma> <sortSpecification>
-
-<sortSpecification> ::= <sortKey>
-                       | <sortKey> <orderingSpecification>
-                       | <sortKey> <orderingSpecification> <nullOrdering>
-                       | <sortKey> <nullOrdering>
-
-<sortKey> ::= <valueExpression>
-
-<orderingSpecification> ::= <ASC> | <DESC>
-
-<nullOrdering> ::= <NULLS> <FIRST> | <NULLS> <LAST>
-
-<schemaElements> ::= <schemaElement>+
-
-<schemaDefinition> ::= <CREATE> <SCHEMA> <schemaNameClause>
-                      | <CREATE> <SCHEMA> <schemaNameClause> <schemaCharacterSetOrPath>
-                      | <CREATE> <SCHEMA> <schemaNameClause> <schemaCharacterSetOrPath> <schemaElements>
-                      | <CREATE> <SCHEMA> <schemaNameClause> <schemaElements>
-
-<schemaCharacterSetOrPath> ::=
-		<schemaCharacterSetSpecification>
-	|	<schemaPathSpecification>
-	|	<schemaCharacterSetSpecification> <schemaPathSpecification>
-	|	<schemaPathSpecification> <schemaCharacterSetSpecification>
-
-<schemaNameClause> ::=
-		<_schema name>
-	|	<AUTHORIZATION> <schemaAuthorizationIdentifier>
-	|	<_schema name> <AUTHORIZATION> <schemaAuthorizationIdentifier>
-
-<schemaAuthorizationIdentifier> ::= <_authorization identifier>
-
-<schemaCharacterSetSpecification> ::= <DEFAULT> <CHARACTER> <SET> <_character set specification>
-
-<schemaPathSpecification> ::= <pathSpecification>
-
-<schemaElement> ::=
-		<tableDefinition>
-	|	<viewDefinition>
-	|	<domainDefinition>
-	|	<characterSetDefinition>
-	|	<collationDefinition>
-	|	<transliterationDefinition>
-	|	<assertionDefinition>
-	|	<triggerDefinition>
-	|	<userDefinedTypeDefinition>
-	|	<userDefinedCastDefinition>
-	|	<userDefinedOrderingDefinition>
-	|	<transformDefinition>
-	|	<schemaRoutine>
-	|	<sequenceGeneratorDefinition>
-	|	<grantStatement>
-	|	<roleDefinition>
-
-<dropSchemaStatement> ::= <DROP> <SCHEMA> <_schema name> <dropBehavior>
-
-<dropBehavior> ::= <CASCADE> | <RESTRICT>
-
-<tableDefinition> ::=
-		<CREATE>               <TABLE> <_table name> <tableContentsSource>
-	|	<CREATE>               <TABLE> <_table name> <tableContentsSource> <ON> <COMMIT> <tableCommitAction> <ROWS>
-	|	<CREATE> <tableScope> <TABLE> <_table name> <tableContentsSource>
-	|	<CREATE> <tableScope> <TABLE> <_table name> <tableContentsSource> <ON> <COMMIT> <tableCommitAction> <ROWS>
-
-<tableContentsSource> ::=
-		<tableElementList>
-	|	<OF> <pathResolvedUserDefinedTypeName>
-	|	<OF> <pathResolvedUserDefinedTypeName> <subtableClause>
-	|	<OF> <pathResolvedUserDefinedTypeName> <subtableClause> <tableElementList>
-	|	<OF> <pathResolvedUserDefinedTypeName> <tableElementList>
-	|	<asSubqueryClause>
-
-<tableScope> ::= <globalOrLocal> <TEMPORARY>
-
-<globalOrLocal> ::= <GLOBAL> | <LOCAL>
-
-<tableCommitAction> ::= <PRESERVE> | <DELETE>
-
-<tableElements> ::= <tableElement>
-                   | <tableElements> <_comma> <tableElement>
-
-<tableElementList> ::= <_left paren> <tableElements> <_right paren>
-
-<tableElement> ::=
-		<columnDefinition>
-	|	<tableConstraintDefinition>
-	|	<likeClause>
-	|	<selfReferencingColumnSpecification>
-	|	<columnOptions>
-
-<selfReferencingColumnSpecification> ::= <REF> <IS> <selfReferencingColumnName> <referenceGeneration>
-
-<referenceGeneration> ::= <SYSTEM> <GENERATED> | <USER> <GENERATED> | <DERIVED>
-
-<selfReferencingColumnName> ::= <_column name>
-
-#
-# Little deviation: <columnOptionList> is made non-empty
-#
-<columnOptions> ::= <_column name> <WITH> <OPTIONS>
-                   | <_column name> <WITH> <OPTIONS> <columnOptionList>
-
-<columnConstraintDefinitions> ::= <columnConstraintDefinition>+
-
-<columnOptionList> ::=
-	  <scopeClause>
-	| <scopeClause> <defaultClause>
-	| <scopeClause> <defaultClause> <columnConstraintDefinitions>
-	| <scopeClause> <columnConstraintDefinitions>
-	| <defaultClause>
-	| <defaultClause> <columnConstraintDefinitions>
-	| <columnConstraintDefinitions>
-
-
-<subtableClause> ::= <UNDER> <supertableClause>
-
-<supertableClause> ::= <supertableName>
-
-<supertableName> ::= <_table name>
-
-<likeClause> ::= <LIKE> <_table name>
-                | <LIKE> <_table name> <likeOptions>
-
-<likeOptions> ::= <identityOption> | <columnDefaultOption>
-
-<identityOption> ::= <INCLUDING> <IDENTITY> | <EXCLUDING> <IDENTITY>
-
-<columnDefaultOption> ::= <INCLUDING> <DEFAULTS> | <EXCLUDING> <DEFAULTS>
-
-<asSubqueryClause> ::= <AS> <subquery> <withOrWithoutData>
-                       | <_left paren> <columnNameList> <_right paren> <AS> <subquery> <withOrWithoutData>
-
-<withOrWithoutData> ::= <WITH> <NO> <DATA> | <WITH> <DATA>
-
-<columnDefinition> ::=
-	  <_column name> <dataType>
-	| <_column name> <dataType> <referenceScopeCheck>
-	| <_column name> <dataType> <referenceScopeCheck> <defaultClause>
-	| <_column name> <dataType> <referenceScopeCheck> <defaultClause> <columnConstraintDefinitions>
-	| <_column name> <dataType> <referenceScopeCheck> <defaultClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <defaultClause> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <identityColumnSpecification>
-	| <_column name> <dataType> <referenceScopeCheck> <identityColumnSpecification> <columnConstraintDefinitions>
-	| <_column name> <dataType> <referenceScopeCheck> <identityColumnSpecification> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <identityColumnSpecification> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <generationClause>
-	| <_column name> <dataType> <referenceScopeCheck> <generationClause> <columnConstraintDefinitions>
-	| <_column name> <dataType> <referenceScopeCheck> <generationClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <generationClause> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <columnConstraintDefinitions>
-	| <_column name> <dataType> <referenceScopeCheck> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <referenceScopeCheck> <collateClause>
-	| <_column name> <dataType> <defaultClause>
-	| <_column name> <dataType> <defaultClause> <columnConstraintDefinitions>
-	| <_column name> <dataType> <defaultClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <defaultClause> <collateClause>
-	| <_column name> <dataType> <identityColumnSpecification>
-	| <_column name> <dataType> <identityColumnSpecification> <columnConstraintDefinitions>
-	| <_column name> <dataType> <identityColumnSpecification> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <identityColumnSpecification> <collateClause>
-	| <_column name> <dataType> <generationClause>
-	| <_column name> <dataType> <generationClause> <columnConstraintDefinitions>
-	| <_column name> <dataType> <generationClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <generationClause> <collateClause>
-	| <_column name> <dataType> <columnConstraintDefinitions>
-	| <_column name> <dataType> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <dataType> <collateClause>
-	| <_column name> <_domain name>
-	| <_column name> <_domain name> <referenceScopeCheck>
-	| <_column name> <_domain name> <referenceScopeCheck> <defaultClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <defaultClause> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <referenceScopeCheck> <defaultClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <defaultClause> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <identityColumnSpecification>
-	| <_column name> <_domain name> <referenceScopeCheck> <identityColumnSpecification> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <referenceScopeCheck> <identityColumnSpecification> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <identityColumnSpecification> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <generationClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <generationClause> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <referenceScopeCheck> <generationClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <generationClause> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <referenceScopeCheck> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <referenceScopeCheck> <collateClause>
-	| <_column name> <_domain name> <defaultClause>
-	| <_column name> <_domain name> <defaultClause> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <defaultClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <defaultClause> <collateClause>
-	| <_column name> <_domain name> <identityColumnSpecification>
-	| <_column name> <_domain name> <identityColumnSpecification> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <identityColumnSpecification> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <identityColumnSpecification> <collateClause>
-	| <_column name> <_domain name> <generationClause>
-	| <_column name> <_domain name> <generationClause> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <generationClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <generationClause> <collateClause>
-	| <_column name> <_domain name> <columnConstraintDefinitions>
-	| <_column name> <_domain name> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <_domain name> <collateClause>
-	| <_column name> <referenceScopeCheck>
-	| <_column name> <referenceScopeCheck> <defaultClause>
-	| <_column name> <referenceScopeCheck> <defaultClause> <columnConstraintDefinitions>
-	| <_column name> <referenceScopeCheck> <defaultClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <referenceScopeCheck> <defaultClause> <collateClause>
-	| <_column name> <referenceScopeCheck> <identityColumnSpecification>
-	| <_column name> <referenceScopeCheck> <identityColumnSpecification> <columnConstraintDefinitions>
-	| <_column name> <referenceScopeCheck> <identityColumnSpecification> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <referenceScopeCheck> <identityColumnSpecification> <collateClause>
-	| <_column name> <referenceScopeCheck> <generationClause>
-	| <_column name> <referenceScopeCheck> <generationClause> <columnConstraintDefinitions>
-	| <_column name> <referenceScopeCheck> <generationClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <referenceScopeCheck> <generationClause> <collateClause>
-	| <_column name> <referenceScopeCheck> <columnConstraintDefinitions>
-	| <_column name> <referenceScopeCheck> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <referenceScopeCheck> <collateClause>
-	| <_column name> <defaultClause>
-	| <_column name> <defaultClause> <columnConstraintDefinitions>
-	| <_column name> <defaultClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <defaultClause> <collateClause>
-	| <_column name> <identityColumnSpecification>
-	| <_column name> <identityColumnSpecification> <columnConstraintDefinitions>
-	| <_column name> <identityColumnSpecification> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <identityColumnSpecification> <collateClause>
-	| <_column name> <generationClause>
-	| <_column name> <generationClause> <columnConstraintDefinitions>
-	| <_column name> <generationClause> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <generationClause> <collateClause>
-	| <_column name> <columnConstraintDefinitions>
-	| <_column name> <columnConstraintDefinitions> <collateClause>
-	| <_column name> <collateClause>
-
-<columnConstraintDefinition> ::=                              <columnConstraint>
-                                 |                              <columnConstraint> <constraintCharacteristics>
-                                 | <constraintNameDefinition> <columnConstraint>
-                                 | <constraintNameDefinition> <columnConstraint> <constraintCharacteristics>
-
-<columnConstraint> ::=
-		<NOT> <NULL>
-	|	<uniqueSpecification>
-	|	<referencesSpecification>
-	|	<checkConstraintDefinition>
-
-<referenceScopeCheck> ::= <REFERENCES> <ARE>       <CHECKED>
-                          | <REFERENCES> <ARE>       <CHECKED> <ON> <DELETE> <referenceScopeCheckAction>
-                          | <REFERENCES> <ARE> <NOT> <CHECKED>
-                          | <REFERENCES> <ARE> <NOT> <CHECKED> <ON> <DELETE> <referenceScopeCheckAction>
-
-<referenceScopeCheckAction> ::= <referentialAction>
-
-<identityColumnSpecification> ::= <GENERATED> <ALWAYS>       <AS> <IDENTITY>
-                                  | <GENERATED> <ALWAYS>       <AS> <IDENTITY> <_left paren> <commonSequenceGeneratorOptions> <_right paren>
-                                  | <GENERATED> <BY> <DEFAULT> <AS> <IDENTITY>
-                                  | <GENERATED> <BY> <DEFAULT> <AS> <IDENTITY> <_left paren> <commonSequenceGeneratorOptions> <_right paren>
-
-<generationClause> ::= <generationRule> <AS> <generationExpression>
-
-<generationRule> ::= <GENERATED> <ALWAYS>
-
-<generationExpression> ::= <_left paren> <valueExpression> <_right paren>
-
-<defaultClause> ::= <DEFAULT> <defaultOption>
-
-<defaultOption> ::=
-		<literal>
-	|	<datetimeValueFunction>
-	|	<USER>
-	|	<CURRENT_USER>
-	|	<CURRENT_ROLE>
-	|	<SESSION_USER>
-	|	<SYSTEM_USER>
-	|	<CURRENT_PATH>
-	|	<implicitlyTypedValueSpecification>
-
-<tableConstraintDefinition> ::=                              <tableConstraint>
-                                |                              <tableConstraint> <constraintCharacteristics>
-                                | <constraintNameDefinition> <tableConstraint>
-                                | <constraintNameDefinition> <tableConstraint> <constraintCharacteristics>
-
-<tableConstraint> ::=
-		<uniqueConstraintDefinition>
-	|	<referentialConstraintDefinition>
-	|	<checkConstraintDefinition>
-
-<uniqueConstraintDefinition> ::=
-		<uniqueSpecification> <_left paren> <uniqueColumnList> <_right paren>
-	|	<UNIQUE> '(' 'VALUE' ')'
-
-<uniqueSpecification> ::= <UNIQUE> | <PRIMARY> <KEY>
-
-<uniqueColumnList> ::= <columnNameList>
-
-<referentialConstraintDefinition> ::= <FOREIGN> <KEY> <_left paren> <referencingColumns> <_right paren> <referencesSpecification>
-
-<referencesSpecification> ::= <REFERENCES> <referencedTableAndColumns>
-                             | <REFERENCES> <referencedTableAndColumns> <MATCH> <matchType>
-                             | <REFERENCES> <referencedTableAndColumns> <MATCH> <matchType> <referentialTriggeredAction>
-                             | <REFERENCES> <referencedTableAndColumns> <referentialTriggeredAction>
-
-<matchType> ::= <FULL> | <PARTIAL> | <SIMPLE>
-
-<referencingColumns> ::= <referenceColumnList>
-
-<referencedTableAndColumns> ::= <_table name>
-                                 | <_table name> <_left paren> <referenceColumnList> <_right paren>
-
-<referenceColumnList> ::= <columnNameList>
-
-<referentialTriggeredAction> ::= <updateRule>
-                                 | <updateRule> <deleteRule>
-                                 | <deleteRule>
-                                 | <deleteRule> <updateRule>
-
-<updateRule> ::= <ON> <UPDATE> <referentialAction>
-
-<deleteRule> ::= <ON> <DELETE> <referentialAction>
-
-<referentialAction> ::= <CASCADE> | <SET> <NULL> | <SET> <DEFAULT> | <RESTRICT> | <NO> <ACTION>
-
-<checkConstraintDefinition> ::= <CHECK> <_left paren> <searchCondition> <_right paren>
-
-<alterTableStatement> ::= <ALTER> <TABLE> <_table name> <alterTableAction>
-
-<alterTableAction> ::=
-		<addColumnDefinition>
-	|	<alterColumnDefinition>
-	|	<dropColumnDefinition>
-	|	<addTableConstraintDefinition>
-	|	<dropTableConstraintDefinition>
-
-<addColumnDefinition> ::= <ADD>          <columnDefinition>
-                          | <ADD> <COLUMN> <columnDefinition>
-
-<alterColumnDefinition> ::= <ALTER>          <_column name> <alterColumnAction>
-                            | <ALTER> <COLUMN> <_column name> <alterColumnAction>
-
-<alterColumnAction> ::=
-		<setColumnDefaultClause>
-	|	<dropColumnDefaultClause>
-	|	<addColumnScopeClause>
-	|	<dropColumnScopeClause>
-	|	<alterIdentityColumnSpecification>
-
-<setColumnDefaultClause> ::= <SET> <defaultClause>
-
-<dropColumnDefaultClause> ::= <DROP> <DEFAULT>
-
-<addColumnScopeClause> ::= <ADD> <scopeClause>
-
-<dropColumnScopeClause> ::= <DROP> <SCOPE> <dropBehavior>
-
-<alterIdentityColumnSpecification> ::= <alterIdentityColumnOption>+
-
-<alterIdentityColumnOption> ::=
-		<alterSequenceGeneratorRestartOption>
-	|	<SET> <basicSequenceGeneratorOption>
-
-<dropColumnDefinition> ::= <DROP>          <_column name> <dropBehavior>
-                           | <DROP> <COLUMN> <_column name> <dropBehavior>
-
-<addTableConstraintDefinition> ::= <ADD> <tableConstraintDefinition>
-
-<dropTableConstraintDefinition> ::= <DROP> <CONSTRAINT> <_constraint name> <dropBehavior>
-
-<dropTableStatement> ::= <DROP> <TABLE> <_table name> <dropBehavior>
-
-<viewDefinition> ::= <CREATE>             <VIEW> <_table name> <viewSpecification> <AS> <queryExpression>
-                    | <CREATE>             <VIEW> <_table name> <viewSpecification> <AS> <queryExpression> <WITH>                 <CHECK> <OPTION>
-                    | <CREATE>             <VIEW> <_table name> <viewSpecification> <AS> <queryExpression> <WITH> <levelsClause> <CHECK> <OPTION>
-                    | <CREATE> <RECURSIVE> <VIEW> <_table name> <viewSpecification> <AS> <queryExpression>
-                    | <CREATE> <RECURSIVE> <VIEW> <_table name> <viewSpecification> <AS> <queryExpression> <WITH>                 <CHECK> <OPTION>
-                    | <CREATE> <RECURSIVE> <VIEW> <_table name> <viewSpecification> <AS> <queryExpression> <WITH> <levelsClause> <CHECK> <OPTION>
-
-<viewSpecification> ::= <regularViewSpecification> | <referenceableViewSpecification>
-
-<regularViewSpecification> ::= <_left paren> <viewColumnList> <_right paren>
-<regularViewSpecification> ::=
-
-<referenceableViewSpecification> ::= <OF> <pathResolvedUserDefinedTypeName>
-                                     | <OF> <pathResolvedUserDefinedTypeName> <subviewClause>
-                                     | <OF> <pathResolvedUserDefinedTypeName> <subviewClause> <viewElementList>
-                                     | <OF> <pathResolvedUserDefinedTypeName> <viewElementList>
-
-<subviewClause> ::= <UNDER> <_table name>
-
-<viewElements> ::= <viewElement>
-                  | <viewElements> <_comma> <viewElement>
-
-<viewElementList> ::= <_left paren> <viewElements> <_right paren>
-
-<viewElement> ::= <selfReferencingColumnSpecification> | <viewColumnOption>
-
-<viewColumnOption> ::= <_column name> <WITH> <OPTIONS> <scopeClause>
-
-<levelsClause> ::= <CASCADED> | <LOCAL>
-
-<viewColumnList> ::= <columnNameList>
-
-<dropViewStatement> ::= <DROP> <VIEW> <_table name> <dropBehavior>
-
-<domainConstraints> ::= <domainConstraint>+
-
-<domainDefinition> ::=
-          <CREATE> <DOMAIN> <_domain name>      <dataType>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <defaultClause>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <defaultClause> <domainConstraints>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <defaultClause> <domainConstraints> <collateClause>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <defaultClause> <collateClause>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <domainConstraints>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <domainConstraints> <collateClause>
-	| <CREATE> <DOMAIN> <_domain name>      <dataType> <collateClause>
-        | <CREATE> <DOMAIN> <_domain name> <AS> <dataType>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <defaultClause>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <defaultClause> <domainConstraints>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <defaultClause> <domainConstraints> <collateClause>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <defaultClause> <collateClause>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <domainConstraints>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <domainConstraints> <collateClause>
-	| <CREATE> <DOMAIN> <_domain name> <AS> <dataType> <collateClause>
-
-<domainConstraint> ::=                              <checkConstraintDefinition>
-                      |                              <checkConstraintDefinition> <constraintCharacteristics>
-                      | <constraintNameDefinition> <checkConstraintDefinition>
-                      | <constraintNameDefinition> <checkConstraintDefinition> <constraintCharacteristics>
-
-<alterDomainStatement> ::= <ALTER> <DOMAIN> <_domain name> <alterDomainAction>
-
-<alterDomainAction> ::=
-		<setDomainDefaultClause>
-	|	<dropDomainDefaultClause>
-	|	<addDomainConstraintDefinition>
-	|	<dropDomainConstraintDefinition>
-
-<setDomainDefaultClause> ::= <SET> <defaultClause>
-
-<dropDomainDefaultClause> ::= <DROP> <DEFAULT>
-
-<addDomainConstraintDefinition> ::= <ADD> <domainConstraint>
-
-<dropDomainConstraintDefinition> ::= <DROP> <CONSTRAINT> <_constraint name>
-
-<dropDomainStatement> ::= <DROP> <DOMAIN> <_domain name> <dropBehavior>
-
-<characterSetDefinition> ::= <CREATE> <CHARACTER> <SET> <_character set name>      <characterSetSource>
-                             | <CREATE> <CHARACTER> <SET> <_character set name>      <characterSetSource> <collateClause>
-                             | <CREATE> <CHARACTER> <SET> <_character set name> <AS> <characterSetSource>
-                             | <CREATE> <CHARACTER> <SET> <_character set name> <AS> <characterSetSource> <collateClause>
-
-<characterSetSource> ::= <GET> <_character set specification>
-
-<dropCharacterSetStatement> ::= <DROP> <CHARACTER> <SET> <_character set name>
-
-<collationDefinition> ::= <CREATE> <COLLATION> <_collation name> <FOR> <_character set specification> <FROM> <existingCollationName>
-                         | <CREATE> <COLLATION> <_collation name> <FOR> <_character set specification> <FROM> <existingCollationName> <padCharacteristic>
-
-<existingCollationName> ::= <_collation name>
-
-<padCharacteristic> ::= <NO> <PAD> | <PAD> <SPACE>
-
-<dropCollationStatement> ::= <DROP> <COLLATION> <_collation name> <dropBehavior>
-
-<transliterationDefinition> ::= <CREATE> <TRANSLATION> <transliterationName> <FOR> <sourceCharacterSetSpecification> <TO> <targetCharacterSetSpecification> <FROM> <transliterationSource>
-
-<sourceCharacterSetSpecification> ::= <_character set specification>
-
-<targetCharacterSetSpecification> ::= <_character set specification>
-
-<transliterationSource> ::= <existingTransliterationName> | <transliterationRoutine>
-
-<existingTransliterationName> ::= <transliterationName>
-
-<transliterationRoutine> ::= <specificRoutineDesignator>
-
-<dropTransliterationStatement> ::= <DROP> <TRANSLATION> <transliterationName>
-
-<assertionDefinition> ::= <CREATE> <ASSERTION> <_constraint name> <CHECK> <_left paren> <searchCondition> <_right paren>
-                         | <CREATE> <ASSERTION> <_constraint name> <CHECK> <_left paren> <searchCondition> <_right paren> <constraintCharacteristics>
-
-<dropAssertionStatement> ::= <DROP> <ASSERTION> <_constraint name>
-
-<triggerDefinition> ::= <CREATE> <TRIGGER> <_trigger name> <triggerActionTime> <triggerEvent> <ON> <_table name>                                              <triggeredAction>
-                       | <CREATE> <TRIGGER> <_trigger name> <triggerActionTime> <triggerEvent> <ON> <_table name> <REFERENCING> <oldOrNewValuesAliasList> <triggeredAction>
-
-<triggerActionTime> ::= <BEFORE> | <AFTER>
-
-<triggerEvent> ::= <INSERT>
-                  | <DELETE>
-                  | <UPDATE>
-                  | <UPDATE> <OF> <triggerColumnList>
-
-<triggerColumnList> ::= <columnNameList>
-
-<triggeredAction> ::= <triggeredSqlStatement>
-                     | <FOR> <EACH> <ROW>                                                            <triggeredSqlStatement>
-                     | <FOR> <EACH> <STATEMENT>                                                      <triggeredSqlStatement>
-                     | <FOR> <EACH> <ROW>       <WHEN> <_left paren> <searchCondition> <_right paren> <triggeredSqlStatement>
-                     | <FOR> <EACH> <STATEMENT> <WHEN> <_left paren> <searchCondition> <_right paren> <triggeredSqlStatement>
-                     |                          <WHEN> <_left paren> <searchCondition> <_right paren> <triggeredSqlStatement>
-
-<sqlProcedureStatementAndSemicolon> ::= <sqlProcedureStatement> <_semicolon>
-
-<sqlProcedureStatementAndSemicolonMany> ::= <sqlProcedureStatementAndSemicolon>+
-
-<triggeredSqlStatement> ::=
-		<sqlProcedureStatement>
-	|	<BEGIN> <ATOMIC> <sqlProcedureStatementAndSemicolonMany> <END>
-
-<oldOrNewValuesAliasList> ::= <oldOrNewValuesAlias>+
-
-<oldOrNewValuesAlias> ::=
-		<OLD>              <oldValuesCorrelationName>
-	|	<OLD> <ROW>        <oldValuesCorrelationName>
-	|	<OLD> <ROW> <AS>   <oldValuesCorrelationName>
-	|	<OLD> <AS>         <oldValuesCorrelationName>
-	|	<NEW>              <newValuesCorrelationName>
-	|	<NEW> <ROW>        <newValuesCorrelationName>
-	|	<NEW> <ROW> <AS>   <newValuesCorrelationName>
-	|	<NEW> <AS>         <newValuesCorrelationName>
-	|	<OLD> <TABLE>      <oldValuesTableAlias>
-	|	<OLD> <TABLE> <AS> <oldValuesTableAlias>
-	|	<NEW> <TABLE>      <newValuesTableAlias>
-	|	<NEW> <TABLE> <AS> <newValuesTableAlias>
-
-<oldValuesTableAlias> ::= <_identifier>
-
-<newValuesTableAlias> ::= <_identifier>
-
-<oldValuesCorrelationName> ::= <_correlation name>
-
-<newValuesCorrelationName> ::= <_correlation name>
-
-<dropTriggerStatement> ::= <DROP> <TRIGGER> <_trigger name>
-
-<userDefinedTypeDefinition> ::= <CREATE> <TYPE> <userDefinedTypeBody>
-
-<userDefinedTypeBody> ::=
-	  <schemaResolvedUserDefinedTypeName>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <AS> <representation>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <AS> <representation> <userDefinedTypeOptionList>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <AS> <representation> <userDefinedTypeOptionList> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <AS> <representation> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <userDefinedTypeOptionList>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <userDefinedTypeOptionList> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <subtypeClause> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <AS> <representation>
-	| <schemaResolvedUserDefinedTypeName> <AS> <representation> <userDefinedTypeOptionList>
-	| <schemaResolvedUserDefinedTypeName> <AS> <representation> <userDefinedTypeOptionList> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <AS> <representation> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <userDefinedTypeOptionList>
-	| <schemaResolvedUserDefinedTypeName> <userDefinedTypeOptionList> <methodSpecificationList>
-	| <schemaResolvedUserDefinedTypeName> <methodSpecificationList>
-
-<userDefinedTypeOptionList> ::= <userDefinedTypeOption>+
-
-<userDefinedTypeOption> ::=
-		<instantiableClause>
-	|	<finality>
-	|	<referenceTypeSpecification>
-	|	<refCastOption>
-	|	<castOption>
-
-<subtypeClause> ::= <UNDER> <supertypeName>
-
-<supertypeName> ::= <pathResolvedUserDefinedTypeName>
-
-<representation> ::= <predefinedType> | <memberList>
-
-<members> ::= <member>
-            | <members> <_comma> <member>
-
-<memberList> ::= <_left paren> <members> <_right paren>
-
-<member> ::= <attributeDefinition>
-
-<instantiableClause> ::= <INSTANTIABLE> | <NOT> <INSTANTIABLE>
-
-<finality> ::= <FINAL> | <NOT> <FINAL>
-
-<referenceTypeSpecification> ::=
-		<userDefinedRepresentation>
-	|	<derivedRepresentation>
-	|	<systemGeneratedRepresentation>
-
-<userDefinedRepresentation> ::= <REF> <USING> <predefinedType>
-
-<derivedRepresentation> ::= <REF> <FROM> <listOfAttributes>
-
-<systemGeneratedRepresentation> ::= <REF> <IS> <SYSTEM> <GENERATED>
-
-<refCastOption> ::=
-	  <castToRef>
-	| <castToRef> <castToType>
-	| <castToType>
-
-<castToRef> ::= <CAST> <_left paren> <SOURCE> <AS> <REF> <_right paren> <WITH> <castToRefIdentifier>
-
-<castToRefIdentifier> ::= <_identifier>
-
-<castToType> ::= <CAST> <_left paren> <REF> <AS> <SOURCE> <_right paren> <WITH> <castToTypeIdentifier>
-
-<castToTypeIdentifier> ::= <_identifier>
-
-<attributeNames> ::= <attributeName>
-                    | <attributeNames> <_comma> <attributeName>
-
-<listOfAttributes> ::= <_left paren> <attributeNames> <_right paren>
-
-<castOption> ::=
-	  <castToDistinct>
-	| <castToDistinct> <castToSource>
-	| <castToSource>
-
-<castToDistinct> ::= <CAST> <_left paren> <SOURCE> <AS> <DISTINCT> <_right paren> <WITH> <castToDistinctIdentifier>
-
-<castToDistinctIdentifier> ::= <_identifier>
-
-<castToSource> ::= <CAST> <_left paren> <DISTINCT> <AS> <SOURCE> <_right paren> <WITH> <castToSourceIdentifier>
-
-<castToSourceIdentifier> ::= <_identifier>
-
-<methodSpecificationList> ::= <methodSpecification>
-                              | <methodSpecificationList> <_comma> <methodSpecification>
-
-<methodSpecification> ::= <originalMethodSpecification> | <overridingMethodSpecification>
-
-<originalMethodSpecification> ::=
-	  <partialMethodSpecification> <SELF> <AS> <RESULT>
-	| <partialMethodSpecification> <SELF> <AS> <RESULT> <SELF> <AS> <LOCATOR>
-	| <partialMethodSpecification> <SELF> <AS> <RESULT> <SELF> <AS> <LOCATOR> <methodCharacteristics>
-	| <partialMethodSpecification> <SELF> <AS> <RESULT> <methodCharacteristics>
-	| <partialMethodSpecification> <SELF> <AS> <LOCATOR>
-	| <partialMethodSpecification> <SELF> <AS> <LOCATOR> <methodCharacteristics>
-	| <partialMethodSpecification> <methodCharacteristics>
-
-<overridingMethodSpecification> ::= <OVERRIDING> <partialMethodSpecification>
-
-<partialMethodSpecification> ::=               <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause>
-                                 |               <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <SPECIFIC> <specificMethodName>
-                                 | <INSTANCE>    <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause>
-                                 | <STATIC>      <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause>
-                                 | <CONSTRUCTOR> <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause>
-                                 | <INSTANCE>    <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <SPECIFIC> <specificMethodName>
-                                 | <STATIC>      <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <SPECIFIC> <specificMethodName>
-                                 | <CONSTRUCTOR> <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <SPECIFIC> <specificMethodName>
-
-<specificMethodName> ::= <_qualified identifier>
-                         | <_schema name> <_period> <_qualified identifier>
-
-<methodCharacteristics> ::= <methodCharacteristic>+
-
-<methodCharacteristic> ::=
-		<languageClause>
-	|	<parameterStyleClause>
-	|	<deterministicCharacteristic>
-	|	<sqlDataAccessIndication>
-	|	<nullCallClause>
-
-<attributeDefinition> ::=
-	  <attributeName> <dataType> <referenceScopeCheck>
-	| <attributeName> <dataType> <referenceScopeCheck> <attributeDefault>
-	| <attributeName> <dataType> <referenceScopeCheck> <attributeDefault> <collateClause>
-	| <attributeName> <dataType> <referenceScopeCheck> <collateClause>
-	| <attributeName> <dataType> <attributeDefault>
-	| <attributeName> <dataType> <attributeDefault> <collateClause>
-	| <attributeName> <dataType> <collateClause>
-
-<attributeDefault> ::= <defaultClause>
-
-<alterTypeStatement> ::= <ALTER> <TYPE> <schemaResolvedUserDefinedTypeName> <alterTypeAction>
-
-<alterTypeAction> ::=
-		<addAttributeDefinition>
-	|	<dropAttributeDefinition>
-	|	<addOriginalMethodSpecification>
-	|	<addOverridingMethodSpecification>
-	|	<dropMethodSpecification>
-
-<addAttributeDefinition> ::= <ADD> <ATTRIBUTE> <attributeDefinition>
-
-<dropAttributeDefinition> ::= <DROP> <ATTRIBUTE> <attributeName> <RESTRICT>
-
-<addOriginalMethodSpecification> ::= <ADD> <originalMethodSpecification>
-
-<addOverridingMethodSpecification> ::= <ADD> <overridingMethodSpecification>
-
-<dropMethodSpecification> ::= <DROP> <specificMethodSpecificationDesignator> <RESTRICT>
-
-<specificMethodSpecificationDesignator> ::=               <METHOD> <_method name> <dataTypeList>
-                                             | <INSTANCE>    <METHOD> <_method name> <dataTypeList>
-                                             | <STATIC>      <METHOD> <_method name> <dataTypeList>
-                                             | <CONSTRUCTOR> <METHOD> <_method name> <dataTypeList>
-
-<dropDataTypeStatement> ::= <DROP> <TYPE> <schemaResolvedUserDefinedTypeName> <dropBehavior>
-
-<sqlInvokedRoutine> ::= <schemaRoutine>
-
-<schemaRoutine> ::= <schemaProcedure> | <schemaFunction>
-
-<schemaProcedure> ::= <CREATE> <sqlInvokedProcedure>
-
-<schemaFunction> ::= <CREATE> <sqlInvokedFunction>
-
-<sqlInvokedProcedure> ::= <PROCEDURE> <_schema qualified routine name> <sqlParameterDeclarationList> <routineCharacteristics> <routineBody>
-
-<sqlInvokedFunction> ::= <functionSpecification> <routineBody>
-                         | <methodSpecificationDesignator> <routineBody>
-
-<sqlParameterDeclarations> ::= <sqlParameterDeclaration>
-                               | <sqlParameterDeclarations> <_comma> <sqlParameterDeclaration>
-
-<sqlParameterDeclarationList> ::= <_left paren> <_right paren>
-                                   | <_left paren> <sqlParameterDeclarations> <_right paren>
-
-<sqlParameterDeclaration> ::=
-	  <parameterMode> <parameterType>
-	|  <parameterMode> <parameterType> <RESULT>
-	| <parameterMode> <_SQL parameter name> <parameterType>
-	| <parameterMode> <_SQL parameter name> <parameterType> <RESULT>
-	| <_SQL parameter name> <parameterType>
-	| <_SQL parameter name> <parameterType> <RESULT>
-
-<parameterMode> ::= <IN> | <OUT> | <INOUT>
-
-<parameterType> ::= <dataType>
-                   | <dataType> <locatorIndication>
-
-<locatorIndication> ::= <AS> <LOCATOR>
-
-<functionSpecification> ::= <FUNCTION> <_schema qualified routine name> <sqlParameterDeclarationList> <returnsClause> <routineCharacteristics>
-                           | <FUNCTION> <_schema qualified routine name> <sqlParameterDeclarationList> <returnsClause> <routineCharacteristics> <dispatchClause>
-
-<methodSpecificationDesignator> ::=
-		<SPECIFIC>    <METHOD> <specificMethodName>
-	|	              <METHOD> <_method name> <sqlParameterDeclarationList>                  <FOR> <schemaResolvedUserDefinedTypeName>
-	|	              <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <FOR> <schemaResolvedUserDefinedTypeName>
-	|	<INSTANCE>    <METHOD> <_method name> <sqlParameterDeclarationList>                  <FOR> <schemaResolvedUserDefinedTypeName>
-	|	<STATIC>      <METHOD> <_method name> <sqlParameterDeclarationList>                  <FOR> <schemaResolvedUserDefinedTypeName>
-	|	<CONSTRUCTOR> <METHOD> <_method name> <sqlParameterDeclarationList>                  <FOR> <schemaResolvedUserDefinedTypeName>
-	|	<INSTANCE>    <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <FOR> <schemaResolvedUserDefinedTypeName>
-	|	<STATIC>      <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <FOR> <schemaResolvedUserDefinedTypeName>
-	|	<CONSTRUCTOR> <METHOD> <_method name> <sqlParameterDeclarationList> <returnsClause> <FOR> <schemaResolvedUserDefinedTypeName>
-
-<routineCharacteristics> ::= <routineCharacteristic>*
-
-<routineCharacteristic> ::=
-		<languageClause>
-	|	<parameterStyleClause>
-	|	<SPECIFIC> <_specific name>
-	|	<deterministicCharacteristic>
-	|	<sqlDataAccessIndication>
-	|	<nullCallClause>
-	|	<dynamicResultSetsCharacteristic>
-	|	<savepointLevelIndication>
-
-<savepointLevelIndication> ::= <NEW> <SAVEPOINT> <LEVEL> | <OLD> <SAVEPOINT> <LEVEL>
-
-<dynamicResultSetsCharacteristic> ::= <DYNAMIC> <RESULT> <SETS> <maximumDynamicResultSets>
-
-<parameterStyleClause> ::= <PARAMETER> <STYLE> <parameterStyle>
-
-<dispatchClause> ::= <STATIC> <DISPATCH>
-
-<returnsClause> ::= <RETURNS> <returnsType>
-
-<returnsType> ::=
-		<returnsDataType>
-	|	<returnsDataType> <resultCast>
-	|	<returnsTableType>
-
-<returnsTableType> ::= <TABLE> <tableFunctionColumnList>
-
-<tableFunctionColumnListElements> ::= <tableFunctionColumnListElement>
-                                        | <tableFunctionColumnListElements> <_comma> <tableFunctionColumnListElement>
-
-<tableFunctionColumnList> ::= <_left paren> <tableFunctionColumnListElements> <_right paren>
-
-<tableFunctionColumnListElement> ::= <_column name> <dataType>
-
-<resultCast> ::= <CAST> <FROM> <resultCastFromType>
-
-<resultCastFromType> ::= <dataType> <locatorIndication>
-                          | <dataType>
-
-<returnsDataType> ::= <dataType>
-                      | <dataType> <locatorIndication>
-
-<routineBody> ::=
-		<sqlRoutineSpec>
-	|	<externalBodyReference>
-
-<sqlRoutineSpec> ::=                 <sqlRoutineBody>
-                     | <rightsClause> <sqlRoutineBody>
-
-<rightsClause> ::= <SQL> <SECURITY> <INVOKER> | <SQL> <SECURITY> <DEFINER>
-
-<sqlRoutineBody> ::= <sqlProcedureStatement>
-
-<externalBodyReference> ::=
-	  <EXTERNAL><NAME> <_external routine name>
-	| <EXTERNAL><NAME> <_external routine name> <parameterStyleClause>
-	| <EXTERNAL><NAME> <_external routine name> <parameterStyleClause> <transformGroupSpecification>
-	| <EXTERNAL><NAME> <_external routine name> <parameterStyleClause> <transformGroupSpecification> <externalSecurityClause>
-	| <EXTERNAL><NAME> <_external routine name> <parameterStyleClause> <externalSecurityClause>
-	| <EXTERNAL><NAME> <_external routine name> <transformGroupSpecification>
-	| <EXTERNAL><NAME> <_external routine name> <transformGroupSpecification> <externalSecurityClause>
-	| <EXTERNAL><NAME> <_external routine name> <externalSecurityClause>
-	| <EXTERNAL><parameterStyleClause>
-	| <EXTERNAL><parameterStyleClause> <transformGroupSpecification>
-	| <EXTERNAL><parameterStyleClause> <transformGroupSpecification> <externalSecurityClause>
-	| <EXTERNAL><parameterStyleClause> <externalSecurityClause>
-	| <EXTERNAL><transformGroupSpecification>
-	| <EXTERNAL><transformGroupSpecification> <externalSecurityClause>
-	| <EXTERNAL><externalSecurityClause>
-
-<externalSecurityClause> ::=
-		<EXTERNAL> <SECURITY> <DEFINER>
-	|	<EXTERNAL> <SECURITY> <INVOKER>
-	|	<EXTERNAL> <SECURITY> <IMPLEMENTATION> <DEFINED>
-
-<parameterStyle> ::= <SQL> | <GENERAL>
-
-<deterministicCharacteristic> ::= <DETERMINISTIC> | <NOT> <DETERMINISTIC>
-
-<sqlDataAccessIndication> ::=
-		<NO> <SQL>
-	|	<CONTAINS> <SQL>
-	|	<READS> <SQL> <DATA>
-	|	<MODIFIES> <SQL> <DATA>
-
-<nullCallClause> ::=
-		<RETURNS> <NULL> <ON> <NULL> <INPUT>
-	|	<CALLED> <ON> <NULL> <INPUT>
-
-<maximumDynamicResultSets> ::= <_unsigned integer>
-
-<transformGroupSpecification> ::= <TRANSFORM> <GROUP> <singleGroupSpecification>
-                                  | <TRANSFORM> <GROUP> <multipleGroupSpecification>
-
-<singleGroupSpecification> ::= <groupName>
-
-<multipleGroupSpecification> ::= <groupSpecification>
-                                 | <multipleGroupSpecification> <_comma> <groupSpecification>
-
-<groupSpecification> ::= <groupName> <FOR> <TYPE> <pathResolvedUserDefinedTypeName>
-
-<alterRoutineStatement> ::= <ALTER> <specificRoutineDesignator> <alterRoutineCharacteristics> <alterRoutineBehavior>
-
-<alterRoutineCharacteristics> ::= <alterRoutineCharacteristic>+
-
-<alterRoutineCharacteristic> ::=
-		<languageClause>
-	|	<parameterStyleClause>
-	|	<sqlDataAccessIndication>
-	|	<nullCallClause>
-	|	<dynamicResultSetsCharacteristic>
-	|	<NAME> <_external routine name>
-
-<alterRoutineBehavior> ::= <RESTRICT>
-
-<dropRoutineStatement> ::= <DROP> <specificRoutineDesignator> <dropBehavior>
-
-<userDefinedCastDefinition> ::= <CREATE> <CAST> <_left paren> <sourceDataType> <AS> <targetDataType> <_right paren> <WITH> <castFunction>
-                                 | <CREATE> <CAST> <_left paren> <sourceDataType> <AS> <targetDataType> <_right paren> <WITH> <castFunction> <AS> <ASSIGNMENT>
-
-<castFunction> ::= <specificRoutineDesignator>
-
-<sourceDataType> ::= <dataType>
-
-<targetDataType> ::= <dataType>
-
-<dropUserDefinedCastStatement> ::= <DROP> <CAST> <_left paren> <sourceDataType> <AS> <targetDataType> <_right paren> <dropBehavior>
-
-<userDefinedOrderingDefinition> ::= <CREATE> <ORDERING> <FOR> <schemaResolvedUserDefinedTypeName> <orderingForm>
-
-<orderingForm> ::= <equalsOrderingForm> | <fullOrderingForm>
-
-<equalsOrderingForm> ::= <EQUALS> <ONLY> <BY> <orderingCategory>
-
-<fullOrderingForm> ::= <ORDER> <FULL> <BY> <orderingCategory>
-
-<orderingCategory> ::= <relativeCategory> | <mapCategory> | <stateCategory>
-
-<relativeCategory> ::= <RELATIVE> <WITH> <relativeFunctionSpecification>
-
-<mapCategory> ::= <MAP> <WITH> <mapFunctionSpecification>
-
-<stateCategory> ::= <STATE>
-                   | <STATE> <_specific name>
-
-<relativeFunctionSpecification> ::= <specificRoutineDesignator>
-
-<mapFunctionSpecification> ::= <specificRoutineDesignator>
-
-<dropUserDefinedOrderingStatement> ::= <DROP> <ORDERING> <FOR> <schemaResolvedUserDefinedTypeName> <dropBehavior>
-
-<transformGroupMany> ::= <transformGroup>+
-
-<transformDefinition> ::= <CREATE> <TRANSFORM>  <FOR> <schemaResolvedUserDefinedTypeName> <transformGroupMany>
-                         | <CREATE> <TRANSFORMS> <FOR> <schemaResolvedUserDefinedTypeName> <transformGroupMany>
-
-<transformGroup> ::= <groupName> <_left paren> <transformElementList> <_right paren>
-
-<groupName> ::= <_identifier>
-
-<transformElementList> ::= <transformElement>
-                           | <transformElementList> <_comma> <transformElement>
-
-<transformElement> ::= <toSql> | <fromSql>
-
-<toSql> ::= <TO> <SQL> <WITH> <toSqlFunction>
-
-<fromSql> ::= <FROM> <SQL> <WITH> <fromSqlFunction>
-
-<toSqlFunction> ::= <specificRoutineDesignator>
-
-<fromSqlFunction> ::= <specificRoutineDesignator>
-
-<alterGroupMany> ::= <alterGroup>+
-
-<alterTransformStatement> ::= <ALTER> <TRANSFORM>  <FOR> <schemaResolvedUserDefinedTypeName> <alterGroupMany>
-                              | <ALTER> <TRANSFORMS> <FOR> <schemaResolvedUserDefinedTypeName> <alterGroupMany>
-
-<alterGroup> ::= <groupName> <_left paren> <alterTransformActionList> <_right paren>
-
-<alterTransformActionList> ::= <alterTransformAction>
-                                | <alterTransformActionList> <_comma> <alterTransformAction>
-
-<alterTransformAction> ::= <addTransformElementList> | <dropTransformElementList>
-
-<addTransformElementList> ::= <ADD> <_left paren> <transformElementList> <_right paren>
-
-<dropTransformElementList> ::= <DROP> <_left paren> <transformKind>                          <dropBehavior> <_right paren>
-                                | <DROP> <_left paren> <transformKind> <_comma> <transformKind> <dropBehavior> <_right paren>
-
-<transformKind> ::= <TO> <SQL> | <FROM> <SQL>
-
-<dropTransformStatement> ::= <DROP> <TRANSFORM>  <transformsToBeDropped> <FOR> <schemaResolvedUserDefinedTypeName> <dropBehavior>
-                             | <DROP> <TRANSFORMS> <transformsToBeDropped> <FOR> <schemaResolvedUserDefinedTypeName> <dropBehavior>
-
-<transformsToBeDropped> ::= <ALL> | <transformGroupElement>
-
-<transformGroupElement> ::= <groupName>
-
-<sequenceGeneratorDefinition> ::= <CREATE> <SEQUENCE> <sequenceGeneratorName>
-                                  | <CREATE> <SEQUENCE> <sequenceGeneratorName> <sequenceGeneratorOptions>
-
-<sequenceGeneratorOptions> ::= <sequenceGeneratorOption>+
-
-<sequenceGeneratorOption> ::= <sequenceGeneratorDataTypeOption> | <commonSequenceGeneratorOptions>
-
-<commonSequenceGeneratorOptions> ::= <commonSequenceGeneratorOption>+
-
-<commonSequenceGeneratorOption> ::= <sequenceGeneratorStartWithOption> | <basicSequenceGeneratorOption>
-
-<basicSequenceGeneratorOption> ::=
-		<sequenceGeneratorIncrementByOption>
-	|	<sequenceGeneratorMaxvalueOption>
-	|	<sequenceGeneratorMinvalueOption>
-	|	<sequenceGeneratorCycleOption>
-
-<sequenceGeneratorDataTypeOption> ::= <AS> <dataType>
-
-<sequenceGeneratorStartWithOption> ::= <START> <WITH> <sequenceGeneratorStartValue>
-
-<sequenceGeneratorStartValue> ::= <signedNumericLiteral>
-
-<sequenceGeneratorIncrementByOption> ::= <INCREMENT> <BY> <sequenceGeneratorIncrement>
-
-<sequenceGeneratorIncrement> ::= <signedNumericLiteral>
-
-<sequenceGeneratorMaxvalueOption> ::=
-		<MAXVALUE> <sequenceGeneratorMaxValue>
-	|	<NO> <MAXVALUE>
-
-<sequenceGeneratorMaxValue> ::= <signedNumericLiteral>
-
-<sequenceGeneratorMinvalueOption> ::= <MINVALUE> <sequenceGeneratorMinValue> | <NO> <MINVALUE>
-
-<sequenceGeneratorMinValue> ::= <signedNumericLiteral>
-
-<sequenceGeneratorCycleOption> ::= <CYCLE> | <NO> <CYCLE>
-
-<alterSequenceGeneratorStatement> ::= <ALTER> <SEQUENCE> <sequenceGeneratorName> <alterSequenceGeneratorOptions>
-
-<alterSequenceGeneratorOptions> ::= <alterSequenceGeneratorOption>+
-
-<alterSequenceGeneratorOption> ::=
-		<alterSequenceGeneratorRestartOption>
-	|	<basicSequenceGeneratorOption>
-
-<alterSequenceGeneratorRestartOption> ::= <RESTART> <WITH> <sequenceGeneratorRestartValue>
-
-<sequenceGeneratorRestartValue> ::= <signedNumericLiteral>
-
-<dropSequenceGeneratorStatement> ::= <DROP> <SEQUENCE> <sequenceGeneratorName> <dropBehavior>
-
-<grantStatement> ::= <grantPrivilegeStatement> | <grantRoleStatement>
-
-<grantees> ::= <grantee>
-             | <grantees> <_comma> <grantee>
-
-<grantPrivilegeStatement> ::=
-	  <GRANT> <privileges> <TO> <grantees> <WITH> <HIERARCHY> <OPTION>
-	| <GRANT> <privileges> <TO> <grantees> <WITH> <HIERARCHY> <OPTION> <WITH> <GRANT> <OPTION>
-	| <GRANT> <privileges> <TO> <grantees> <WITH> <HIERARCHY> <OPTION> <WITH> <GRANT> <OPTION> <GRANTED> <BY> <grantor>
-	| <GRANT> <privileges> <TO> <grantees> <WITH> <HIERARCHY> <OPTION> <GRANTED> <BY> <grantor>
-	| <GRANT> <privileges> <TO> <grantees> <WITH> <GRANT> <OPTION>
-	| <GRANT> <privileges> <TO> <grantees> <WITH> <GRANT> <OPTION> <GRANTED> <BY> <grantor>
-	| <GRANT> <privileges> <TO> <grantees> <GRANTED> <BY> <grantor>
-
-<privileges> ::= <objectPrivileges> <ON> <objectName>
-
-<objectName> ::=
-		<_table name>
-	|	<TABLE> <_table name>
-	|	<DOMAIN> <_domain name>
-	|	<COLLATION> <_collation name>
-	|	<CHARACTER> <SET> <_character set name>
-	|	<TRANSLATION> <transliterationName>
-	|	<TYPE> <schemaResolvedUserDefinedTypeName>
-	|	<SEQUENCE> <sequenceGeneratorName>
-	|	<specificRoutineDesignator>
-
-<actions> ::= <action>
-            | <actions> <_comma> <action>
-
-<objectPrivileges> ::=
-		<ALL> <PRIVILEGES>
-	|	<actions>
-
-<action> ::=
-		<SELECT>
-	|	<SELECT> <_left paren> <privilegeColumnList> <_right paren>
-	|	<SELECT> <_left paren> <privilegeMethodList> <_right paren>
-	|	<DELETE>
-	|	<INSERT>
-	|	<INSERT> <_left paren> <privilegeColumnList> <_right paren>
-	|	<UPDATE>
-	|	<UPDATE> <_left paren> <privilegeColumnList> <_right paren>
-	|	<REFERENCES>
-	|	<REFERENCES> <_left paren> <privilegeColumnList> <_right paren>
-	|	<USAGE>
-	|	<TRIGGER>
-	|	<UNDER>
-	|	<EXECUTE>
-
-<privilegeMethodList> ::= <specificRoutineDesignator>
-                          | <privilegeMethodList> <_comma> <specificRoutineDesignator>
-
-<privilegeColumnList> ::= <columnNameList>
-
-<grantee> ::= <PUBLIC> | <_authorization identifier>
-
-<grantor> ::= <CURRENT_USER> | <CURRENT_ROLE>
-
-<roleDefinition> ::= <CREATE> <ROLE> <_role name>
-                    | <CREATE> <ROLE> <_role name> <WITH> <ADMIN> <grantor>
-
-<roleGrantedMany> ::= <roleGranted>
-                      | <roleGrantedMany> <_comma> <roleGranted>
-
-<grantRoleStatement> ::=
-	  <GRANT> <roleGrantedMany> <TO> <grantees> <WITH> <ADMIN> <OPTION>
-	| <GRANT> <roleGrantedMany> <TO> <grantees> <WITH> <ADMIN> <OPTION> <GRANTED> <BY> <grantor>
-	| <GRANT> <roleGrantedMany> <TO> <grantees> <GRANTED> <BY> <grantor>
-
-<roleGranted> ::= <_role name>
-
-<dropRoleStatement> ::= <DROP> <ROLE> <_role name>
-
-<revokeStatement> ::=
-		<revokePrivilegeStatement>
-	|	<revokeRoleStatement>
-
-<revokePrivilegeStatement> ::= <REVOKE>                           <privileges> <FROM> <grantees>                          <dropBehavior>
-                               | <REVOKE>                           <privileges> <FROM> <grantees> <GRANTED> <BY> <grantor> <dropBehavior>
-                               | <REVOKE> <revokeOptionExtension> <privileges> <FROM> <grantees>                          <dropBehavior>
-                               | <REVOKE> <revokeOptionExtension> <privileges> <FROM> <grantees> <GRANTED> <BY> <grantor> <dropBehavior>
-
-<revokeOptionExtension> ::= <GRANT> <OPTION> <FOR> | <HIERARCHY> <OPTION> <FOR>
-
-<roleRevokedMany> ::= <roleRevoked>
-                      | <roleRevokedMany> <_comma> <roleRevoked>
-
-<revokeRoleStatement> ::= <REVOKE>                        <roleRevokedMany> <FROM> <grantees>                          <dropBehavior>
-                          | <REVOKE>                        <roleRevokedMany> <FROM> <grantees> <GRANTED> <BY> <grantor> <dropBehavior>
-                          | <REVOKE> <ADMIN> <OPTION> <FOR> <roleRevokedMany> <FROM> <grantees>                          <dropBehavior>
-                          | <REVOKE> <ADMIN> <OPTION> <FOR> <roleRevokedMany> <FROM> <grantees> <GRANTED> <BY> <grantor> <dropBehavior>
-
-<roleRevoked> ::= <_role name>
-
-<moduleContentsMany> ::= <moduleContents>+
-
-<temporaryTableDeclarations> ::= <temporaryTableDeclaration>+
-
-<sqlClientModuleDefinition> ::=
-	  <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleTransformGroupSpecification> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleTransformGroupSpecification> <moduleCollations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleTransformGroupSpecification> <moduleCollations> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleTransformGroupSpecification> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleCollations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <moduleCollations> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <modulePathSpecification> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <moduleTransformGroupSpecification> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <moduleTransformGroupSpecification> <moduleCollations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <moduleTransformGroupSpecification> <moduleCollations> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <moduleTransformGroupSpecification> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <moduleCollations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <moduleCollations> <temporaryTableDeclarations> <moduleContentsMany>
-	| <moduleNameClause> <languageClause> <moduleAuthorizationClause> <temporaryTableDeclarations> <moduleContentsMany>
-
-<moduleAuthorizationClause> ::=
-		<SCHEMA> <_schema name>
-	|	<AUTHORIZATION> <moduleAuthorizationIdentifier>
-	|	<AUTHORIZATION> <moduleAuthorizationIdentifier> <FOR> <STATIC> <ONLY>
-	|	<AUTHORIZATION> <moduleAuthorizationIdentifier> <FOR> <STATIC> <AND> <DYNAMIC>
-	|	<SCHEMA> <_schema name> <AUTHORIZATION> <moduleAuthorizationIdentifier>
-	|	<SCHEMA> <_schema name> <AUTHORIZATION> <moduleAuthorizationIdentifier> <FOR> <STATIC> <ONLY>
-	|	<SCHEMA> <_schema name> <AUTHORIZATION> <moduleAuthorizationIdentifier> <FOR> <STATIC> <AND> <DYNAMIC>
-
-<moduleAuthorizationIdentifier> ::= <_authorization identifier>
-
-<modulePathSpecification> ::= <pathSpecification>
-
-<moduleTransformGroupSpecification> ::= <transformGroupSpecification>
-
-<moduleCollations> ::= <moduleCollationSpecification>+
-
-<moduleCollationSpecification> ::= <COLLATION> <_collation name>
-                                   | <COLLATION> <_collation name> <FOR> <characterSetSpecificationList>
-
-<characterSetSpecificationList> ::= <_character set specification>
-                                     | <characterSetSpecificationList> <_comma> <_character set specification>
-
-<moduleContents> ::=
-		<declareCursor>
-	|	<dynamicDeclareCursor>
-	|	<externallyInvokedProcedure>
-
-<moduleNameClause> ::=
-	  <MODULE> <_SQL_client module name> <moduleContentsMany>
-	| <MODULE> <_SQL_client module name> <moduleCharacterSetSpecification> <moduleContentsMany>
-	| <MODULE> <moduleCharacterSetSpecification> <moduleContentsMany>
-
-<moduleCharacterSetSpecification> ::= <NAMES> <ARE> <_character set specification>
-
-<externallyInvokedProcedure> ::= <PROCEDURE> <_procedure name> <hostParameterDeclarationList> <_semicolon> <sqlProcedureStatement> <_semicolon>
-
-<hostParameterDeclarations> ::= <hostParameterDeclaration>
-                                | <hostParameterDeclarations> <_comma> <hostParameterDeclaration>
-
-<hostParameterDeclarationList> ::= <_left paren> <hostParameterDeclarations> <_right paren>
-
-<hostParameterDeclaration> ::=
-		<_host parameter name> <hostParameterDataType>
-	|	<statusParameter>
-
-<hostParameterDataType> ::= <dataType>
-                             | <dataType> <locatorIndication>
-
-<statusParameter> ::= <SQLSTATE>
-
-<sqlProcedureStatement> ::= <sqlExecutableStatement>
-
-<sqlExecutableStatement> ::=
-		<sqlSchemaStatement>
-	|	<sqlDataStatement>
-	|	<sqlControlStatement>
-	|	<sqlTransactionStatement>
-	|	<sqlConnectionStatement>
-	|	<sqlSessionStatement>
-	|	<sqlDiagnosticsStatement>
-	|	<sqlDynamicStatement>
-
-<sqlSchemaStatement> ::=
-		<sqlSchemaDefinitionStatement>
-	|	<sqlSchemaManipulationStatement>
-
-<sqlSchemaDefinitionStatement> ::=
-		<schemaDefinition>
-	|	<tableDefinition>
-	|	<viewDefinition>
-	|	<sqlInvokedRoutine>
-	|	<grantStatement>
-	|	<roleDefinition>
-	|	<domainDefinition>
-	|	<characterSetDefinition>
-	|	<collationDefinition>
-	|	<transliterationDefinition>
-	|	<assertionDefinition>
-	|	<triggerDefinition>
-	|	<userDefinedTypeDefinition>
-	|	<userDefinedCastDefinition>
-	|	<userDefinedOrderingDefinition>
-	|	<transformDefinition>
-	|	<sequenceGeneratorDefinition>
-
-<sqlSchemaManipulationStatement> ::=
-		<dropSchemaStatement>
-	|	<alterTableStatement>
-	|	<dropTableStatement>
-	|	<dropViewStatement>
-	|	<alterRoutineStatement>
-	|	<dropRoutineStatement>
-	|	<dropUserDefinedCastStatement>
-	|	<revokeStatement>
-	|	<dropRoleStatement>
-	|	<alterDomainStatement>
-	|	<dropDomainStatement>
-	|	<dropCharacterSetStatement>
-	|	<dropCollationStatement>
-	|	<dropTransliterationStatement>
-	|	<dropAssertionStatement>
-	|	<dropTriggerStatement>
-	|	<alterTypeStatement>
-	|	<dropDataTypeStatement>
-	|	<dropUserDefinedOrderingStatement>
-	|	<alterTransformStatement>
-	|	<dropTransformStatement> | <alterSequenceGeneratorStatement>
-	|	<dropSequenceGeneratorStatement>
-
-<sqlDataStatement> ::=
-		<openStatement>
-	|	<fetchStatement>
-	|	<closeStatement>
-	|	<selectStatementSingleRow>
-	|	<freeLocatorStatement>
-	|	<holdLocatorStatement>
-	|	<sqlDataChangeStatement>
-
-<sqlDataChangeStatement> ::=
-		<deleteStatementPositioned>
-	|	<deleteStatementSearched>
-	|	<insertStatement>
-	|	<updateStatementPositioned>
-	|	<updateStatementSearched>
-	|	<mergeStatement>
-
-<sqlControlStatement> ::=
-		<callStatement>
-	|	<returnStatement>
-
-<sqlTransactionStatement> ::=
-		<startTransactionStatement>
-	|	<setTransactionStatement>
-	|	<setConstraintsModeStatement>
-	|	<savepointStatement>
-	|	<releaseSavepointStatement>
-	|	<commitStatement>
-	|	<rollbackStatement>
-
-<sqlConnectionStatement> ::=
-		<connectStatement>
-	|	<setConnectionStatement>
-	|	<disconnectStatement>
-
-<sqlSessionStatement> ::=
-		<setSessionUserIdentifierStatement>
-	|	<setRoleStatement>
-	|	<setLocalTimeZoneStatement>
-	|	<setSessionCharacteristicsStatement>
-	|	<setCatalogStatement>
-	|	<setSchemaStatement>
-	|	<setNamesStatement>
-	|	<setPathStatement>
-	|	<setTransformGroupStatement>
-	|	<setSessionCollationStatement>
-
-<sqlDiagnosticsStatement> ::= <getDiagnosticsStatement>
-
-<sqlDynamicStatement> ::=
-		<systemDescriptorStatement>
-	|	<prepareStatement>
-	|	<deallocatePreparedStatement>
-	|	<describeStatement>
-	|	<executeStatement>
-	|	<executeImmediateStatement>
-	|	<sqlDynamicDataStatement>
-
-<sqlDynamicDataStatement> ::=
-		<allocateCursorStatement>
-	|	<dynamicOpenStatement>
-	|	<dynamicFetchStatement>
-	|	<dynamicCloseStatement>
-	|	<dynamicDeleteStatementPositioned>
-	|	<dynamicUpdateStatementPositioned>
-
-<systemDescriptorStatement> ::=
-		<allocateDescriptorStatement>
-	|	<deallocateDescriptorStatement>
-	|	<setDescriptorStatement>
-	|	<getDescriptorStatement>
-
-<declareCursor> ::=
-	  <DECLARE> <_cursor name> <cursorSensitivity>                        <CURSOR> <cursorHoldability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorSensitivity>                        <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorSensitivity>                        <CURSOR> <cursorReturnability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorHoldability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorReturnability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorScrollability>                      <CURSOR> <cursorHoldability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorScrollability>                      <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <cursorSpecification>
-	| <DECLARE> <_cursor name> <cursorScrollability>                      <CURSOR> <cursorReturnability> <FOR> <cursorSpecification>
-
-
-<cursorSensitivity> ::= <SENSITIVE> | <INSENSITIVE> | <ASENSITIVE>
-
-<cursorScrollability> ::= <SCROLL> | <NO> <SCROLL>
-
-<cursorHoldability> ::= <WITH> <HOLD> | <WITHOUT> <HOLD>
-
-<cursorReturnability> ::= <WITH> <RETURN> | <WITHOUT> <RETURN>
-
-<cursorSpecification> ::=
-	  <queryExpression> <orderByClause>
-	| <queryExpression> <orderByClause> <updatabilityClause>
-	| <queryExpression> <updatabilityClause>
-
-<updatabilityClause> ::= <FOR> <READ> <ONLY>
-                        | <FOR> <UPDATE>
-                        | <FOR> <UPDATE> <OF> <columnNameList>
-
-<orderByClause> ::= <ORDER> <BY> <sortSpecificationList>
-
-<openStatement> ::= <OPEN> <_cursor name>
-
-<fetchStatement> ::= <FETCH>                            <_cursor name> <INTO> <fetchTargetList>
-                    | <FETCH>                     <FROM> <_cursor name> <INTO> <fetchTargetList>
-                    | <FETCH> <fetchOrientation> <FROM> <_cursor name> <INTO> <fetchTargetList>
-
-<fetchOrientation> ::=
-		<NEXT>
-	|	<PRIOR>
-	|	<FIRST>
-	|	<LAST>
-	|	<ABSOLUTE> <simpleValueSpecification>
-	|	<RELATIVE> <simpleValueSpecification>
-
-<fetchTargetList> ::= <targetSpecification>
-                      | <fetchTargetList> <_comma> <targetSpecification>
-
-<closeStatement> ::= <CLOSE> <_cursor name>
-
-<selectStatementSingleRow> ::= <SELECT>                  <selectList> <INTO> <selectTargetList> <tableExpression>
-                                | <SELECT> <setQuantifier> <selectList> <INTO> <selectTargetList> <tableExpression>
-
-<selectTargetList> ::= <targetSpecification>
-                       | <selectTargetList> <_comma> <targetSpecification>
-
-<deleteStatementPositioned> ::= <DELETE> <FROM> <targetTable> <WHERE> <CURRENT> <OF> <_cursor name>
-
-<targetTable> ::=
-		<_table name>
-	|	<ONLY> <_left paren> <_table name> <_right paren>
-
-<deleteStatementSearched> ::= <DELETE> <FROM> <targetTable>
-                              | <DELETE> <FROM> <targetTable> <WHERE> <searchCondition>
-
-<insertStatement> ::= <INSERT> <INTO> <insertionTarget> <insertColumnsAndSource>
-
-<insertionTarget> ::= <_table name>
-
-#
-# Ambiguities with FROM
-#
-<insertColumnsAndSource> ::=
-		<fromSubquery>                  rank =>  0
-	|	<fromConstructor>               rank => -1
-	|	<fromDefault>                   rank => -2
-
-<fromSubquery> ::=
-	  <_left paren> <insertColumnList> <_right paren> <queryExpression>
-	| <_left paren> <insertColumnList> <_right paren> <overrideClause> <queryExpression>
-	| <overrideClause> <queryExpression>
-
-<fromConstructor> ::=
-	  <_left paren> <insertColumnList> <_right paren> <contextuallyTypedTableValueConstructor>
-	| <_left paren> <insertColumnList> <_right paren> <overrideClause> <contextuallyTypedTableValueConstructor>
-	| <overrideClause> <contextuallyTypedTableValueConstructor>
-
-<overrideClause> ::= <OVERRIDING> <USER> <VALUE> | <OVERRIDING> <SYSTEM> <VALUE>
-
-<fromDefault> ::= <DEFAULT> <VALUES>
-
-<insertColumnList> ::= <columnNameList>
-
-<mergeStatement> ::= <MERGE> <INTO> <targetTable>                               <USING> <tableReference> <ON> <searchCondition> <mergeOperationSpecification>
-                    | <MERGE> <INTO> <targetTable>      <mergeCorrelationName> <USING> <tableReference> <ON> <searchCondition> <mergeOperationSpecification>
-                    | <MERGE> <INTO> <targetTable> <AS> <mergeCorrelationName> <USING> <tableReference> <ON> <searchCondition> <mergeOperationSpecification>
-
-<mergeCorrelationName> ::= <_correlation name>
-
-<mergeOperationSpecification> ::= <mergeWhenClause>+
-
-<mergeWhenClause> ::= <mergeWhenMatchedClause> | <mergeWhenNotMatchedClause>
-
-<mergeWhenMatchedClause> ::= <WHEN> <MATCHED> <THEN> <mergeUpdateSpecification>
-
-<mergeWhenNotMatchedClause> ::= <WHEN> <NOT> <MATCHED> <THEN> <mergeInsertSpecification>
-
-<mergeUpdateSpecification> ::= <UPDATE> <SET> <setClauseList>
-
-<mergeInsertSpecification> ::=
-	  <INSERT> <_left paren> <insertColumnList> <_right paren> <VALUES> <mergeInsertValueList>
-	| <INSERT> <_left paren> <insertColumnList> <_right paren> <overrideClause> <VALUES> <mergeInsertValueList>
-	| <INSERT> <overrideClause> <VALUES> <mergeInsertValueList>
-
-<mergeInsertValueElementMany> ::= <mergeInsertValueElement>
-                                    | <mergeInsertValueElementMany> <_comma> <mergeInsertValueElement>
-
-<mergeInsertValueList> ::= <_left paren> <mergeInsertValueElementMany> <_right paren>
-
-<mergeInsertValueElement> ::= <valueExpression> | <contextuallyTypedValueSpecification>
-
-<updateStatementPositioned> ::= <UPDATE> <targetTable> <SET> <setClauseList> <WHERE> <CURRENT> <OF> <_cursor name>
-
-<updateStatementSearched> ::= <UPDATE> <targetTable> <SET> <setClauseList>
-                              | <UPDATE> <targetTable> <SET> <setClauseList> <WHERE> <searchCondition>
-
-<setClauseList> ::= <setClause>
-                    | <setClauseList> <_comma> <setClause>
-
-<setClause> ::=
-		<multipleColumnAssignment>
-	|	<setTarget> <_equals operator> <updateSource>
-
-<setTarget> ::= <updateTarget> | <mutatedSetClause>
-
-<multipleColumnAssignment> ::= <setTargetList> <_equals operator> <assignedRow>
-
-<setTargetMany> ::= <setTarget>
-                    | <setTargetMany> <_comma> <setTarget>
-
-<setTargetList> ::= <_left paren> <setTargetMany> <_right paren>
-
-<assignedRow> ::= <contextuallyTypedRowValueExpression>
-
-<updateTarget> ::=
-		<objectColumn>
-	|	<objectColumn> <_left bracket or trigraph> <simpleValueSpecification> <_right bracket or trigraph>
-
-<objectColumn> ::= <_column name>
-
-<mutatedSetClause> ::= <mutatedTarget> <_period> <_method name>
-
-<mutatedTarget> ::= <objectColumn> | <mutatedSetClause>
-
-<updateSource> ::= <valueExpression> | <contextuallyTypedValueSpecification>
-
-<temporaryTableDeclaration> ::= <DECLARE> <LOCAL> <TEMPORARY> <TABLE> <_table name> <tableElementList>
-                                | <DECLARE> <LOCAL> <TEMPORARY> <TABLE> <_table name> <tableElementList> <ON> <COMMIT> <tableCommitAction> <ROWS>
-
-<locatorReferenceMany> ::= <locatorReference>
-                           | <locatorReferenceMany> <_comma> <locatorReference>
-
-<freeLocatorStatement> ::= <FREE> <LOCATOR> <locatorReferenceMany>
-
-<locatorReference> ::= <_host parameter name> | <_embedded variable name>
-
-<holdLocatorStatement> ::= <HOLD> <LOCATOR> <locatorReferenceMany>
-
-<callStatement> ::= <CALL> <routineInvocation>
-
-<returnStatement> ::= <RETURN> <returnValue>
-
-<returnValue> ::= <valueExpression> | <NULL>
-
-<transactionModeMany> ::= <transactionMode>
-                          | <transactionModeMany> <_comma> <transactionMode>
-
-<startTransactionStatement> ::= <START> <TRANSACTION>
-                                | <START> <TRANSACTION> <transactionModeMany>
-
-<transactionMode> ::= <isolationLevel> | <transactionAccessMode> | <diagnosticsSize>
-
-<transactionAccessMode> ::= <READ> <ONLY> | <READ> <WRITE>
-
-<isolationLevel> ::= <ISOLATION> <LEVEL> <levelOfIsolation>
-
-<levelOfIsolation> ::= <READ> <UNCOMMITTED> | <READ> <COMMITTED> | <REPEATABLE> <READ> | <SERIALIZABLE>
-
-<diagnosticsSize> ::= <DIAGNOSTICS> <SIZE> <numberOfConditions>
-
-<numberOfConditions> ::= <simpleValueSpecification>
-
-<setTransactionStatement> ::= <SET>         <transactionCharacteristics>
-                              | <SET> <LOCAL> <transactionCharacteristics>
-
-<transactionCharacteristics> ::= <TRANSACTION> <transactionModeMany>
-
-#
-# Little deviation from the grammar:
-# <ALL> is disassociated from <constraintNameList>
-#
-<setConstraintsModeStatement> ::= <SET> <CONSTRAINTS> <ALL> <DEFERRED>
-                                   | <SET> <CONSTRAINTS> <constraintNameList> <DEFERRED>
-                                   | <SET> <CONSTRAINTS> <constraintNameList> <IMMEDIATE>
-                                   | <SET> <CONSTRAINTS> <ALL> <IMMEDIATE>
-
-<constraintNameList> ::= <_constraint name>
-                         | <constraintNameList> <_comma> <_constraint name>
-
-<savepointStatement> ::= <SAVEPOINT> <savepointSpecifier>
-
-<savepointSpecifier> ::= <savepointName>
-
-<releaseSavepointStatement> ::= <RELEASE> <SAVEPOINT> <savepointSpecifier>
-
-<commitStatement> ::=
-	  <COMMIT>
-	| <COMMIT> <WORK>
-	| <COMMIT> <WORK> <AND> <CHAIN>
-	| <COMMIT> <WORK> <AND> <NO> <CHAIN>
-	| <COMMIT> <AND> <CHAIN>
-	| <COMMIT> <AND> <NO> <CHAIN>
-
-<rollbackStatement> ::= <ROLLBACK>
-	| <ROLLBACK> <WORK>
-	| <ROLLBACK> <WORK> <AND> <CHAIN>
-	| <ROLLBACK> <WORK> <AND> <NO> <CHAIN>
-	| <ROLLBACK> <WORK> <AND> <CHAIN> <savepointClause>
-	| <ROLLBACK> <WORK> <AND> <NO> <CHAIN> <savepointClause>
-	| <ROLLBACK> <WORK> <savepointClause>
-	| <ROLLBACK> <AND> <CHAIN>
-	| <ROLLBACK> <AND> <NO> <CHAIN>
-	| <ROLLBACK> <AND> <CHAIN> <savepointClause>
-	| <ROLLBACK> <AND> <NO> <CHAIN> <savepointClause>
-	| <ROLLBACK> <savepointClause>
-
-<savepointClause> ::= <TO> <SAVEPOINT> <savepointSpecifier>
-
-<connectStatement> ::= <CONNECT> <TO> <connectionTarget>
-
-<connectionTarget> ::=
-	  <sqlServerName>
-	| <sqlServerName> <AS> <connectionName>
-	| <sqlServerName> <AS> <connectionName> <USER> <connectionUserName>
-	| <sqlServerName> <USER> <connectionUserName>
-	| <DEFAULT>
-
-<setConnectionStatement> ::= <SET> <CONNECTION> <connectionObject>
-
-<connectionObject> ::= <DEFAULT> | <connectionName>
-
-<disconnectStatement> ::= <DISCONNECT> <disconnectObject>
-
-<disconnectObject> ::= <connectionObject> | <ALL> | <CURRENT>
-
-<setSessionCharacteristicsStatement> ::= <SET> <SESSION> <CHARACTERISTICS> <AS> <sessionCharacteristicList>
-
-<sessionCharacteristicList> ::= <sessionCharacteristic>
-                                | <sessionCharacteristicList> <_comma> <sessionCharacteristic>
-
-<sessionCharacteristic> ::= <transactionCharacteristics>
-
-<setSessionUserIdentifierStatement> ::= <SET> <SESSION> <AUTHORIZATION> <valueSpecification>
-
-<setRoleStatement> ::= <SET> <ROLE> <roleSpecification>
-
-<roleSpecification> ::= <valueSpecification> | <NONE>
-
-<setLocalTimeZoneStatement> ::= <SET> <TIME> <ZONE> <setTimeZoneValue>
-
-<setTimeZoneValue> ::= <intervalValueExpression> | <LOCAL>
-
-<setCatalogStatement> ::= <SET> <catalogNameCharacteristic>
-
-<catalogNameCharacteristic> ::= <CATALOG> <valueSpecification>
-
-<setSchemaStatement> ::= <SET> <schemaNameCharacteristic>
-
-<schemaNameCharacteristic> ::= <SCHEMA> <valueSpecification>
-
-<setNamesStatement> ::= <SET> <characterSetNameCharacteristic>
-
-<characterSetNameCharacteristic> ::= <NAMES> <valueSpecification>
-
-<setPathStatement> ::= <SET> <sqlPathCharacteristic>
-
-<sqlPathCharacteristic> ::= <PATH> <valueSpecification>
-
-<setTransformGroupStatement> ::= <SET> <transformGroupCharacteristic>
-
-<transformGroupCharacteristic> ::=
-		<DEFAULT> <TRANSFORM> <GROUP> <valueSpecification>
-	|	<TRANSFORM> <GROUP> <FOR> <TYPE> <pathResolvedUserDefinedTypeName> <valueSpecification>
-
-<setSessionCollationStatement> ::=
-		<SET> <COLLATION> <collationSpecification>
-	|	<SET> <COLLATION> <collationSpecification> <FOR> <characterSetSpecificationList>
-	|	<SET> <NO> <COLLATION>
-	|	<SET> <NO> <COLLATION> <FOR> <characterSetSpecificationList>
-
-<collationSpecification> ::= <valueSpecification>
-
-<allocateDescriptorStatement> ::= <ALLOCATE>       <DESCRIPTOR> <descriptorName>
-                                  | <ALLOCATE>       <DESCRIPTOR> <descriptorName> <WITH> <MAX> <occurrences>
-                                  | <ALLOCATE> <SQL> <DESCRIPTOR> <descriptorName>
-                                  | <ALLOCATE> <SQL> <DESCRIPTOR> <descriptorName> <WITH> <MAX> <occurrences>
-
-<occurrences> ::= <simpleValueSpecification>
-
-<deallocateDescriptorStatement> ::= <DEALLOCATE>       <DESCRIPTOR> <descriptorName>
-                                    | <DEALLOCATE> <SQL> <DESCRIPTOR> <descriptorName>
-
-<getDescriptorStatement> ::= <GET>       <DESCRIPTOR> <descriptorName> <getDescriptorInformation>
-                             | <GET> <SQL> <DESCRIPTOR> <descriptorName> <getDescriptorInformation>
-
-<getHeaderInformationMany> ::= <getHeaderInformation>
-                                | <getHeaderInformationMany> <_comma> <getHeaderInformation>
-
-<getItemInformationMany> ::= <getItemInformation>
-                              | <getItemInformationMany> <_comma> <getItemInformation>
-<getDescriptorInformation> ::=
-		<getHeaderInformationMany>
-	|	<VALUE> <itemNumber> <getItemInformationMany>
-
-<getHeaderInformation> ::= <simpleTargetSpecification1> <_equals operator> <headerItemName>
-
-<headerItemName> ::= <COUNT> | <KEY_TYPE> | <DYNAMIC_FUNCTION> | <DYNAMIC_FUNCTION_CODE> | <TOP_LEVEL_COUNT>
-
-<getItemInformation> ::= <simpleTargetSpecification2> <_equals operator> <descriptorItemName>
-
-<itemNumber> ::= <simpleValueSpecification>
-
-<simpleTargetSpecification1> ::= <simpleTargetSpecification>
-
-<simpleTargetSpecification2> ::= <simpleTargetSpecification>
-
-<descriptorItemName> ::=
-		<CARDINALITY>
-	|	<CHARACTER_SET_CATALOG>
-	|	<CHARACTER_SET_NAME>
-	|	<CHARACTER_SET_SCHEMA>
-	|	<COLLATION_CATALOG>
-	|	<COLLATION_NAME>
-	|	<COLLATION_SCHEMA>
-	|	<DATA>
-	|	<DATETIME_INTERVAL_CODE>
-	|	<DATETIME_INTERVAL_PRECISION>
-	|	<DEGREE>
-	|	<INDICATOR>
-	|	<KEY_MEMBER>
-	|	<LENGTH>
-	|	<LEVEL>
-	|	<NAME>
-	|	<NULLABLE>
-	|	<OCTET_LENGTH>
-	|	<PARAMETER_MODE>
-	|	<PARAMETER_ORDINAL_POSITION>
-	|	<PARAMETER_SPECIFIC_CATALOG>
-	|	<PARAMETER_SPECIFIC_NAME>
-	|	<PARAMETER_SPECIFIC_SCHEMA>
-	|	<PRECISION>
-	|	<RETURNED_CARDINALITY>
-	|	<RETURNED_LENGTH>
-	|	<RETURNED_OCTET_LENGTH>
-	|	<SCALE>
-	|	<SCOPE_CATALOG>
-	|	<SCOPE_NAME>
-	|	<SCOPE_SCHEMA>
-	|	<TYPE>
-	|	<UNNAMED>
-	|	<USER_DEFINED_TYPE_CATALOG>
-	|	<USER_DEFINED_TYPE_NAME>
-	|	<USER_DEFINED_TYPE_SCHEMA>
-	|	<USER_DEFINED_TYPE_CODE>
-
-<setDescriptorStatement> ::= <SET>       <DESCRIPTOR> <descriptorName> <setDescriptorInformation>
-                             | <SET> <SQL> <DESCRIPTOR> <descriptorName> <setDescriptorInformation>
-
-<setHeaderInformationMany> ::= <setHeaderInformation>
-                                | <setHeaderInformationMany> <_comma> <setHeaderInformation>
-
-<setItemInformationMany> ::= <setItemInformation>
-                              | <setItemInformationMany> <_comma> <setItemInformation>
-
-<setDescriptorInformation> ::=
-		<setHeaderInformationMany>
-	|	<VALUE> <itemNumber> <setItemInformationMany>
-
-<setHeaderInformation> ::= <headerItemName> <_equals operator> <simpleValueSpecification1>
-
-<setItemInformation> ::= <descriptorItemName> <_equals operator> <simpleValueSpecification2>
-
-<simpleValueSpecification1> ::= <simpleValueSpecification>
-
-<simpleValueSpecification2> ::= <simpleValueSpecification>
-
-<prepareStatement> ::= <PREPARE> <sqlStatementName>                            <FROM> <sqlStatementVariable>
-                      | <PREPARE> <sqlStatementName> <attributesSpecification> <FROM> <sqlStatementVariable>
-
-<attributesSpecification> ::= <ATTRIBUTES> <attributesVariable>
-
-<attributesVariable> ::= <simpleValueSpecification>
-
-<sqlStatementVariable> ::= <simpleValueSpecification>
-
-<preparableStatement> ::=
-		<preparableSqlDataStatement>
-	|	<preparableSqlSchemaStatement>
-	|	<preparableSqlTransactionStatement>
-	|	<preparableSqlControlStatement>
-	|	<preparableSqlSessionStatement>
-#	|	<preparableImplementationDefinedStatement>
-
-<preparableSqlDataStatement> ::=
-		<deleteStatementSearched>
-	|	<dynamicSingleRowSelectStatement>
-	|	<insertStatement>
-	|	<dynamicSelectStatement>
-	|	<updateStatementSearched>
-	|	<mergeStatement>
-	|	<preparableDynamicDeleteStatementPositioned>
-	|	<preparableDynamicUpdateStatementPositioned>
-
-<preparableSqlSchemaStatement> ::= <sqlSchemaStatement>
-
-<preparableSqlTransactionStatement> ::= <sqlTransactionStatement>
-
-<preparableSqlControlStatement> ::= <sqlControlStatement>
-
-<preparableSqlSessionStatement> ::= <sqlSessionStatement>
-
-<dynamicSelectStatement> ::= <cursorSpecification>
-
-<deallocatePreparedStatement> ::= <DEALLOCATE> <PREPARE> <sqlStatementName>
-
-<describeStatement> ::= <describeInputStatement> | <describeOutputStatement>
-
-<describeInputStatement> ::= <DESCRIBE> <INPUT> <sqlStatementName> <usingDescriptor>
-                             | <DESCRIBE> <INPUT> <sqlStatementName> <usingDescriptor> <nestingOption>
-
-<describeOutputStatement> ::= <DESCRIBE>          <describedObject> <usingDescriptor>
-                              | <DESCRIBE>          <describedObject> <usingDescriptor> <nestingOption>
-                              | <DESCRIBE> <OUTPUT> <describedObject> <usingDescriptor>
-                              | <DESCRIBE> <OUTPUT> <describedObject> <usingDescriptor> <nestingOption>
-
-<nestingOption> ::= <WITH> <NESTING> | <WITHOUT> <NESTING>
-
-<usingDescriptor> ::= <USING>       <DESCRIPTOR> <descriptorName>
-                     | <USING> <SQL> <DESCRIPTOR> <descriptorName>
-
-<describedObject> ::=
-		<sqlStatementName>
-	|	<CURSOR> <extendedCursorName> <STRUCTURE>
-
-<inputUsingClause> ::= <usingArguments> | <usingInputDescriptor>
-
-<usingArgumentMany> ::= <usingArgument>
-                        | <usingArgumentMany> <_comma> <usingArgument>
-
-<usingArguments> ::= <USING> <usingArgumentMany>
-
-<usingArgument> ::= <generalValueSpecification>
-
-<usingInputDescriptor> ::= <usingDescriptor>
-
-<outputUsingClause> ::= <intoArguments> | <intoDescriptor>
-
-<intoArgumentMany> ::= <intoArgument>
-                       | <intoArgumentMany> <_comma> <intoArgument>
-
-<intoArguments> ::= <INTO> <intoArgumentMany>
-
-<intoArgument> ::= <targetSpecification>
-
-<intoDescriptor> ::= <INTO>       <DESCRIPTOR> <descriptorName>
-                    | <INTO> <SQL> <DESCRIPTOR> <descriptorName>
-
-<executeStatement> ::= <EXECUTE> <sqlStatementName>
-	| <EXECUTE> <sqlStatementName> <resultUsingClause>
-	| <EXECUTE> <sqlStatementName> <resultUsingClause> <parameterUsingClause>
-	| <EXECUTE> <sqlStatementName> <parameterUsingClause>
-
-<resultUsingClause> ::= <outputUsingClause>
-
-<parameterUsingClause> ::= <inputUsingClause>
-
-<executeImmediateStatement> ::= <EXECUTE> <IMMEDIATE> <sqlStatementVariable>
-
-<dynamicDeclareCursor> ::= <DECLARE> <_cursor name> <CURSOR> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <CURSOR> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorHoldability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <CURSOR> <cursorHoldability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorSensitivity> <CURSOR> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorScrollability> <CURSOR> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorScrollability> <CURSOR> <cursorHoldability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorScrollability> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <cursorScrollability> <CURSOR> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <CURSOR> <cursorHoldability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <statementName>
-	| <DECLARE> <_cursor name> <CURSOR> <cursorReturnability> <FOR> <statementName>
-
-<allocateCursorStatement> ::= <ALLOCATE> <extendedCursorName> <cursorIntent>
-
-<cursorIntent> ::= <statementCursor> | <resultSetCursor>
-
-<statementCursor> ::= <CURSOR> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <CURSOR> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <cursorScrollability> <CURSOR> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorHoldability> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <cursorScrollability> <CURSOR> <cursorReturnability> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <CURSOR> <cursorHoldability> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <extendedStatementName>
-	| <cursorSensitivity> <CURSOR> <cursorReturnability> <FOR> <extendedStatementName>
-	| <cursorScrollability> <CURSOR> <FOR> <extendedStatementName>
-	| <cursorScrollability> <CURSOR> <cursorHoldability> <FOR> <extendedStatementName>
-	| <cursorScrollability> <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <extendedStatementName>
-	| <cursorScrollability> <CURSOR> <cursorReturnability> <FOR> <extendedStatementName>
-	| <CURSOR> <cursorHoldability> <FOR> <extendedStatementName>
-	| <CURSOR> <cursorHoldability> <cursorReturnability> <FOR> <extendedStatementName>
-	| <CURSOR> <cursorReturnability> <FOR> <extendedStatementName>
-
-<resultSetCursor> ::= <FOR> <PROCEDURE> <specificRoutineDesignator>
-
-<dynamicOpenStatement> ::= <OPEN> <dynamicCursorName>
-                           | <OPEN> <dynamicCursorName> <inputUsingClause>
-
-<dynamicFetchStatement> ::= <FETCH>                            <dynamicCursorName> <outputUsingClause>
-                            | <FETCH>                     <FROM> <dynamicCursorName> <outputUsingClause>
-                            | <FETCH> <fetchOrientation> <FROM> <dynamicCursorName> <outputUsingClause>
-
-<dynamicSingleRowSelectStatement> ::= <querySpecification>
-
-<dynamicCloseStatement> ::= <CLOSE> <dynamicCursorName>
-
-<dynamicDeleteStatementPositioned> ::= <DELETE> <FROM> <targetTable> <WHERE> <CURRENT> <OF> <dynamicCursorName>
-
-<dynamicUpdateStatementPositioned> ::= <UPDATE> <targetTable> <SET> <setClauseList> <WHERE> <CURRENT> <OF> <dynamicCursorName>
-
-<preparableDynamicDeleteStatementPositioned> ::= <DELETE>                       <WHERE> <CURRENT> <OF>                <_cursor name>
-                                                   | <DELETE>                       <WHERE> <CURRENT> <OF> <scopeOption> <_cursor name>
-                                                   | <DELETE> <FROM> <targetTable> <WHERE> <CURRENT> <OF>                <_cursor name>
-                                                   | <DELETE> <FROM> <targetTable> <WHERE> <CURRENT> <OF> <scopeOption> <_cursor name>
-
-<preparableDynamicUpdateStatementPositioned> ::= <UPDATE>                <SET> <setClauseList> <WHERE> <CURRENT> <OF>                <_cursor name>
-                                                   | <UPDATE>                <SET> <setClauseList> <WHERE> <CURRENT> <OF> <scopeOption> <_cursor name>
-                                                   | <UPDATE> <targetTable> <SET> <setClauseList> <WHERE> <CURRENT> <OF>                <_cursor name>
-                                                   | <UPDATE> <targetTable> <SET> <setClauseList> <WHERE> <CURRENT> <OF> <scopeOption> <_cursor name>
-
-<embeddedSqlHostProgram> ::=	<embeddedSqlCProgram>
-
-<embeddedSqlStatement> ::= <sqlPrefix> <statementOrDeclaration>
-                           | <sqlPrefix> <statementOrDeclaration> <sqlTerminator>
-
-<statementOrDeclaration> ::=
-		<declareCursor>
-	|	<dynamicDeclareCursor>
-	|	<temporaryTableDeclaration>
-	|	<embeddedAuthorizationDeclaration>
-	|	<embeddedPathSpecification>
-	|	<embeddedTransformGroupSpecification>
-	|	<embeddedCollationSpecification>
-	|	<embeddedExceptionDeclaration>
-	|	<sqlProcedureStatement>
-
-<ampersandAndSqlAndLeftParen> ::= <_ampersand> <SQL> <_left paren>
-
-<sqlPrefix> ::= <EXEC> <SQL> | <ampersandAndSqlAndLeftParen>
-
-<sqlTerminator> ::= <END_EXEC> | <_semicolon> | <_right paren>
-
-<embeddedAuthorizationDeclaration> ::= <DECLARE> <embeddedAuthorizationClause>
-
-<embeddedAuthorizationClause> ::=
-		<SCHEMA> <_schema name>
-	|	<AUTHORIZATION> <embeddedAuthorizationIdentifier>
-	|	<AUTHORIZATION> <embeddedAuthorizationIdentifier> <FOR> <STATIC> <ONLY>
-	|	<AUTHORIZATION> <embeddedAuthorizationIdentifier> <FOR> <STATIC> <AND> <DYNAMIC>
-	|	<SCHEMA> <_schema name> <AUTHORIZATION> <embeddedAuthorizationIdentifier>
-	|	<SCHEMA> <_schema name> <AUTHORIZATION> <embeddedAuthorizationIdentifier> <FOR> <STATIC> <ONLY>
-	|	<SCHEMA> <_schema name> <AUTHORIZATION> <embeddedAuthorizationIdentifier> <FOR> <STATIC> <AND> <DYNAMIC>
-
-<embeddedAuthorizationIdentifier> ::= <moduleAuthorizationIdentifier>
-
-<embeddedPathSpecification> ::= <pathSpecification>
-
-<embeddedTransformGroupSpecification> ::= <transformGroupSpecification>
-
-<embeddedCollationSpecification> ::= <moduleCollations>
-
-<hostVariableDefinitionMany> ::= <hostVariableDefinition>+
-
-<embeddedSqlDeclareSection> ::=
-	  <embeddedSqlBeginDeclare> <embeddedSqlEndDeclare>
-	| <embeddedSqlBeginDeclare> <embeddedCharacterSetDeclaration> <embeddedSqlEndDeclare>
-	| <embeddedSqlBeginDeclare> <embeddedCharacterSetDeclaration> <hostVariableDefinitionMany> <embeddedSqlEndDeclare>
-	| <embeddedSqlBeginDeclare> <hostVariableDefinitionMany> <embeddedSqlEndDeclare>
-	| <embeddedSqlMumpsDeclare>
-
-<embeddedCharacterSetDeclaration> ::= <SQL> <NAMES> <ARE> <_character set specification>
-
-<embeddedSqlBeginDeclare> ::= <sqlPrefix> <BEGIN> <DECLARE> <SECTION>
-                               | <sqlPrefix> <BEGIN> <DECLARE> <SECTION> <sqlTerminator>
-
-<embeddedSqlEndDeclare> ::= <sqlPrefix> <END> <DECLARE> <SECTION>
-                             | <sqlPrefix> <END> <DECLARE> <SECTION> <sqlTerminator>
-
-<embeddedSqlMumpsDeclare> ::= <sqlPrefix> <BEGIN> <DECLARE> <SECTION> <END> <DECLARE> <SECTION> <sqlTerminator>
-	| <sqlPrefix> <BEGIN> <DECLARE> <SECTION> <embeddedCharacterSetDeclaration> <END> <DECLARE> <SECTION> <sqlTerminator>
-	| <sqlPrefix> <BEGIN> <DECLARE> <SECTION> <embeddedCharacterSetDeclaration> <hostVariableDefinitionMany> <END> <DECLARE> <SECTION> <sqlTerminator>
-	| <sqlPrefix> <BEGIN> <DECLARE> <SECTION> <hostVariableDefinitionMany> <END> <DECLARE> <SECTION> <sqlTerminator>
-
-<hostVariableDefinition> ::= <cVariableDefinition>
-
-<_embedded variable name> ~ <__colon> <_host identifier>
-
-<_host identifier> ~ <__C host identifier>
-
-<embeddedExceptionDeclaration> ::= <WHENEVER> <condition> <conditionAction>
-
-<condition> ::= <sqlCondition>
-
-<sqlCondition> ::= <majorCategory>
-	|	<SQLSTATE> '(' <sqlstateClassValue> ')'
-	|	<SQLSTATE> '(' <sqlstateClassValue> <_comma> <sqlstateSubclassValue> ')'
-	|	<CONSTRAINT> <_constraint name>
-
-<majorCategory> ::= <SQLEXCEPTION> | <SQLWARNING> | <NOT> <FOUND>
-
-<sqlstateClassValue> ::= <sqlstateChar><sqlstateChar>
-
-<sqlstateSubclassValue> ::= <sqlstateChar><sqlstateChar><sqlstateChar>
-
-<sqlstateChar> ::= <_simple Latin upper case letter> | <_digit>
-
-<conditionAction> ::= <CONTINUE> | <goTo>
-
-<goTo> ::= <GOTO> <gotoTarget>
-          | <GO> <TO> <gotoTarget>
-
-#
-# Note: deviation from the grammar: we consider anything not starting with a digit nor <whiteSpace> and followed by anything not a <whiteSpace> to be the <hostLabelIdentifier>
-#                                   Any embedded grammar but the C language, with EXEC SQL keywords, is removed.
-#
-<gotoTarget> ::=
-		<hostLabelIdentifier>
-	|	<_unsigned integer>
-
-#
-# We assume the host label identifier follows C convention
-#
-
-<hostLabelIdentifier> ::= <_C host identifier>
-
-<embeddedSqlCProgram> ::= <EXEC> <SQL>
-
-<cVariableDefinition> ::= <cVariableSpecification> <_semicolon>
-	| <cStorageClass> <cVariableSpecification> <_semicolon>
-	| <cStorageClass> <cClassModifier> <cVariableSpecification> <_semicolon>
-	| <cClassModifier> <cVariableSpecification> <_semicolon>
-
-<cVariableSpecification> ::= <cNumericVariable> | <cCharacterVariable> | <cDerivedVariable>
-
-<cStorageClass> ::= 'auto' | 'extern' | 'static'
-
-<cClassModifier> ::= 'const' | 'volatile'
-
-<cHostIdentifierAndMaybeCInitialValue> ::= <_C host identifier>
-                                                | <_C host identifier> <cInitialValue>
-
-<cHostIdentifierAndMaybeCInitialValueList> ::= <cHostIdentifierAndMaybeCInitialValue>
-                                                     | <cHostIdentifierAndMaybeCInitialValue> <_comma> <cHostIdentifierAndMaybeCInitialValue>
-<cNumericVariable> ::= 'long' 'long' <cHostIdentifierAndMaybeCInitialValueList>
-                       | 'long' <cHostIdentifierAndMaybeCInitialValueList>
-                       | 'short' <cHostIdentifierAndMaybeCInitialValueList>
-                       | 'float' <cHostIdentifierAndMaybeCInitialValueList>
-                       | 'double' <cHostIdentifierAndMaybeCInitialValueList>
-
-<cHostIdentifierAndCArraySpecificationAndMaybeCInitialValue> ::= <_C host identifier> <cArraySpecification>
-                                                                          | <_C host identifier> <cArraySpecification> <cInitialValue>
-
-<cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList> ::= <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValue>
-                                                                               | <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList> <_comma> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValue>
-
-<cCharacterVariable> ::= <cCharacterType>                                                      <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                         | <cCharacterType> <CHARACTER> <SET> <_character set specification>      <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                         | <cCharacterType> <CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-
-<cCharacterType> ::= 'char' | 'unsigned' 'char' | 'unsigned' 'short'
-
-<cArraySpecification> ::= <_left bracket> <length> <_right bracket>
-
-<C L>          ~ [a-zA-Z_]
-<C A>          ~ [a-zA-Z_0-9]
-<cAAny>      ~ <C A>*
-<C IDENTIFIER>          ~ <C L> <cAAny>
-
-<__C host identifier> ~ <C IDENTIFIER>
-<_C host identifier> ~ <__C host identifier>
-
-<cDerivedVariable> ::=
-		<cVarcharVariable>
-	|	<cNcharVariable>
-	|	<cNcharVaryingVariable>
-	|	<cClobVariable>
-	|	<cNclobVariable>
-	|	<cBlobVariable>
-	|	<cUserDefinedTypeVariable>
-	|	<cClobLocatorVariable>
-	|	<cBlobLocatorVariable>
-	|	<cArrayLocatorVariable>
-	|	<cMultisetLocatorVariable>
-	|	<cUserDefinedTypeLocatorVariable>
-	|	<cRefVariable>
-
-<cVarcharVariable> ::= <VARCHAR>                                                      <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                       | <VARCHAR> <CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                       | <VARCHAR> <CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-
-<cNcharVariable> ::= <NCHAR>                                                      <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                     | <NCHAR> <CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                     | <NCHAR> <CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-
-<cNcharVaryingVariable> ::= <NCHAR> <VARYING>                                                      <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                             | <NCHAR> <VARYING> <CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-                             | <NCHAR> <VARYING> <CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndCArraySpecificationAndMaybeCInitialValueList>
-
-<cClobVariable> ::= <SQL> <TYPE> <IS> <CLOB> <_left paren> <largeObjectLength> <_right paren>	                                                     <cHostIdentifierAndMaybeCInitialValueList>
-                    | <SQL> <TYPE> <IS> <CLOB> <_left paren> <largeObjectLength> <_right paren>	<CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-                    | <SQL> <TYPE> <IS> <CLOB> <_left paren> <largeObjectLength> <_right paren>	<CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cNclobVariable> ::= <SQL> <TYPE> <IS> <NCLOB> <_left paren> <largeObjectLength> <_right paren>	                                                     <cHostIdentifierAndMaybeCInitialValueList>
-                     | <SQL> <TYPE> <IS> <NCLOB> <_left paren> <largeObjectLength> <_right paren>	<CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-                     | <SQL> <TYPE> <IS> <NCLOB> <_left paren> <largeObjectLength> <_right paren>	<CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cUserDefinedTypeVariable> ::= <SQL> <TYPE> <IS> <pathResolvedUserDefinedTypeName> <AS> <predefinedType>	                                                     <cHostIdentifierAndMaybeCInitialValueList>
-                                 | <SQL> <TYPE> <IS> <pathResolvedUserDefinedTypeName> <AS> <predefinedType>	<CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-                                 | <SQL> <TYPE> <IS> <pathResolvedUserDefinedTypeName> <AS> <predefinedType>	<CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cBlobVariable> ::= <SQL> <TYPE> <IS> <BLOB> <_left paren> <largeObjectLength> <_right paren>	                                                     <cHostIdentifierAndMaybeCInitialValueList>
-                    | <SQL> <TYPE> <IS> <BLOB> <_left paren> <largeObjectLength> <_right paren>	<CHARACTER> <SET>      <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-                    | <SQL> <TYPE> <IS> <BLOB> <_left paren> <largeObjectLength> <_right paren>	<CHARACTER> <SET> <IS> <_character set specification> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cClobLocatorVariable> ::= <SQL> <TYPE> <IS> <CLOB> <AS> <LOCATOR> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cBlobLocatorVariable> ::= <SQL> <TYPE> <IS> <BLOB> <AS> <LOCATOR> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cArrayLocatorVariable> ::= <SQL> <TYPE> <IS> <arrayType> <AS> <LOCATOR> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cMultisetLocatorVariable> ::= <SQL> <TYPE> <IS> <multisetType> <AS> <LOCATOR> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cUserDefinedTypeLocatorVariable> ::= <SQL> <TYPE> <IS> <pathResolvedUserDefinedTypeName> <AS> <LOCATOR> <cHostIdentifierAndMaybeCInitialValueList>
-
-<cRefVariable> ::= <SQL> <TYPE> <IS> <referenceType>
-
-<characterRepresentations> ::= <_character representation>+
-
-<cInitialValue> ::= <_equals operator> <characterRepresentations>
-
-<directSqlStatement> ::= <directlyExecutableStatement> <_semicolon>
-
-#
-# <directImplementationDefinedStatement> is dropped
-#
-
-<directlyExecutableStatement> ::=
-		<directSqlDataStatement>
-	|	<sqlSchemaStatement>
-	|	<sqlTransactionStatement>
-	|	<sqlConnectionStatement>
-	|	<sqlSessionStatement>
-
-<directSqlDataStatement> ::=
-		<deleteStatementSearched>
-	|	<directSelectStatementMultipleRows>
-	|	<insertStatement>
-	|	<updateStatementSearched>
-	|	<mergeStatement>
-	|	<temporaryTableDeclaration>
-
-<directSelectStatementMultipleRows> ::= <cursorSpecification>
-
-<getDiagnosticsStatement> ::= <GET> <DIAGNOSTICS> <sqlDiagnosticsInformation>
-
-<sqlDiagnosticsInformation> ::= <statementInformation> | <conditionInformation>
-
-<statementInformation> ::= <statementInformationItem>
-                          | <statementInformation> <_comma> <statementInformationItem>
-
-<statementInformationItem> ::= <simpleTargetSpecification> <_equals operator> <statementInformationItemName>
-
-<statementInformationItemName> ::=
-		<NUMBER>
-	|	<MORE>
-	|	<COMMAND_FUNCTION>
-	|	<COMMAND_FUNCTION_CODE>
-	|	<DYNAMIC_FUNCTION>
-	|	<DYNAMIC_FUNCTION_CODE>
-	|	<ROW_COUNT>
-	|	<TRANSACTIONS_COMMITTED>
-	|	<TRANSACTIONS_ROLLED_BACK>
-	|	<TRANSACTION_ACTIVE>
-
-<conditionInformationItems> ::= <conditionInformationItem>
-                                | <conditionInformationItems> <_comma> <conditionInformationItem>
-
-<conditionInformation> ::=
-		<EXCEPTION> <conditionNumber> <conditionInformationItems>
-	|	<CONDITION> <conditionNumber> <conditionInformationItems>
-
-<conditionInformationItem> ::= <simpleTargetSpecification> <_equals operator> <conditionInformationItemName>
-
-<conditionInformationItemName> ::=
-		<CATALOG_NAME>
-	|	<CLASS_ORIGIN>
-	|	<COLUMN_NAME>
-	|	<CONDITION_NUMBER>
-	|	<CONNECTION_NAME>
-	|	<CONSTRAINT_CATALOG>
-	|	<CONSTRAINT_NAME>
-	|	<CONSTRAINT_SCHEMA>
-	|	<CURSOR_NAME>
-	|	<MESSAGE_LENGTH>
-	|	<MESSAGE_OCTET_LENGTH>
-	|	<MESSAGE_TEXT>
-	|	<PARAMETER_MODE>
-	|	<PARAMETER_NAME>
-	|	<PARAMETER_ORDINAL_POSITION>
-	|	<RETURNED_SQLSTATE>
-	|	<ROUTINE_CATALOG>
-	|	<ROUTINE_NAME>
-	|	<ROUTINE_SCHEMA>
-	|	<SCHEMA_NAME>
-	|	<SERVER_NAME>
-	|	<SPECIFIC_NAME>
-	|	<SUBCLASS_ORIGIN>
-	|	<TABLE_NAME>
-	|	<TRIGGER_CATALOG>
-	|	<TRIGGER_NAME>
-	|	<TRIGGER_SCHEMA>
-
-<conditionNumber> ::= <simpleValueSpecification>
-
-#
-# Case-insensitive versions of keywords
-#
-:lexeme ~ <A> priority => 1
-<A> ~ [Aa]
-:lexeme ~ <ABS> priority => 1
-<ABS> ~ [Aa][Bb][Ss]
-:lexeme ~ <ABSOLUTE> priority => 1
-<ABSOLUTE> ~ [Aa][Bb][Ss][Oo][Ll][Uu][Tt][Ee]
-:lexeme ~ <ACTION> priority => 1
-<ACTION> ~ [Aa][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <ADD> priority => 1
-<ADD> ~ [Aa][Dd][Dd]
-:lexeme ~ <ADMIN> priority => 1
-<ADMIN> ~ [Aa][Dd][Mm][Ii][Nn]
-:lexeme ~ <AFTER> priority => 1
-<AFTER> ~ [Aa][Ff][Tt][Ee][Rr]
-:lexeme ~ <ALL> priority => 1
-<ALL> ~ [Aa][Ll][Ll]
-:lexeme ~ <ALLOCATE> priority => 1
-<ALLOCATE> ~ [Aa][Ll][Ll][Oo][Cc][Aa][Tt][Ee]
-:lexeme ~ <ALTER> priority => 1
-<ALTER> ~ [Aa][Ll][Tt][Ee][Rr]
-:lexeme ~ <ALWAYS> priority => 1
-<ALWAYS> ~ [Aa][Ll][Ww][Aa][Yy][Ss]
-:lexeme ~ <AND> priority => 1
-<AND> ~ [Aa][Nn][Dd]
-:lexeme ~ <ANY> priority => 1
-<ANY> ~ [Aa][Nn][Yy]
-:lexeme ~ <ARE> priority => 1
-<ARE> ~ [Aa][Rr][Ee]
-:lexeme ~ <ARRAY> priority => 1
-<ARRAY> ~ [Aa][Rr][Rr][Aa][Yy]
-:lexeme ~ <AS> priority => 1
-<AS> ~ [Aa][Ss]
-:lexeme ~ <ASC> priority => 1
-<ASC> ~ [Aa][Ss][Cc]
-:lexeme ~ <ASENSITIVE> priority => 1
-<ASENSITIVE> ~ [Aa][Ss][Ee][Nn][Ss][Ii][Tt][Ii][Vv][Ee]
-:lexeme ~ <ASSERTION> priority => 1
-<ASSERTION> ~ [Aa][Ss][Ss][Ee][Rr][Tt][Ii][Oo][Nn]
-:lexeme ~ <ASSIGNMENT> priority => 1
-<ASSIGNMENT> ~ [Aa][Ss][Ss][Ii][Gg][Nn][Mm][Ee][Nn][Tt]
-:lexeme ~ <ASYMMETRIC> priority => 1
-<ASYMMETRIC> ~ [Aa][Ss][Yy][Mm][Mm][Ee][Tt][Rr][Ii][Cc]
-:lexeme ~ <AT> priority => 1
-<AT> ~ [Aa][Tt]
-:lexeme ~ <ATOMIC> priority => 1
-<ATOMIC> ~ [Aa][Tt][Oo][Mm][Ii][Cc]
-:lexeme ~ <ATTRIBUTE> priority => 1
-<ATTRIBUTE> ~ [Aa][Tt][Tt][Rr][Ii][Bb][Uu][Tt][Ee]
-:lexeme ~ <ATTRIBUTES> priority => 1
-<ATTRIBUTES> ~ [Aa][Tt][Tt][Rr][Ii][Bb][Uu][Tt][Ee][Ss]
-:lexeme ~ <AUTHORIZATION> priority => 1
-<AUTHORIZATION> ~ [Aa][Uu][Tt][Hh][Oo][Rr][Ii][Zz][Aa][Tt][Ii][Oo][Nn]
-:lexeme ~ <AVG> priority => 1
-<AVG> ~ [Aa][Vv][Gg]
-:lexeme ~ <BEFORE> priority => 1
-<BEFORE> ~ [Bb][Ee][Ff][Oo][Rr][Ee]
-:lexeme ~ <BEGIN> priority => 1
-<BEGIN> ~ [Bb][Ee][Gg][Ii][Nn]
-:lexeme ~ <BERNOULLI> priority => 1
-<BERNOULLI> ~ [Bb][Ee][Rr][Nn][Oo][Uu][Ll][Ll][Ii]
-:lexeme ~ <BETWEEN> priority => 1
-<BETWEEN> ~ [Bb][Ee][Tt][Ww][Ee][Ee][Nn]
-:lexeme ~ <BIGINT> priority => 1
-<BIGINT> ~ [Bb][Ii][Gg][Ii][Nn][Tt]
-:lexeme ~ <BINARY> priority => 1
-<BINARY> ~ [Bb][Ii][Nn][Aa][Rr][Yy]
-:lexeme ~ <BLOB> priority => 1
-<BLOB> ~ [Bb][Ll][Oo][Bb]
-:lexeme ~ <BOOLEAN> priority => 1
-<BOOLEAN> ~ [Bb][Oo][Oo][Ll][Ee][Aa][Nn]
-:lexeme ~ <BOTH> priority => 1
-<BOTH> ~ [Bb][Oo][Tt][Hh]
-:lexeme ~ <BREADTH> priority => 1
-<BREADTH> ~ [Bb][Rr][Ee][Aa][Dd][Tt][Hh]
-:lexeme ~ <BY> priority => 1
-<BY> ~ [Bb][Yy]
-:lexeme ~ <C> priority => 1
-<C> ~ [Cc]
-:lexeme ~ <CALL> priority => 1
-<CALL> ~ [Cc][Aa][Ll][Ll]
-:lexeme ~ <CALLED> priority => 1
-<CALLED> ~ [Cc][Aa][Ll][Ll][Ee][Dd]
-:lexeme ~ <CARDINALITY> priority => 1
-<CARDINALITY> ~ [Cc][Aa][Rr][Dd][Ii][Nn][Aa][Ll][Ii][Tt][Yy]
-:lexeme ~ <CASCADE> priority => 1
-<CASCADE> ~ [Cc][Aa][Ss][Cc][Aa][Dd][Ee]
-:lexeme ~ <CASCADED> priority => 1
-<CASCADED> ~ [Cc][Aa][Ss][Cc][Aa][Dd][Ee][Dd]
-:lexeme ~ <CASE> priority => 1
-<CASE> ~ [Cc][Aa][Ss][Ee]
-:lexeme ~ <CAST> priority => 1
-<CAST> ~ [Cc][Aa][Ss][Tt]
-:lexeme ~ <CATALOG> priority => 1
-<CATALOG> ~ [Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <CATALOG_NAME> priority => 1
-<CATALOG_NAME> ~ [Cc][Aa][Tt][Aa][Ll][Oo][Gg]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <CEIL> priority => 1
-<CEIL> ~ [Cc][Ee][Ii][Ll]
-:lexeme ~ <CEILING> priority => 1
-<CEILING> ~ [Cc][Ee][Ii][Ll][Ii][Nn][Gg]
-:lexeme ~ <CHAIN> priority => 1
-<CHAIN> ~ [Cc][Hh][Aa][Ii][Nn]
-:lexeme ~ <CHAR> priority => 1
-<CHAR> ~ [Cc][Hh][Aa][Rr]
-:lexeme ~ <CHARACTER> priority => 1
-<CHARACTER> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]
-:lexeme ~ <CHARACTERISTICS> priority => 1
-<CHARACTERISTICS> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr][Ii][Ss][Tt][Ii][Cc][Ss]
-:lexeme ~ <CHARACTERS> priority => 1
-<CHARACTERS> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr][Ss]
-:lexeme ~ <CHARACTER_LENGTH> priority => 1
-<CHARACTER_LENGTH> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <CHARACTER_SET_CATALOG> priority => 1
-<CHARACTER_SET_CATALOG> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ss][Ee][Tt]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <CHARACTER_SET_NAME> priority => 1
-<CHARACTER_SET_NAME> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ss][Ee][Tt]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <CHARACTER_SET_SCHEMA> priority => 1
-<CHARACTER_SET_SCHEMA> ~ [Cc][Hh][Aa][Rr][Aa][Cc][Tt][Ee][Rr]'_'[Ss][Ee][Tt]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <CHAR_LENGTH> priority => 1
-<CHAR_LENGTH> ~ [Cc][Hh][Aa][Rr]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <CHECK> priority => 1
-<CHECK> ~ [Cc][Hh][Ee][Cc][Kk]
-:lexeme ~ <CHECKED> priority => 1
-<CHECKED> ~ [Cc][Hh][Ee][Cc][Kk][Ee][Dd]
-:lexeme ~ <CLASS_ORIGIN> priority => 1
-<CLASS_ORIGIN> ~ [Cc][Ll][Aa][Ss][Ss]'_'[Oo][Rr][Ii][Gg][Ii][Nn]
-:lexeme ~ <CLOB> priority => 1
-<CLOB> ~ [Cc][Ll][Oo][Bb]
-:lexeme ~ <CLOSE> priority => 1
-<CLOSE> ~ [Cc][Ll][Oo][Ss][Ee]
-:lexeme ~ <COALESCE> priority => 1
-<COALESCE> ~ [Cc][Oo][Aa][Ll][Ee][Ss][Cc][Ee]
-:lexeme ~ <CODE_UNITS> priority => 1
-<CODE_UNITS> ~ [Cc][Oo][Dd][Ee]'_'[Uu][Nn][Ii][Tt][Ss]
-:lexeme ~ <COLLATE> priority => 1
-<COLLATE> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ee]
-:lexeme ~ <COLLATION> priority => 1
-<COLLATION> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]
-:lexeme ~ <COLLATION_CATALOG> priority => 1
-<COLLATION_CATALOG> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <COLLATION_NAME> priority => 1
-<COLLATION_NAME> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <COLLATION_SCHEMA> priority => 1
-<COLLATION_SCHEMA> ~ [Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <COLLECT> priority => 1
-<COLLECT> ~ [Cc][Oo][Ll][Ll][Ee][Cc][Tt]
-:lexeme ~ <COLUMN> priority => 1
-<COLUMN> ~ [Cc][Oo][Ll][Uu][Mm][Nn]
-:lexeme ~ <COLUMN_NAME> priority => 1
-<COLUMN_NAME> ~ [Cc][Oo][Ll][Uu][Mm][Nn]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <COMMAND_FUNCTION> priority => 1
-<COMMAND_FUNCTION> ~ [Cc][Oo][Mm][Mm][Aa][Nn][Dd]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <COMMAND_FUNCTION_CODE> priority => 1
-<COMMAND_FUNCTION_CODE> ~ [Cc][Oo][Mm][Mm][Aa][Nn][Dd]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]'_'[Cc][Oo][Dd][Ee]
-:lexeme ~ <COMMIT> priority => 1
-<COMMIT> ~ [Cc][Oo][Mm][Mm][Ii][Tt]
-:lexeme ~ <COMMITTED> priority => 1
-<COMMITTED> ~ [Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
-:lexeme ~ <CONDITION> priority => 1
-<CONDITION> ~ [Cc][Oo][Nn][Dd][Ii][Tt][Ii][Oo][Nn]
-:lexeme ~ <CONDITION_NUMBER> priority => 1
-<CONDITION_NUMBER> ~ [Cc][Oo][Nn][Dd][Ii][Tt][Ii][Oo][Nn]'_'[Nn][Uu][Mm][Bb][Ee][Rr]
-:lexeme ~ <CONNECT> priority => 1
-<CONNECT> ~ [Cc][Oo][Nn][Nn][Ee][Cc][Tt]
-:lexeme ~ <CONNECTION> priority => 1
-<CONNECTION> ~ [Cc][Oo][Nn][Nn][Ee][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <CONNECTION_NAME> priority => 1
-<CONNECTION_NAME> ~ [Cc][Oo][Nn][Nn][Ee][Cc][Tt][Ii][Oo][Nn]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <CONSTRAINT> priority => 1
-<CONSTRAINT> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]
-:lexeme ~ <CONSTRAINTS> priority => 1
-<CONSTRAINTS> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt][Ss]
-:lexeme ~ <CONSTRAINT_CATALOG> priority => 1
-<CONSTRAINT_CATALOG> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <CONSTRAINT_NAME> priority => 1
-<CONSTRAINT_NAME> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <CONSTRAINT_SCHEMA> priority => 1
-<CONSTRAINT_SCHEMA> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Aa][Ii][Nn][Tt]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <CONSTRUCTOR> priority => 1
-<CONSTRUCTOR> ~ [Cc][Oo][Nn][Ss][Tt][Rr][Uu][Cc][Tt][Oo][Rr]
-:lexeme ~ <CONTAINS> priority => 1
-<CONTAINS> ~ [Cc][Oo][Nn][Tt][Aa][Ii][Nn][Ss]
-:lexeme ~ <CONTINUE> priority => 1
-<CONTINUE> ~ [Cc][Oo][Nn][Tt][Ii][Nn][Uu][Ee]
-:lexeme ~ <CONVERT> priority => 1
-<CONVERT> ~ [Cc][Oo][Nn][Vv][Ee][Rr][Tt]
-:lexeme ~ <CORR> priority => 1
-<CORR> ~ [Cc][Oo][Rr][Rr]
-:lexeme ~ <CORRESPONDING> priority => 1
-<CORRESPONDING> ~ [Cc][Oo][Rr][Rr][Ee][Ss][Pp][Oo][Nn][Dd][Ii][Nn][Gg]
-:lexeme ~ <COUNT> priority => 1
-<COUNT> ~ [Cc][Oo][Uu][Nn][Tt]
-:lexeme ~ <COVAR_POP> priority => 1
-<COVAR_POP> ~ [Cc][Oo][Vv][Aa][Rr]'_'[Pp][Oo][Pp]
-:lexeme ~ <COVAR_SAMP> priority => 1
-<COVAR_SAMP> ~ [Cc][Oo][Vv][Aa][Rr]'_'[Ss][Aa][Mm][Pp]
-:lexeme ~ <CREATE> priority => 1
-<CREATE> ~ [Cc][Rr][Ee][Aa][Tt][Ee]
-:lexeme ~ <CROSS> priority => 1
-<CROSS> ~ [Cc][Rr][Oo][Ss][Ss]
-:lexeme ~ <CUBE> priority => 1
-<CUBE> ~ [Cc][Uu][Bb][Ee]
-:lexeme ~ <CUME_DIST> priority => 1
-<CUME_DIST> ~ [Cc][Uu][Mm][Ee]'_'[Dd][Ii][Ss][Tt]
-:lexeme ~ <CURRENT> priority => 1
-<CURRENT> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]
-:lexeme ~ <CURRENT_COLLATION> priority => 1
-<CURRENT_COLLATION> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Cc][Oo][Ll][Ll][Aa][Tt][Ii][Oo][Nn]
-:lexeme ~ <CURRENT_DATE> priority => 1
-<CURRENT_DATE> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Dd][Aa][Tt][Ee]
-:lexeme ~ <CURRENT_DEFAULT_TRANSFORM_GROUP> priority => 1
-<CURRENT_DEFAULT_TRANSFORM_GROUP> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Dd][Ee][Ff][Aa][Uu][Ll][Tt]'_'[Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm]'_'[Gg][Rr][Oo][Uu][Pp]
-:lexeme ~ <CURRENT_PATH> priority => 1
-<CURRENT_PATH> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Pp][Aa][Tt][Hh]
-:lexeme ~ <CURRENT_ROLE> priority => 1
-<CURRENT_ROLE> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Rr][Oo][Ll][Ee]
-:lexeme ~ <CURRENT_TIME> priority => 1
-<CURRENT_TIME> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Tt][Ii][Mm][Ee]
-:lexeme ~ <CURRENT_TIMESTAMP> priority => 1
-<CURRENT_TIMESTAMP> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
-:lexeme ~ <CURRENT_TRANSFORM_GROUP_FOR_TYPE> priority => 1
-<CURRENT_TRANSFORM_GROUP_FOR_TYPE> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm]'_'[Gg][Rr][Oo][Uu][Pp]'_'[Ff][Oo][Rr]'_'[Tt][Yy][Pp][Ee]
-:lexeme ~ <CURRENT_USER> priority => 1
-<CURRENT_USER> ~ [Cc][Uu][Rr][Rr][Ee][Nn][Tt]'_'[Uu][Ss][Ee][Rr]
-:lexeme ~ <CURSOR> priority => 1
-<CURSOR> ~ [Cc][Uu][Rr][Ss][Oo][Rr]
-:lexeme ~ <CURSOR_NAME> priority => 1
-<CURSOR_NAME> ~ [Cc][Uu][Rr][Ss][Oo][Rr]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <CYCLE> priority => 1
-<CYCLE> ~ [Cc][Yy][Cc][Ll][Ee]
-:lexeme ~ <DATA> priority => 1
-<DATA> ~ [Dd][Aa][Tt][Aa]
-<__DATE> ~ [Dd][Aa][Tt][Ee]
-:lexeme ~ <DATE> priority => 1
-<DATE> ~ <__DATE>
-:lexeme ~ <DATETIME_INTERVAL_CODE> priority => 1
-<DATETIME_INTERVAL_CODE> ~ [Dd][Aa][Tt][Ee][Tt][Ii][Mm][Ee]'_'[Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]'_'[Cc][Oo][Dd][Ee]
-:lexeme ~ <DATETIME_INTERVAL_PRECISION> priority => 1
-<DATETIME_INTERVAL_PRECISION> ~ [Dd][Aa][Tt][Ee][Tt][Ii][Mm][Ee]'_'[Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]'_'[Pp][Rr][Ee][Cc][Ii][Ss][Ii][Oo][Nn]
-:lexeme ~ <DAY> priority => 1
-<DAY> ~ [Dd][Aa][Yy]
-:lexeme ~ <DEALLOCATE> priority => 1
-<DEALLOCATE> ~ [Dd][Ee][Aa][Ll][Ll][Oo][Cc][Aa][Tt][Ee]
-:lexeme ~ <DEC> priority => 1
-<DEC> ~ [Dd][Ee][Cc]
-:lexeme ~ <DECIMAL> priority => 1
-<DECIMAL> ~ [Dd][Ee][Cc][Ii][Mm][Aa][Ll]
-:lexeme ~ <DECLARE> priority => 1
-<DECLARE> ~ [Dd][Ee][Cc][Ll][Aa][Rr][Ee]
-:lexeme ~ <DEFAULT> priority => 1
-<DEFAULT> ~ [Dd][Ee][Ff][Aa][Uu][Ll][Tt]
-:lexeme ~ <DEFAULTS> priority => 1
-<DEFAULTS> ~ [Dd][Ee][Ff][Aa][Uu][Ll][Tt][Ss]
-:lexeme ~ <DEFERRABLE> priority => 1
-<DEFERRABLE> ~ [Dd][Ee][Ff][Ee][Rr][Rr][Aa][Bb][Ll][Ee]
-:lexeme ~ <DEFERRED> priority => 1
-<DEFERRED> ~ [Dd][Ee][Ff][Ee][Rr][Rr][Ee][Dd]
-:lexeme ~ <DEFINED> priority => 1
-<DEFINED> ~ [Dd][Ee][Ff][Ii][Nn][Ee][Dd]
-:lexeme ~ <DEFINER> priority => 1
-<DEFINER> ~ [Dd][Ee][Ff][Ii][Nn][Ee][Rr]
-:lexeme ~ <DEGREE> priority => 1
-<DEGREE> ~ [Dd][Ee][Gg][Rr][Ee][Ee]
-:lexeme ~ <DELETE> priority => 1
-<DELETE> ~ [Dd][Ee][Ll][Ee][Tt][Ee]
-:lexeme ~ <DENSE_RANK> priority => 1
-<DENSE_RANK> ~ [Dd][Ee][Nn][Ss][Ee]'_'[Rr][Aa][Nn][Kk]
-:lexeme ~ <DEPTH> priority => 1
-<DEPTH> ~ [Dd][Ee][Pp][Tt][Hh]
-:lexeme ~ <DEREF> priority => 1
-<DEREF> ~ [Dd][Ee][Rr][Ee][Ff]
-:lexeme ~ <DERIVED> priority => 1
-<DERIVED> ~ [Dd][Ee][Rr][Ii][Vv][Ee][Dd]
-:lexeme ~ <DESC> priority => 1
-<DESC> ~ [Dd][Ee][Ss][Cc]
-:lexeme ~ <DESCRIBE> priority => 1
-<DESCRIBE> ~ [Dd][Ee][Ss][Cc][Rr][Ii][Bb][Ee]
-:lexeme ~ <DESCRIPTOR> priority => 1
-<DESCRIPTOR> ~ [Dd][Ee][Ss][Cc][Rr][Ii][Pp][Tt][Oo][Rr]
-:lexeme ~ <DETERMINISTIC> priority => 1
-<DETERMINISTIC> ~ [Dd][Ee][Tt][Ee][Rr][Mm][Ii][Nn][Ii][Ss][Tt][Ii][Cc]
-:lexeme ~ <DIAGNOSTICS> priority => 1
-<DIAGNOSTICS> ~ [Dd][Ii][Aa][Gg][Nn][Oo][Ss][Tt][Ii][Cc][Ss]
-:lexeme ~ <DISCONNECT> priority => 1
-<DISCONNECT> ~ [Dd][Ii][Ss][Cc][Oo][Nn][Nn][Ee][Cc][Tt]
-:lexeme ~ <DISPATCH> priority => 1
-<DISPATCH> ~ [Dd][Ii][Ss][Pp][Aa][Tt][Cc][Hh]
-:lexeme ~ <DISTINCT> priority => 1
-<DISTINCT> ~ [Dd][Ii][Ss][Tt][Ii][Nn][Cc][Tt]
-:lexeme ~ <DOMAIN> priority => 1
-<DOMAIN> ~ [Dd][Oo][Mm][Aa][Ii][Nn]
-:lexeme ~ <DOUBLE> priority => 1
-<DOUBLE> ~ [Dd][Oo][Uu][Bb][Ll][Ee]
-:lexeme ~ <DROP> priority => 1
-<DROP> ~ [Dd][Rr][Oo][Pp]
-:lexeme ~ <DYNAMIC> priority => 1
-<DYNAMIC> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]
-:lexeme ~ <DYNAMIC_FUNCTION> priority => 1
-<DYNAMIC_FUNCTION> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <DYNAMIC_FUNCTION_CODE> priority => 1
-<DYNAMIC_FUNCTION_CODE> ~ [Dd][Yy][Nn][Aa][Mm][Ii][Cc]'_'[Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]'_'[Cc][Oo][Dd][Ee]
-<__E> ~ [Ee]
-:lexeme ~ <EACH> priority => 1
-<EACH> ~ [Ee][Aa][Cc][Hh]
-:lexeme ~ <ELEMENT> priority => 1
-<ELEMENT> ~ [Ee][Ll][Ee][Mm][Ee][Nn][Tt]
-:lexeme ~ <ELSE> priority => 1
-<ELSE> ~ [Ee][Ll][Ss][Ee]
-:lexeme ~ <END> priority => 1
-<END> ~ [Ee][Nn][Dd]
-:lexeme ~ <END_EXEC> priority => 1
-<END_EXEC> ~ [Ee][Nn][Dd]'-'[Ee][Xx][Ee][Cc]
-:lexeme ~ <EQUALS> priority => 1
-<EQUALS> ~ [Ee][Qq][Uu][Aa][Ll][Ss]
-<__ESCAPE> ~ [Ee][Ss][Cc][Aa][Pp][Ee]
-:lexeme ~ <ESCAPE> priority => 1
-<ESCAPE> ~ <__ESCAPE>
-:lexeme ~ <EVERY> priority => 1
-<EVERY> ~ [Ee][Vv][Ee][Rr][Yy]
-:lexeme ~ <EXCEPT> priority => 1
-<EXCEPT> ~ [Ee][Xx][Cc][Ee][Pp][Tt]
-:lexeme ~ <EXCEPTION> priority => 1
-<EXCEPTION> ~ [Ee][Xx][Cc][Ee][Pp][Tt][Ii][Oo][Nn]
-:lexeme ~ <EXCLUDE> priority => 1
-<EXCLUDE> ~ [Ee][Xx][Cc][Ll][Uu][Dd][Ee]
-:lexeme ~ <EXCLUDING> priority => 1
-<EXCLUDING> ~ [Ee][Xx][Cc][Ll][Uu][Dd][Ii][Nn][Gg]
-:lexeme ~ <EXEC> priority => 1
-<EXEC> ~ [Ee][Xx][Ee][Cc]
-:lexeme ~ <EXECUTE> priority => 1
-<EXECUTE> ~ [Ee][Xx][Ee][Cc][Uu][Tt][Ee]
-:lexeme ~ <EXISTS> priority => 1
-<EXISTS> ~ [Ee][Xx][Ii][Ss][Tt][Ss]
-:lexeme ~ <EXP> priority => 1
-<EXP> ~ [Ee][Xx][Pp]
-:lexeme ~ <EXTERNAL> priority => 1
-<EXTERNAL> ~ [Ee][Xx][Tt][Ee][Rr][Nn][Aa][Ll]
-:lexeme ~ <EXTRACT> priority => 1
-<EXTRACT> ~ [Ee][Xx][Tt][Rr][Aa][Cc][Tt]
-<__FALSE> ~ [Ff][Aa][Ll][Ss][Ee]
-:lexeme ~ <FALSE> priority => 1
-<FALSE> ~ <__FALSE>
-:lexeme ~ <FETCH> priority => 1
-<FETCH> ~ [Ff][Ee][Tt][Cc][Hh]
-:lexeme ~ <FILTER> priority => 1
-<FILTER> ~ [Ff][Ii][Ll][Tt][Ee][Rr]
-:lexeme ~ <FINAL> priority => 1
-<FINAL> ~ [Ff][Ii][Nn][Aa][Ll]
-:lexeme ~ <FIRST> priority => 1
-<FIRST> ~ [Ff][Ii][Rr][Ss][Tt]
-:lexeme ~ <FLOAT> priority => 1
-<FLOAT> ~ [Ff][Ll][Oo][Aa][Tt]
-:lexeme ~ <FLOOR> priority => 1
-<FLOOR> ~ [Ff][Ll][Oo][Oo][Rr]
-:lexeme ~ <FOLLOWING> priority => 1
-<FOLLOWING> ~ [Ff][Oo][Ll][Ll][Oo][Ww][Ii][Nn][Gg]
-:lexeme ~ <FOR> priority => 1
-<FOR> ~ [Ff][Oo][Rr]
-:lexeme ~ <FOREIGN> priority => 1
-<FOREIGN> ~ [Ff][Oo][Rr][Ee][Ii][Gg][Nn]
-:lexeme ~ <FOUND> priority => 1
-<FOUND> ~ [Ff][Oo][Uu][Nn][Dd]
-:lexeme ~ <FREE> priority => 1
-<FREE> ~ [Ff][Rr][Ee][Ee]
-:lexeme ~ <FROM> priority => 1
-<FROM> ~ [Ff][Rr][Oo][Mm]
-:lexeme ~ <FULL> priority => 1
-<FULL> ~ [Ff][Uu][Ll][Ll]
-:lexeme ~ <FUNCTION> priority => 1
-<FUNCTION> ~ [Ff][Uu][Nn][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <FUSION> priority => 1
-<FUSION> ~ [Ff][Uu][Ss][Ii][Oo][Nn]
-:lexeme ~ <GENERAL> priority => 1
-<GENERAL> ~ [Gg][Ee][Nn][Ee][Rr][Aa][Ll]
-:lexeme ~ <GENERATED> priority => 1
-<GENERATED> ~ [Gg][Ee][Nn][Ee][Rr][Aa][Tt][Ee][Dd]
-:lexeme ~ <GET> priority => 1
-<GET> ~ [Gg][Ee][Tt]
-<__GLOBAL> ~ [Gg][Ll][Oo][Bb][Aa][Ll]
-:lexeme ~ <GLOBAL> priority => 1
-<GLOBAL> ~ <__GLOBAL>
-:lexeme ~ <GO> priority => 1
-<GO> ~ [Gg][Oo]
-:lexeme ~ <GOTO> priority => 1
-<GOTO> ~ [Gg][Oo][Tt][Oo]
-:lexeme ~ <GRANT> priority => 1
-<GRANT> ~ [Gg][Rr][Aa][Nn][Tt]
-:lexeme ~ <GRANTED> priority => 1
-<GRANTED> ~ [Gg][Rr][Aa][Nn][Tt][Ee][Dd]
-:lexeme ~ <GROUP> priority => 1
-<GROUP> ~ [Gg][Rr][Oo][Uu][Pp]
-:lexeme ~ <GROUPING> priority => 1
-<GROUPING> ~ [Gg][Rr][Oo][Uu][Pp][Ii][Nn][Gg]
-:lexeme ~ <HAVING> priority => 1
-<HAVING> ~ [Hh][Aa][Vv][Ii][Nn][Gg]
-:lexeme ~ <HIERARCHY> priority => 1
-<HIERARCHY> ~ [Hh][Ii][Ee][Rr][Aa][Rr][Cc][Hh][Yy]
-:lexeme ~ <HOLD> priority => 1
-<HOLD> ~ [Hh][Oo][Ll][Dd]
-:lexeme ~ <HOUR> priority => 1
-<HOUR> ~ [Hh][Oo][Uu][Rr]
-:lexeme ~ <IDENTITY> priority => 1
-<IDENTITY> ~ [Ii][Dd][Ee][Nn][Tt][Ii][Tt][Yy]
-:lexeme ~ <IMMEDIATE> priority => 1
-<IMMEDIATE> ~ [Ii][Mm][Mm][Ee][Dd][Ii][Aa][Tt][Ee]
-:lexeme ~ <IMPLEMENTATION> priority => 1
-<IMPLEMENTATION> ~ [Ii][Mm][Pp][Ll][Ee][Mm][Ee][Nn][Tt][Aa][Tt][Ii][Oo][Nn]
-:lexeme ~ <IN> priority => 1
-<IN> ~ [Ii][Nn]
-:lexeme ~ <INCLUDING> priority => 1
-<INCLUDING> ~ [Ii][Nn][Cc][Ll][Uu][Dd][Ii][Nn][Gg]
-:lexeme ~ <INCREMENT> priority => 1
-<INCREMENT> ~ [Ii][Nn][Cc][Rr][Ee][Mm][Ee][Nn][Tt]
-:lexeme ~ <INDICATOR> priority => 1
-<INDICATOR> ~ [Ii][Nn][Dd][Ii][Cc][Aa][Tt][Oo][Rr]
-:lexeme ~ <INITIALLY> priority => 1
-<INITIALLY> ~ [Ii][Nn][Ii][Tt][Ii][Aa][Ll][Ll][Yy]
-:lexeme ~ <INNER> priority => 1
-<INNER> ~ [Ii][Nn][Nn][Ee][Rr]
-:lexeme ~ <INOUT> priority => 1
-<INOUT> ~ [Ii][Nn][Oo][Uu][Tt]
-:lexeme ~ <INPUT> priority => 1
-<INPUT> ~ [Ii][Nn][Pp][Uu][Tt]
-:lexeme ~ <INSENSITIVE> priority => 1
-<INSENSITIVE> ~ [Ii][Nn][Ss][Ee][Nn][Ss][Ii][Tt][Ii][Vv][Ee]
-:lexeme ~ <INSERT> priority => 1
-<INSERT> ~ [Ii][Nn][Ss][Ee][Rr][Tt]
-:lexeme ~ <INSTANCE> priority => 1
-<INSTANCE> ~ [Ii][Nn][Ss][Tt][Aa][Nn][Cc][Ee]
-:lexeme ~ <INSTANTIABLE> priority => 1
-<INSTANTIABLE> ~ [Ii][Nn][Ss][Tt][Aa][Nn][Tt][Ii][Aa][Bb][Ll][Ee]
-:lexeme ~ <INT> priority => 1
-<INT> ~ [Ii][Nn][Tt]
-:lexeme ~ <INTEGER> priority => 1
-<INTEGER> ~ [Ii][Nn][Tt][Ee][Gg][Ee][Rr]
-:lexeme ~ <INTERSECT> priority => 1
-<INTERSECT> ~ [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt]
-:lexeme ~ <INTERSECTION> priority => 1
-<INTERSECTION> ~ [Ii][Nn][Tt][Ee][Rr][Ss][Ee][Cc][Tt][Ii][Oo][Nn]
-<__INTERVAL> ~ [Ii][Nn][Tt][Ee][Rr][Vv][Aa][Ll]
-:lexeme ~ <INTERVAL> priority => 1
-<INTERVAL> ~ <__INTERVAL>
-:lexeme ~ <INTO> priority => 1
-<INTO> ~ [Ii][Nn][Tt][Oo]
-:lexeme ~ <INVOKER> priority => 1
-<INVOKER> ~ [Ii][Nn][Vv][Oo][Kk][Ee][Rr]
-:lexeme ~ <IS> priority => 1
-<IS> ~ [Ii][Ss]
-:lexeme ~ <ISOLATION> priority => 1
-<ISOLATION> ~ [Ii][Ss][Oo][Ll][Aa][Tt][Ii][Oo][Nn]
-:lexeme ~ <JOIN> priority => 1
-<JOIN> ~ [Jj][Oo][Ii][Nn]
-:lexeme ~ <KEY> priority => 1
-<KEY> ~ [Kk][Ee][Yy]
-:lexeme ~ <KEY_MEMBER> priority => 1
-<KEY_MEMBER> ~ [Kk][Ee][Yy]'_'[Mm][Ee][Mm][Bb][Ee][Rr]
-:lexeme ~ <KEY_TYPE> priority => 1
-<KEY_TYPE> ~ [Kk][Ee][Yy]'_'[Tt][Yy][Pp][Ee]
-:lexeme ~ <LANGUAGE> priority => 1
-<LANGUAGE> ~ [Ll][Aa][Nn][Gg][Uu][Aa][Gg][Ee]
-:lexeme ~ <LARGE> priority => 1
-<LARGE> ~ [Ll][Aa][Rr][Gg][Ee]
-:lexeme ~ <LAST> priority => 1
-<LAST> ~ [Ll][Aa][Ss][Tt]
-:lexeme ~ <LATERAL> priority => 1
-<LATERAL> ~ [Ll][Aa][Tt][Ee][Rr][Aa][Ll]
-:lexeme ~ <LEADING> priority => 1
-<LEADING> ~ [Ll][Ee][Aa][Dd][Ii][Nn][Gg]
-:lexeme ~ <LEFT> priority => 1
-<LEFT> ~ [Ll][Ee][Ff][Tt]
-:lexeme ~ <LENGTH> priority => 1
-<LENGTH> ~ [Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <LEVEL> priority => 1
-<LEVEL> ~ [Ll][Ee][Vv][Ee][Ll]
-:lexeme ~ <LIKE> priority => 1
-<LIKE> ~ [Ll][Ii][Kk][Ee]
-:lexeme ~ <LN> priority => 1
-<LN> ~ [Ll][Nn]
-<__LOCAL> ~ [Ll][Oo][Cc][Aa][Ll]
-:lexeme ~ <LOCAL> priority => 1
-<LOCAL> ~ <__LOCAL>
-:lexeme ~ <LOCALTIME> priority => 1
-<LOCALTIME> ~ [Ll][Oo][Cc][Aa][Ll][Tt][Ii][Mm][Ee]
-:lexeme ~ <LOCALTIMESTAMP> priority => 1
-<LOCALTIMESTAMP> ~ [Ll][Oo][Cc][Aa][Ll][Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
-:lexeme ~ <LOCATOR> priority => 1
-<LOCATOR> ~ [Ll][Oo][Cc][Aa][Tt][Oo][Rr]
-:lexeme ~ <LOWER> priority => 1
-<LOWER> ~ [Ll][Oo][Ww][Ee][Rr]
-:lexeme ~ <MAP> priority => 1
-<MAP> ~ [Mm][Aa][Pp]
-:lexeme ~ <MATCH> priority => 1
-<MATCH> ~ [Mm][Aa][Tt][Cc][Hh]
-:lexeme ~ <MATCHED> priority => 1
-<MATCHED> ~ [Mm][Aa][Tt][Cc][Hh][Ee][Dd]
-:lexeme ~ <MAX> priority => 1
-<MAX> ~ [Mm][Aa][Xx]
-:lexeme ~ <MAXVALUE> priority => 1
-<MAXVALUE> ~ [Mm][Aa][Xx][Vv][Aa][Ll][Uu][Ee]
-:lexeme ~ <MEMBER> priority => 1
-<MEMBER> ~ [Mm][Ee][Mm][Bb][Ee][Rr]
-:lexeme ~ <MERGE> priority => 1
-<MERGE> ~ [Mm][Ee][Rr][Gg][Ee]
-:lexeme ~ <MESSAGE_LENGTH> priority => 1
-<MESSAGE_LENGTH> ~ [Mm][Ee][Ss][Ss][Aa][Gg][Ee]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <MESSAGE_OCTET_LENGTH> priority => 1
-<MESSAGE_OCTET_LENGTH> ~ [Mm][Ee][Ss][Ss][Aa][Gg][Ee]'_'[Oo][Cc][Tt][Ee][Tt]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <MESSAGE_TEXT> priority => 1
-<MESSAGE_TEXT> ~ [Mm][Ee][Ss][Ss][Aa][Gg][Ee]'_'[Tt][Ee][Xx][Tt]
-:lexeme ~ <METHOD> priority => 1
-<METHOD> ~ [Mm][Ee][Tt][Hh][Oo][Dd]
-:lexeme ~ <MIN> priority => 1
-<MIN> ~ [Mm][Ii][Nn]
-:lexeme ~ <MINUTE> priority => 1
-<MINUTE> ~ [Mm][Ii][Nn][Uu][Tt][Ee]
-:lexeme ~ <MINVALUE> priority => 1
-<MINVALUE> ~ [Mm][Ii][Nn][Vv][Aa][Ll][Uu][Ee]
-:lexeme ~ <MOD> priority => 1
-<MOD> ~ [Mm][Oo][Dd]
-:lexeme ~ <MODIFIES> priority => 1
-<MODIFIES> ~ [Mm][Oo][Dd][Ii][Ff][Ii][Ee][Ss]
-<__MODULE> ~ [Mm][Oo][Dd][Uu][Ll][Ee]
-:lexeme ~ <MODULE> priority => 1
-<MODULE> ~ <__MODULE>
-:lexeme ~ <MONTH> priority => 1
-<MONTH> ~ [Mm][Oo][Nn][Tt][Hh]
-:lexeme ~ <MORE> priority => 1
-<MORE> ~ [Mm][Oo][Rr][Ee]
-:lexeme ~ <MULTISET> priority => 1
-<MULTISET> ~ [Mm][Uu][Ll][Tt][Ii][Ss][Ee][Tt]
-<__N> ~ [Nn]
-:lexeme ~ <NAME> priority => 1
-<NAME> ~ [Nn][Aa][Mm][Ee]
-:lexeme ~ <NAMES> priority => 1
-<NAMES> ~ [Nn][Aa][Mm][Ee][Ss]
-:lexeme ~ <NATIONAL> priority => 1
-<NATIONAL> ~ [Nn][Aa][Tt][Ii][Oo][Nn][Aa][Ll]
-:lexeme ~ <NATURAL> priority => 1
-<NATURAL> ~ [Nn][Aa][Tt][Uu][Rr][Aa][Ll]
-:lexeme ~ <NCHAR> priority => 1
-<NCHAR> ~ [Nn][Cc][Hh][Aa][Rr]
-:lexeme ~ <NCLOB> priority => 1
-<NCLOB> ~ [Nn][Cc][Ll][Oo][Bb]
-:lexeme ~ <NESTING> priority => 1
-<NESTING> ~ [Nn][Ee][Ss][Tt][Ii][Nn][Gg]
-:lexeme ~ <NEW> priority => 1
-<NEW> ~ [Nn][Ee][Ww]
-:lexeme ~ <NEXT> priority => 1
-<NEXT> ~ [Nn][Ee][Xx][Tt]
-:lexeme ~ <NO> priority => 1
-<NO> ~ [Nn][Oo]
-:lexeme ~ <NONE> priority => 1
-<NONE> ~ [Nn][Oo][Nn][Ee]
-:lexeme ~ <NORMALIZE> priority => 1
-<NORMALIZE> ~ [Nn][Oo][Rr][Mm][Aa][Ll][Ii][Zz][Ee]
-:lexeme ~ <NORMALIZED> priority => 1
-<NORMALIZED> ~ [Nn][Oo][Rr][Mm][Aa][Ll][Ii][Zz][Ee][Dd]
-:lexeme ~ <NOT> priority => 1
-<NOT> ~ [Nn][Oo][Tt]
-:lexeme ~ <NULL> priority => 1
-<NULL> ~ [Nn][Uu][Ll][Ll]
-:lexeme ~ <NULLABLE> priority => 1
-<NULLABLE> ~ [Nn][Uu][Ll][Ll][Aa][Bb][Ll][Ee]
-:lexeme ~ <NULLIF> priority => 1
-<NULLIF> ~ [Nn][Uu][Ll][Ll][Ii][Ff]
-:lexeme ~ <NULLS> priority => 1
-<NULLS> ~ [Nn][Uu][Ll][Ll][Ss]
-:lexeme ~ <NUMBER> priority => 1
-<NUMBER> ~ [Nn][Uu][Mm][Bb][Ee][Rr]
-:lexeme ~ <NUMERIC> priority => 1
-<NUMERIC> ~ [Nn][Uu][Mm][Ee][Rr][Ii][Cc]
-:lexeme ~ <OBJECT> priority => 1
-<OBJECT> ~ [Oo][Bb][Jj][Ee][Cc][Tt]
-:lexeme ~ <OCTETS> priority => 1
-<OCTETS> ~ [Oo][Cc][Tt][Ee][Tt][Ss]
-:lexeme ~ <OCTET_LENGTH> priority => 1
-<OCTET_LENGTH> ~ [Oo][Cc][Tt][Ee][Tt]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <OF> priority => 1
-<OF> ~ [Oo][Ff]
-:lexeme ~ <OLD> priority => 1
-<OLD> ~ [Oo][Ll][Dd]
-:lexeme ~ <ON> priority => 1
-<ON> ~ [Oo][Nn]
-:lexeme ~ <ONLY> priority => 1
-<ONLY> ~ [Oo][Nn][Ll][Yy]
-:lexeme ~ <OPEN> priority => 1
-<OPEN> ~ [Oo][Pp][Ee][Nn]
-:lexeme ~ <OPTION> priority => 1
-<OPTION> ~ [Oo][Pp][Tt][Ii][Oo][Nn]
-:lexeme ~ <OPTIONS> priority => 1
-<OPTIONS> ~ [Oo][Pp][Tt][Ii][Oo][Nn][Ss]
-:lexeme ~ <OR> priority => 1
-<OR> ~ [Oo][Rr]
-:lexeme ~ <ORDER> priority => 1
-<ORDER> ~ [Oo][Rr][Dd][Ee][Rr]
-:lexeme ~ <ORDERING> priority => 1
-<ORDERING> ~ [Oo][Rr][Dd][Ee][Rr][Ii][Nn][Gg]
-:lexeme ~ <ORDINALITY> priority => 1
-<ORDINALITY> ~ [Oo][Rr][Dd][Ii][Nn][Aa][Ll][Ii][Tt][Yy]
-:lexeme ~ <OTHERS> priority => 1
-<OTHERS> ~ [Oo][Tt][Hh][Ee][Rr][Ss]
-:lexeme ~ <OUT> priority => 1
-<OUT> ~ [Oo][Uu][Tt]
-:lexeme ~ <OUTER> priority => 1
-<OUTER> ~ [Oo][Uu][Tt][Ee][Rr]
-:lexeme ~ <OUTPUT> priority => 1
-<OUTPUT> ~ [Oo][Uu][Tt][Pp][Uu][Tt]
-:lexeme ~ <OVER> priority => 1
-<OVER> ~ [Oo][Vv][Ee][Rr]
-:lexeme ~ <OVERLAPS> priority => 1
-<OVERLAPS> ~ [Oo][Vv][Ee][Rr][Ll][Aa][Pp][Ss]
-:lexeme ~ <OVERLAY> priority => 1
-<OVERLAY> ~ [Oo][Vv][Ee][Rr][Ll][Aa][Yy]
-:lexeme ~ <OVERRIDING> priority => 1
-<OVERRIDING> ~ [Oo][Vv][Ee][Rr][Rr][Ii][Dd][Ii][Nn][Gg]
-:lexeme ~ <PAD> priority => 1
-<PAD> ~ [Pp][Aa][Dd]
-:lexeme ~ <PARAMETER> priority => 1
-<PARAMETER> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]
-:lexeme ~ <PARAMETER_MODE> priority => 1
-<PARAMETER_MODE> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Mm][Oo][Dd][Ee]
-:lexeme ~ <PARAMETER_NAME> priority => 1
-<PARAMETER_NAME> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <PARAMETER_ORDINAL_POSITION> priority => 1
-<PARAMETER_ORDINAL_POSITION> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Oo][Rr][Dd][Ii][Nn][Aa][Ll]'_'[Pp][Oo][Ss][Ii][Tt][Ii][Oo][Nn]
-:lexeme ~ <PARAMETER_SPECIFIC_CATALOG> priority => 1
-<PARAMETER_SPECIFIC_CATALOG> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <PARAMETER_SPECIFIC_NAME> priority => 1
-<PARAMETER_SPECIFIC_NAME> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <PARAMETER_SPECIFIC_SCHEMA> priority => 1
-<PARAMETER_SPECIFIC_SCHEMA> ~ [Pp][Aa][Rr][Aa][Mm][Ee][Tt][Ee][Rr]'_'[Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <PARTIAL> priority => 1
-<PARTIAL> ~ [Pp][Aa][Rr][Tt][Ii][Aa][Ll]
-:lexeme ~ <PARTITION> priority => 1
-<PARTITION> ~ [Pp][Aa][Rr][Tt][Ii][Tt][Ii][Oo][Nn]
-:lexeme ~ <PATH> priority => 1
-<PATH> ~ [Pp][Aa][Tt][Hh]
-:lexeme ~ <PERCENTILE_CONT> priority => 1
-<PERCENTILE_CONT> ~ [Pp][Ee][Rr][Cc][Ee][Nn][Tt][Ii][Ll][Ee]'_'[Cc][Oo][Nn][Tt]
-:lexeme ~ <PERCENTILE_DISC> priority => 1
-<PERCENTILE_DISC> ~ [Pp][Ee][Rr][Cc][Ee][Nn][Tt][Ii][Ll][Ee]'_'[Dd][Ii][Ss][Cc]
-:lexeme ~ <PERCENT_RANK> priority => 1
-<PERCENT_RANK> ~ [Pp][Ee][Rr][Cc][Ee][Nn][Tt]'_'[Rr][Aa][Nn][Kk]
-:lexeme ~ <PLACING> priority => 1
-<PLACING> ~ [Pp][Ll][Aa][Cc][Ii][Nn][Gg]
-:lexeme ~ <POSITION> priority => 1
-<POSITION> ~ [Pp][Oo][Ss][Ii][Tt][Ii][Oo][Nn]
-:lexeme ~ <POWER> priority => 1
-<POWER> ~ [Pp][Oo][Ww][Ee][Rr]
-:lexeme ~ <PRECEDING> priority => 1
-<PRECEDING> ~ [Pp][Rr][Ee][Cc][Ee][Dd][Ii][Nn][Gg]
-:lexeme ~ <PRECISION> priority => 1
-<PRECISION> ~ [Pp][Rr][Ee][Cc][Ii][Ss][Ii][Oo][Nn]
-:lexeme ~ <PREPARE> priority => 1
-<PREPARE> ~ [Pp][Rr][Ee][Pp][Aa][Rr][Ee]
-:lexeme ~ <PRESERVE> priority => 1
-<PRESERVE> ~ [Pp][Rr][Ee][Ss][Ee][Rr][Vv][Ee]
-:lexeme ~ <PRIMARY> priority => 1
-<PRIMARY> ~ [Pp][Rr][Ii][Mm][Aa][Rr][Yy]
-:lexeme ~ <PRIOR> priority => 1
-<PRIOR> ~ [Pp][Rr][Ii][Oo][Rr]
-:lexeme ~ <PRIVILEGES> priority => 1
-<PRIVILEGES> ~ [Pp][Rr][Ii][Vv][Ii][Ll][Ee][Gg][Ee][Ss]
-:lexeme ~ <PROCEDURE> priority => 1
-<PROCEDURE> ~ [Pp][Rr][Oo][Cc][Ee][Dd][Uu][Rr][Ee]
-:lexeme ~ <PUBLIC> priority => 1
-<PUBLIC> ~ [Pp][Uu][Bb][Ll][Ii][Cc]
-:lexeme ~ <RANGE> priority => 1
-<RANGE> ~ [Rr][Aa][Nn][Gg][Ee]
-:lexeme ~ <RANK> priority => 1
-<RANK> ~ [Rr][Aa][Nn][Kk]
-:lexeme ~ <READ> priority => 1
-<READ> ~ [Rr][Ee][Aa][Dd]
-:lexeme ~ <READS> priority => 1
-<READS> ~ [Rr][Ee][Aa][Dd][Ss]
-:lexeme ~ <REAL> priority => 1
-<REAL> ~ [Rr][Ee][Aa][Ll]
-:lexeme ~ <RECURSIVE> priority => 1
-<RECURSIVE> ~ [Rr][Ee][Cc][Uu][Rr][Ss][Ii][Vv][Ee]
-:lexeme ~ <REF> priority => 1
-<REF> ~ [Rr][Ee][Ff]
-:lexeme ~ <REFERENCES> priority => 1
-<REFERENCES> ~ [Rr][Ee][Ff][Ee][Rr][Ee][Nn][Cc][Ee][Ss]
-:lexeme ~ <REFERENCING> priority => 1
-<REFERENCING> ~ [Rr][Ee][Ff][Ee][Rr][Ee][Nn][Cc][Ii][Nn][Gg]
-:lexeme ~ <REGR_AVGX> priority => 1
-<REGR_AVGX> ~ [Rr][Ee][Gg][Rr]'_'[Aa][Vv][Gg][Xx]
-:lexeme ~ <REGR_AVGY> priority => 1
-<REGR_AVGY> ~ [Rr][Ee][Gg][Rr]'_'[Aa][Vv][Gg][Yy]
-:lexeme ~ <REGR_COUNT> priority => 1
-<REGR_COUNT> ~ [Rr][Ee][Gg][Rr]'_'[Cc][Oo][Uu][Nn][Tt]
-:lexeme ~ <REGR_INTERCEPT> priority => 1
-<REGR_INTERCEPT> ~ [Rr][Ee][Gg][Rr]'_'[Ii][Nn][Tt][Ee][Rr][Cc][Ee][Pp][Tt]
-:lexeme ~ <REGR_R2> priority => 1
-<REGR_R2> ~ [Rr][Ee][Gg][Rr]'_'[Rr]'2'
-:lexeme ~ <REGR_SLOPE> priority => 1
-<REGR_SLOPE> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Ll][Oo][Pp][Ee]
-:lexeme ~ <REGR_SXX> priority => 1
-<REGR_SXX> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Xx][Xx]
-:lexeme ~ <REGR_SXY> priority => 1
-<REGR_SXY> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Xx][Yy]
-:lexeme ~ <REGR_SYY> priority => 1
-<REGR_SYY> ~ [Rr][Ee][Gg][Rr]'_'[Ss][Yy][Yy]
-:lexeme ~ <RELATIVE> priority => 1
-<RELATIVE> ~ [Rr][Ee][Ll][Aa][Tt][Ii][Vv][Ee]
-:lexeme ~ <RELEASE> priority => 1
-<RELEASE> ~ [Rr][Ee][Ll][Ee][Aa][Ss][Ee]
-:lexeme ~ <REPEATABLE> priority => 1
-<REPEATABLE> ~ [Rr][Ee][Pp][Ee][Aa][Tt][Aa][Bb][Ll][Ee]
-:lexeme ~ <RESTART> priority => 1
-<RESTART> ~ [Rr][Ee][Ss][Tt][Aa][Rr][Tt]
-:lexeme ~ <RESTRICT> priority => 1
-<RESTRICT> ~ [Rr][Ee][Ss][Tt][Rr][Ii][Cc][Tt]
-:lexeme ~ <RESULT> priority => 1
-<RESULT> ~ [Rr][Ee][Ss][Uu][Ll][Tt]
-:lexeme ~ <RETURN> priority => 1
-<RETURN> ~ [Rr][Ee][Tt][Uu][Rr][Nn]
-:lexeme ~ <RETURNED_CARDINALITY> priority => 1
-<RETURNED_CARDINALITY> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Cc][Aa][Rr][Dd][Ii][Nn][Aa][Ll][Ii][Tt][Yy]
-:lexeme ~ <RETURNED_LENGTH> priority => 1
-<RETURNED_LENGTH> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <RETURNED_OCTET_LENGTH> priority => 1
-<RETURNED_OCTET_LENGTH> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Oo][Cc][Tt][Ee][Tt]'_'[Ll][Ee][Nn][Gg][Tt][Hh]
-:lexeme ~ <RETURNED_SQLSTATE> priority => 1
-<RETURNED_SQLSTATE> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ee][Dd]'_'[Ss][Qq][Ll][Ss][Tt][Aa][Tt][Ee]
-:lexeme ~ <RETURNS> priority => 1
-<RETURNS> ~ [Rr][Ee][Tt][Uu][Rr][Nn][Ss]
-:lexeme ~ <REVOKE> priority => 1
-<REVOKE> ~ [Rr][Ee][Vv][Oo][Kk][Ee]
-:lexeme ~ <RIGHT> priority => 1
-<RIGHT> ~ [Rr][Ii][Gg][Hh][Tt]
-:lexeme ~ <ROLE> priority => 1
-<ROLE> ~ [Rr][Oo][Ll][Ee]
-:lexeme ~ <ROLLBACK> priority => 1
-<ROLLBACK> ~ [Rr][Oo][Ll][Ll][Bb][Aa][Cc][Kk]
-:lexeme ~ <ROLLUP> priority => 1
-<ROLLUP> ~ [Rr][Oo][Ll][Ll][Uu][Pp]
-:lexeme ~ <ROUTINE> priority => 1
-<ROUTINE> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]
-:lexeme ~ <ROUTINE_CATALOG> priority => 1
-<ROUTINE_CATALOG> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <ROUTINE_NAME> priority => 1
-<ROUTINE_NAME> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <ROUTINE_SCHEMA> priority => 1
-<ROUTINE_SCHEMA> ~ [Rr][Oo][Uu][Tt][Ii][Nn][Ee]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <ROW> priority => 1
-<ROW> ~ [Rr][Oo][Ww]
-:lexeme ~ <ROWS> priority => 1
-<ROWS> ~ [Rr][Oo][Ww][Ss]
-:lexeme ~ <ROW_COUNT> priority => 1
-<ROW_COUNT> ~ [Rr][Oo][Ww]'_'[Cc][Oo][Uu][Nn][Tt]
-:lexeme ~ <ROW_NUMBER> priority => 1
-<ROW_NUMBER> ~ [Rr][Oo][Ww]'_'[Nn][Uu][Mm][Bb][Ee][Rr]
-:lexeme ~ <SAVEPOINT> priority => 1
-<SAVEPOINT> ~ [Ss][Aa][Vv][Ee][Pp][Oo][Ii][Nn][Tt]
-:lexeme ~ <SCALE> priority => 1
-<SCALE> ~ [Ss][Cc][Aa][Ll][Ee]
-:lexeme ~ <SCHEMA> priority => 1
-<SCHEMA> ~ [Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <SCHEMA_NAME> priority => 1
-<SCHEMA_NAME> ~ [Ss][Cc][Hh][Ee][Mm][Aa]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <SCOPE> priority => 1
-<SCOPE> ~ [Ss][Cc][Oo][Pp][Ee]
-:lexeme ~ <SCOPE_CATALOG> priority => 1
-<SCOPE_CATALOG> ~ [Ss][Cc][Oo][Pp][Ee]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <SCOPE_NAME> priority => 1
-<SCOPE_NAME> ~ [Ss][Cc][Oo][Pp][Ee]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <SCOPE_SCHEMA> priority => 1
-<SCOPE_SCHEMA> ~ [Ss][Cc][Oo][Pp][Ee]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <SCROLL> priority => 1
-<SCROLL> ~ [Ss][Cc][Rr][Oo][Ll][Ll]
-:lexeme ~ <SEARCH> priority => 1
-<SEARCH> ~ [Ss][Ee][Aa][Rr][Cc][Hh]
-:lexeme ~ <SECOND> priority => 1
-<SECOND> ~ [Ss][Ee][Cc][Oo][Nn][Dd]
-:lexeme ~ <SECTION> priority => 1
-<SECTION> ~ [Ss][Ee][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <SECURITY> priority => 1
-<SECURITY> ~ [Ss][Ee][Cc][Uu][Rr][Ii][Tt][Yy]
-:lexeme ~ <SELECT> priority => 1
-<SELECT> ~ [Ss][Ee][Ll][Ee][Cc][Tt]
-:lexeme ~ <SELF> priority => 1
-<SELF> ~ [Ss][Ee][Ll][Ff]
-:lexeme ~ <SENSITIVE> priority => 1
-<SENSITIVE> ~ [Ss][Ee][Nn][Ss][Ii][Tt][Ii][Vv][Ee]
-:lexeme ~ <SEQUENCE> priority => 1
-<SEQUENCE> ~ [Ss][Ee][Qq][Uu][Ee][Nn][Cc][Ee]
-:lexeme ~ <SERIALIZABLE> priority => 1
-<SERIALIZABLE> ~ [Ss][Ee][Rr][Ii][Aa][Ll][Ii][Zz][Aa][Bb][Ll][Ee]
-:lexeme ~ <SERVER_NAME> priority => 1
-<SERVER_NAME> ~ [Ss][Ee][Rr][Vv][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <SESSION> priority => 1
-<SESSION> ~ [Ss][Ee][Ss][Ss][Ii][Oo][Nn]
-:lexeme ~ <SESSION_USER> priority => 1
-<SESSION_USER> ~ [Ss][Ee][Ss][Ss][Ii][Oo][Nn]'_'[Uu][Ss][Ee][Rr]
-:lexeme ~ <SET> priority => 1
-<SET> ~ [Ss][Ee][Tt]
-:lexeme ~ <SETS> priority => 1
-<SETS> ~ [Ss][Ee][Tt][Ss]
-:lexeme ~ <SIMILAR> priority => 1
-<SIMILAR> ~ [Ss][Ii][Mm][Ii][Ll][Aa][Rr]
-:lexeme ~ <SIMPLE> priority => 1
-<SIMPLE> ~ [Ss][Ii][Mm][Pp][Ll][Ee]
-:lexeme ~ <SIZE> priority => 1
-<SIZE> ~ [Ss][Ii][Zz][Ee]
-:lexeme ~ <SMALLINT> priority => 1
-<SMALLINT> ~ [Ss][Mm][Aa][Ll][Ll][Ii][Nn][Tt]
-:lexeme ~ <SOME> priority => 1
-<SOME> ~ [Ss][Oo][Mm][Ee]
-:lexeme ~ <SOURCE> priority => 1
-<SOURCE> ~ [Ss][Oo][Uu][Rr][Cc][Ee]
-:lexeme ~ <SPACE> priority => 1
-<SPACE> ~ [Ss][Pp][Aa][Cc][Ee]
-:lexeme ~ <SPECIFIC> priority => 1
-<SPECIFIC> ~ [Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]
-:lexeme ~ <SPECIFICTYPE> priority => 1
-<SPECIFICTYPE> ~ [Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc][Tt][Yy][Pp][Ee]
-:lexeme ~ <SPECIFIC_NAME> priority => 1
-<SPECIFIC_NAME> ~ [Ss][Pp][Ee][Cc][Ii][Ff][Ii][Cc]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <SQL> priority => 1
-<SQL> ~ [Ss][Qq][Ll]
-:lexeme ~ <SQLEXCEPTION> priority => 1
-<SQLEXCEPTION> ~ [Ss][Qq][Ll][Ee][Xx][Cc][Ee][Pp][Tt][Ii][Oo][Nn]
-:lexeme ~ <SQLSTATE> priority => 1
-<SQLSTATE> ~ [Ss][Qq][Ll][Ss][Tt][Aa][Tt][Ee]
-:lexeme ~ <SQLWARNING> priority => 1
-<SQLWARNING> ~ [Ss][Qq][Ll][Ww][Aa][Rr][Nn][Ii][Nn][Gg]
-:lexeme ~ <SQRT> priority => 1
-<SQRT> ~ [Ss][Qq][Rr][Tt]
-:lexeme ~ <START> priority => 1
-<START> ~ [Ss][Tt][Aa][Rr][Tt]
-:lexeme ~ <STATE> priority => 1
-<STATE> ~ [Ss][Tt][Aa][Tt][Ee]
-:lexeme ~ <STATEMENT> priority => 1
-<STATEMENT> ~ [Ss][Tt][Aa][Tt][Ee][Mm][Ee][Nn][Tt]
-:lexeme ~ <STATIC> priority => 1
-<STATIC> ~ [Ss][Tt][Aa][Tt][Ii][Cc]
-:lexeme ~ <STDDEV_POP> priority => 1
-<STDDEV_POP> ~ [Ss][Tt][Dd][Dd][Ee][Vv]'_'[Pp][Oo][Pp]
-:lexeme ~ <STDDEV_SAMP> priority => 1
-<STDDEV_SAMP> ~ [Ss][Tt][Dd][Dd][Ee][Vv]'_'[Ss][Aa][Mm][Pp]
-:lexeme ~ <STRUCTURE> priority => 1
-<STRUCTURE> ~ [Ss][Tt][Rr][Uu][Cc][Tt][Uu][Rr][Ee]
-:lexeme ~ <STYLE> priority => 1
-<STYLE> ~ [Ss][Tt][Yy][Ll][Ee]
-:lexeme ~ <SUBCLASS_ORIGIN> priority => 1
-<SUBCLASS_ORIGIN> ~ [Ss][Uu][Bb][Cc][Ll][Aa][Ss][Ss]'_'[Oo][Rr][Ii][Gg][Ii][Nn]
-:lexeme ~ <SUBMULTISET> priority => 1
-<SUBMULTISET> ~ [Ss][Uu][Bb][Mm][Uu][Ll][Tt][Ii][Ss][Ee][Tt]
-:lexeme ~ <SUBSTRING> priority => 1
-<SUBSTRING> ~ [Ss][Uu][Bb][Ss][Tt][Rr][Ii][Nn][Gg]
-:lexeme ~ <SUM> priority => 1
-<SUM> ~ [Ss][Uu][Mm]
-:lexeme ~ <SYMMETRIC> priority => 1
-<SYMMETRIC> ~ [Ss][Yy][Mm][Mm][Ee][Tt][Rr][Ii][Cc]
-:lexeme ~ <SYSTEM> priority => 1
-<SYSTEM> ~ [Ss][Yy][Ss][Tt][Ee][Mm]
-:lexeme ~ <SYSTEM_USER> priority => 1
-<SYSTEM_USER> ~ [Ss][Yy][Ss][Tt][Ee][Mm]'_'[Uu][Ss][Ee][Rr]
-:lexeme ~ <TABLE> priority => 1
-<TABLE> ~ [Tt][Aa][Bb][Ll][Ee]
-:lexeme ~ <TABLESAMPLE> priority => 1
-<TABLESAMPLE> ~ [Tt][Aa][Bb][Ll][Ee][Ss][Aa][Mm][Pp][Ll][Ee]
-:lexeme ~ <TABLE_NAME> priority => 1
-<TABLE_NAME> ~ [Tt][Aa][Bb][Ll][Ee]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <TEMPORARY> priority => 1
-<TEMPORARY> ~ [Tt][Ee][Mm][Pp][Oo][Rr][Aa][Rr][Yy]
-:lexeme ~ <THEN> priority => 1
-<THEN> ~ [Tt][Hh][Ee][Nn]
-:lexeme ~ <TIES> priority => 1
-<TIES> ~ [Tt][Ii][Ee][Ss]
-<__TIME> ~ [Tt][Ii][Mm][Ee]
-:lexeme ~ <TIME> priority => 1
-<TIME> ~ <__TIME>
-<__TIMESTAMP> ~ [Tt][Ii][Mm][Ee][Ss][Tt][Aa][Mm][Pp]
-:lexeme ~ <TIMESTAMP> priority => 1
-<TIMESTAMP> ~ <__TIMESTAMP>
-:lexeme ~ <TIMEZONE_HOUR> priority => 1
-<TIMEZONE_HOUR> ~ [Tt][Ii][Mm][Ee][Zz][Oo][Nn][Ee]'_'[Hh][Oo][Uu][Rr]
-:lexeme ~ <TIMEZONE_MINUTE> priority => 1
-<TIMEZONE_MINUTE> ~ [Tt][Ii][Mm][Ee][Zz][Oo][Nn][Ee]'_'[Mm][Ii][Nn][Uu][Tt][Ee]
-:lexeme ~ <TO> priority => 1
-<TO> ~ [Tt][Oo]
-:lexeme ~ <TOP_LEVEL_COUNT> priority => 1
-<TOP_LEVEL_COUNT> ~ [Tt][Oo][Pp]'_'[Ll][Ee][Vv][Ee][Ll]'_'[Cc][Oo][Uu][Nn][Tt]
-:lexeme ~ <TRAILING> priority => 1
-<TRAILING> ~ [Tt][Rr][Aa][Ii][Ll][Ii][Nn][Gg]
-:lexeme ~ <TRANSACTION> priority => 1
-<TRANSACTION> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn]
-:lexeme ~ <TRANSACTIONS_COMMITTED> priority => 1
-<TRANSACTIONS_COMMITTED> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn][Ss]'_'[Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
-:lexeme ~ <TRANSACTIONS_ROLLED_BACK> priority => 1
-<TRANSACTIONS_ROLLED_BACK> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn][Ss]'_'[Rr][Oo][Ll][Ll][Ee][Dd]'_'[Bb][Aa][Cc][Kk]
-:lexeme ~ <TRANSACTION_ACTIVE> priority => 1
-<TRANSACTION_ACTIVE> ~ [Tt][Rr][Aa][Nn][Ss][Aa][Cc][Tt][Ii][Oo][Nn]'_'[Aa][Cc][Tt][Ii][Vv][Ee]
-:lexeme ~ <TRANSFORM> priority => 1
-<TRANSFORM> ~ [Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm]
-:lexeme ~ <TRANSFORMS> priority => 1
-<TRANSFORMS> ~ [Tt][Rr][Aa][Nn][Ss][Ff][Oo][Rr][Mm][Ss]
-:lexeme ~ <TRANSLATE> priority => 1
-<TRANSLATE> ~ [Tt][Rr][Aa][Nn][Ss][Ll][Aa][Tt][Ee]
-:lexeme ~ <TRANSLATION> priority => 1
-<TRANSLATION> ~ [Tt][Rr][Aa][Nn][Ss][Ll][Aa][Tt][Ii][Oo][Nn]
-:lexeme ~ <TREAT> priority => 1
-<TREAT> ~ [Tt][Rr][Ee][Aa][Tt]
-:lexeme ~ <TRIGGER> priority => 1
-<TRIGGER> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]
-:lexeme ~ <TRIGGER_CATALOG> priority => 1
-<TRIGGER_CATALOG> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <TRIGGER_NAME> priority => 1
-<TRIGGER_NAME> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <TRIGGER_SCHEMA> priority => 1
-<TRIGGER_SCHEMA> ~ [Tt][Rr][Ii][Gg][Gg][Ee][Rr]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <TRIM> priority => 1
-<TRIM> ~ [Tt][Rr][Ii][Mm]
-<__TRUE> ~ [Tt][Rr][Uu][Ee]
-:lexeme ~ <TRUE> priority => 1
-<TRUE> ~ <__TRUE>
-:lexeme ~ <TYPE> priority => 1
-<TYPE> ~ [Tt][Yy][Pp][Ee]
-<__U> ~ [Uu]
-<__UESCAPE> ~ [Uu][Ee][Ss][Cc][Aa][Pp][Ee]
-:lexeme ~ <UNBOUNDED> priority => 1
-<UNBOUNDED> ~ [Uu][Nn][Bb][Oo][Uu][Nn][Dd][Ee][Dd]
-:lexeme ~ <UNCOMMITTED> priority => 1
-<UNCOMMITTED> ~ [Uu][Nn][Cc][Oo][Mm][Mm][Ii][Tt][Tt][Ee][Dd]
-:lexeme ~ <UNDER> priority => 1
-<UNDER> ~ [Uu][Nn][Dd][Ee][Rr]
-:lexeme ~ <UNION> priority => 1
-<UNION> ~ [Uu][Nn][Ii][Oo][Nn]
-:lexeme ~ <UNIQUE> priority => 1
-<UNIQUE> ~ [Uu][Nn][Ii][Qq][Uu][Ee]
-<__UNKNOWN> ~ [Uu][Nn][Kk][Nn][Oo][Ww][Nn]
-:lexeme ~ <UNKNOWN> priority => 1
-<UNKNOWN> ~ <__UNKNOWN>
-:lexeme ~ <UNNAMED> priority => 1
-<UNNAMED> ~ [Uu][Nn][Nn][Aa][Mm][Ee][Dd]
-:lexeme ~ <UNNEST> priority => 1
-<UNNEST> ~ [Uu][Nn][Nn][Ee][Ss][Tt]
-:lexeme ~ <UPDATE> priority => 1
-<UPDATE> ~ [Uu][Pp][Dd][Aa][Tt][Ee]
-:lexeme ~ <UPPER> priority => 1
-<UPPER> ~ [Uu][Pp][Pp][Ee][Rr]
-:lexeme ~ <USAGE> priority => 1
-<USAGE> ~ [Uu][Ss][Aa][Gg][Ee]
-:lexeme ~ <USER> priority => 1
-<USER> ~ [Uu][Ss][Ee][Rr]
-:lexeme ~ <USER_DEFINED_TYPE_CATALOG> priority => 1
-<USER_DEFINED_TYPE_CATALOG> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Cc][Aa][Tt][Aa][Ll][Oo][Gg]
-:lexeme ~ <USER_DEFINED_TYPE_CODE> priority => 1
-<USER_DEFINED_TYPE_CODE> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Cc][Oo][Dd][Ee]
-:lexeme ~ <USER_DEFINED_TYPE_NAME> priority => 1
-<USER_DEFINED_TYPE_NAME> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Nn][Aa][Mm][Ee]
-:lexeme ~ <USER_DEFINED_TYPE_SCHEMA> priority => 1
-<USER_DEFINED_TYPE_SCHEMA> ~ [Uu][Ss][Ee][Rr]'_'[Dd][Ee][Ff][Ii][Nn][Ee][Dd]'_'[Tt][Yy][Pp][Ee]'_'[Ss][Cc][Hh][Ee][Mm][Aa]
-:lexeme ~ <USING> priority => 1
-<USING> ~ [Uu][Ss][Ii][Nn][Gg]
-:lexeme ~ <VALUE> priority => 1
-<VALUE> ~ [Vv][Aa][Ll][Uu][Ee]
-:lexeme ~ <VALUES> priority => 1
-<VALUES> ~ [Vv][Aa][Ll][Uu][Ee][Ss]
-:lexeme ~ <VARCHAR> priority => 1
-<VARCHAR> ~ [Vv][Aa][Rr][Cc][Hh][Aa][Rr]
-:lexeme ~ <VARYING> priority => 1
-<VARYING> ~ [Vv][Aa][Rr][Yy][Ii][Nn][Gg]
-:lexeme ~ <VAR_POP> priority => 1
-<VAR_POP> ~ [Vv][Aa][Rr]'_'[Pp][Oo][Pp]
-:lexeme ~ <VAR_SAMP> priority => 1
-<VAR_SAMP> ~ [Vv][Aa][Rr]'_'[Ss][Aa][Mm][Pp]
-:lexeme ~ <VIEW> priority => 1
-<VIEW> ~ [Vv][Ii][Ee][Ww]
-:lexeme ~ <WHEN> priority => 1
-<WHEN> ~ [Ww][Hh][Ee][Nn]
-:lexeme ~ <WHENEVER> priority => 1
-<WHENEVER> ~ [Ww][Hh][Ee][Nn][Ee][Vv][Ee][Rr]
-:lexeme ~ <WHERE> priority => 1
-<WHERE> ~ [Ww][Hh][Ee][Rr][Ee]
-:lexeme ~ <WIDTH_BUCKET> priority => 1
-<WIDTH_BUCKET> ~ [Ww][Ii][Dd][Tt][Hh]'_'[Bb][Uu][Cc][Kk][Ee][Tt]
-:lexeme ~ <WINDOW> priority => 1
-<WINDOW> ~ [Ww][Ii][Nn][Dd][Oo][Ww]
-:lexeme ~ <WITH> priority => 1
-<WITH> ~ [Ww][Ii][Tt][Hh]
-:lexeme ~ <WITHIN> priority => 1
-<WITHIN> ~ [Ww][Ii][Tt][Hh][Ii][Nn]
-:lexeme ~ <WITHOUT> priority => 1
-<WITHOUT> ~ [Ww][Ii][Tt][Hh][Oo][Uu][Tt]
-:lexeme ~ <WORK> priority => 1
-<WORK> ~ [Ww][Oo][Rr][Kk]
-:lexeme ~ <WRITE> priority => 1
-<WRITE> ~ [Ww][Rr][Ii][Tt][Ee]
-<__X> ~ [Xx]
-:lexeme ~ <YEAR> priority => 1
-<YEAR> ~ [Yy][Ee][Aa][Rr]
-:lexeme ~ <ZONE> priority => 1
-<ZONE> ~ [Zz][Oo][Nn][Ee]
