@@ -15,7 +15,7 @@ use MarpaX::Languages::SQL::AST::Impl qw//;
 
 =head1 DESCRIPTION
 
-This module translates SQL source into an AST tree. To assist further process of the AST tree, the nodes of the AST are blessed according to the SQL grammar you have selected. (The default is 'ISO-IEC-9075-2-2003'.) If you want to enable logging, be aware that this module is a Log::Any thingy.
+This module translates SQL source into an XML::LibXML AST. Be aware that this module is a Log::Any thingy.
 
 =head1 SYNOPSIS
 
@@ -43,7 +43,7 @@ This module translates SQL source into an AST tree. To assist further process of
     #
     my $sqlSourceCode = 'select * from myTable;';
     my $sqlAstObject = MarpaX::Languages::SQL::AST->new();
-    $log->infof('%s', $sqlAstObject->parse(\$sqlSourceCode));
+    log->infof('%s', $sqlAstObject->parse(\$sqlSourceCode)->value()->toString(1));
 
 =head1 SUBROUTINES/METHODS
 
@@ -113,7 +113,7 @@ sub parse {
   eval {$pos = $self->{_impl}->read($sourcep, $pos)};
   if ($@) {
       my $line_columnp = lineAndCol($self->{_impl});
-      logCroak("%s\nLast position:\n\n%s%s", "$@", showLineAndCol(@{$line_columnp}, $self->{_sourcep}), $self->_context());
+      logCroak("%s\nLast position:\n\n%s%s\nTerminals expected:\n%s", "$@", showLineAndCol(@{$line_columnp}, $self->{_sourcep}), $self->_context(),  join(', ', @{$self->{_impl}->terminals_expected()}));
   }
   do {
     my %lexeme = ();
@@ -134,7 +134,7 @@ sub parse {
 sub _show_last_expression {
   my ($self) = @_;
 
-  my ($start, $end) = $self->{_impl}->last_completed_range('externalDeclaration');
+  my ($start, $end) = $self->{_impl}->last_completed_range('SQL Start');
   return 'No expression was successfully parsed' if (! defined($start));
   my $lastExpression = $self->{_impl}->range_to_string($start, $end);
   return "Last expression successfully parsed was: $lastExpression";
@@ -158,15 +158,19 @@ sub value {
   if (defined($valuep)) {
     push(@rc, $valuep);
   }
+  my $value2p = undef;
   do {
-    ++$nvalue;
-    $valuep = $self->{_impl}->value();
-    if (defined($valuep)) {
-      push(@rc, $valuep);
+    $value2p = $self->{_impl}->value();
+    if (defined($value2p)) {
+      if (! $arrayOfValuesb) {
+	$value2p = undef;
+      } else {
+	push(@rc, $value2p);
+      }
     }
-  } while (defined($valuep));
+  } while (defined($value2p));
   if ($#rc != 0 && ! $arrayOfValuesb) {
-    logCroak('Number of parse tree value is %d. Should be 1.', scalar(@rc));
+    logCroak('Number of parse tree values should be 1 instead of %d.', scalar(@rc));
   }
   if ($arrayOfValuesb) {
     return [ @rc ];
@@ -219,7 +223,7 @@ sub _doPauseBeforeLexeme {
 
 =head1 SEE ALSO
 
-L<Log::Any>, L<Marpa::R2>
+L<Log::Any>, L<Marpa::R2>, L<XML::LibXML>
 
 =cut
 
