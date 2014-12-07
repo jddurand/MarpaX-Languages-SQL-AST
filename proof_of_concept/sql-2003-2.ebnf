@@ -4302,7 +4302,8 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 <Pascal variable definition> ::=
 		<Pascal host identifier> ( <comma> <Pascal host identifier> )* <colon> <Pascal type specification> <semicolon>
 
-<Pascal host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+/* As per http://www.irietools.com/iriepascal/progref534.html */
+<Pascal host identifier> ::= (<simple Latin letter> | <underscore> ) (<simple Latin letter> | <underscore> | <digit> )*
 
 <Pascal type specification> ::=
 		PACKED ARRAY <left bracket> 1 <double period> <length> <right bracket> OF CHAR
