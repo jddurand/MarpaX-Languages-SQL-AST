@@ -4061,19 +4061,24 @@ lexeme default = action => [value] latm => 1
 <Gen3932> ::= <Comma> <Mumps_Host_Identifier> <Mumps_Length_Specification> rank => 0
 <Gen3932_any> ::= <Gen3932>* rank => 0
 <Mumps_Character_Variable> ::= <Lex522> <Mumps_Host_Identifier> <Mumps_Length_Specification> <Gen3932_any> rank => 0
-<Mumps_Host_Identifier> ::= <Regular_Identifier> rank => 0
-<Mumps_Length_Specification> ::= <Left_Paren> <Length> <Right_Paren> rank => 0
-<Gen3937> ::= <Comma> <Mumps_Host_Identifier> rank => 0
+<Gen3935> ::= <Lex006> rank => 0
+            | <Simple_Latin_Letter> rank => -1
+<Gen3937> ::= <Simple_Latin_Letter> rank => 0
+            | <Digit> rank => -1
 <Gen3937_any> ::= <Gen3937>* rank => 0
-<Mumps_Numeric_Variable> ::= <Mumps_Type_Specification> <Mumps_Host_Identifier> <Gen3937_any> rank => 0
-<Gen3940> ::= <Comma> <Scale> rank => 0
-<Gen3940_maybe> ::= <Gen3940> rank => 0
-<Gen3940_maybe> ::= rank => -1
-<Gen3943> ::= <Left_Paren> <Precision> <Gen3940_maybe> <Right_Paren> rank => 0
-<Gen3943_maybe> ::= <Gen3943> rank => 0
-<Gen3943_maybe> ::= rank => -1
+<Mumps_Host_Identifier> ::= <Gen3935> <Gen3937_any> rank => 0
+<Mumps_Length_Specification> ::= <Left_Paren> <Length> <Right_Paren> rank => 0
+<Gen3942> ::= <Comma> <Mumps_Host_Identifier> rank => 0
+<Gen3942_any> ::= <Gen3942>* rank => 0
+<Mumps_Numeric_Variable> ::= <Mumps_Type_Specification> <Mumps_Host_Identifier> <Gen3942_any> rank => 0
+<Gen3945> ::= <Comma> <Scale> rank => 0
+<Gen3945_maybe> ::= <Gen3945> rank => 0
+<Gen3945_maybe> ::= rank => -1
+<Gen3948> ::= <Left_Paren> <Precision> <Gen3945_maybe> <Right_Paren> rank => 0
+<Gen3948_maybe> ::= <Gen3948> rank => 0
+<Gen3948_maybe> ::= rank => -1
 <Mumps_Type_Specification> ::= <Lex396> rank => 0
-                             | <Lex345> <Gen3943_maybe> rank => -1
+                             | <Lex345> <Gen3948_maybe> rank => -1
                              | <Lex451> rank => -2
 <Mumps_Derived_Type_Specification> ::= <Mumps_Clob_Variable> rank => 0
                                      | <Mumps_Blob_Variable> rank => -1
@@ -4084,10 +4089,10 @@ lexeme default = action => [value] latm => 1
                                      | <Mumps_Array_Locator_Variable> rank => -6
                                      | <Mumps_Multiset_Locator_Variable> rank => -7
                                      | <Mumps_Ref_Variable> rank => -8
-<Gen3958> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
-<Gen3958_maybe> ::= <Gen3958> rank => 0
-<Gen3958_maybe> ::= rank => -1
-<Mumps_Clob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left_Paren> <Large_Object_Length> <Right_Paren> <Gen3958_maybe> rank => 0
+<Gen3963> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
+<Gen3963_maybe> ::= <Gen3963> rank => 0
+<Gen3963_maybe> ::= rank => -1
+<Mumps_Clob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left_Paren> <Large_Object_Length> <Right_Paren> <Gen3963_maybe> rank => 0
 <Mumps_Blob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left_Paren> <Large_Object_Length> <Right_Paren> rank => 0
 <Mumps_User_Defined_Type_Variable> ::= <Lex488> <Lex275> <Lex401> <Path_Resolved_User_Defined_Type_Name> <Lex297> <Predefined_Type> rank => 0
 <Mumps_Clob_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
@@ -4097,20 +4102,20 @@ lexeme default = action => [value] latm => 1
 <Mumps_Multiset_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset_Type> <Lex297> <Lex158> rank => 0
 <Mumps_Ref_Variable> ::= <Lex488> <Lex275> <Lex401> <Reference_Type> rank => 0
 <Embedded_SQL_Pascal_Program> ::= <Lex365> <Lex488> rank => 0
-<Gen3971> ::= <Comma> <Pascal_Host_Identifier> rank => 0
-<Gen3971_any> ::= <Gen3971>* rank => 0
-<Pascal_Variable_Definition> ::= <Pascal_Host_Identifier> <Gen3971_any> <Colon> <Pascal_Type_Specification> <Semicolon> rank => 0
+<Gen3976> ::= <Comma> <Pascal_Host_Identifier> rank => 0
+<Gen3976_any> ::= <Gen3976>* rank => 0
+<Pascal_Variable_Definition> ::= <Pascal_Host_Identifier> <Gen3976_any> <Colon> <Pascal_Type_Specification> <Semicolon> rank => 0
 <Pascal_Host_Identifier> ::= <Regular_Identifier> rank => 0
-<Gen3975> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
-<Gen3975_maybe> ::= <Gen3975> rank => 0
-<Gen3975_maybe> ::= rank => -1
-<Gen3978> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
-<Gen3978_maybe> ::= <Gen3978> rank => 0
-<Gen3978_maybe> ::= rank => -1
-<Pascal_Type_Specification> ::= <Lex604> <Lex296> <Left_Bracket> <Lex556> <Double_Period> <Length> <Right_Bracket> <Lex431> <Lex316> <Gen3975_maybe> rank => 0
+<Gen3980> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
+<Gen3980_maybe> ::= <Gen3980> rank => 0
+<Gen3980_maybe> ::= rank => -1
+<Gen3983> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
+<Gen3983_maybe> ::= <Gen3983> rank => 0
+<Gen3983_maybe> ::= rank => -1
+<Pascal_Type_Specification> ::= <Lex604> <Lex296> <Left_Bracket> <Lex556> <Double_Period> <Length> <Right_Bracket> <Lex431> <Lex316> <Gen3980_maybe> rank => 0
                               | <Lex397> rank => -1
                               | <Lex451> rank => -2
-                              | <Lex316> <Gen3978_maybe> rank => -3
+                              | <Lex316> <Gen3983_maybe> rank => -3
                               | <Lex308> rank => -4
                               | <Pascal_Derived_Type_Specification> rank => -5
 <Pascal_Derived_Type_Specification> ::= <Pascal_Clob_Variable> rank => 0
@@ -4122,10 +4127,10 @@ lexeme default = action => [value] latm => 1
                                       | <Pascal_Array_Locator_Variable> rank => -6
                                       | <Pascal_Multiset_Locator_Variable> rank => -7
                                       | <Pascal_Ref_Variable> rank => -8
-<Gen3996> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
-<Gen3996_maybe> ::= <Gen3996> rank => 0
-<Gen3996_maybe> ::= rank => -1
-<Pascal_Clob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left_Paren> <Large_Object_Length> <Right_Paren> <Gen3996_maybe> rank => 0
+<Gen4001> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
+<Gen4001_maybe> ::= <Gen4001> rank => 0
+<Gen4001_maybe> ::= rank => -1
+<Pascal_Clob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left_Paren> <Large_Object_Length> <Right_Paren> <Gen4001_maybe> rank => 0
 <Pascal_Blob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left_Paren> <Large_Object_Length> <Right_Paren> rank => 0
 <Pascal_Clob_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
 <Pascal_User_Defined_Type_Variable> ::= <Lex488> <Lex275> <Lex401> <Path_Resolved_User_Defined_Type_Name> <Lex297> <Predefined_Type> rank => 0
@@ -4135,28 +4140,28 @@ lexeme default = action => [value] latm => 1
 <Pascal_Multiset_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset_Type> <Lex297> <Lex158> rank => 0
 <Pascal_Ref_Variable> ::= <Lex488> <Lex275> <Lex401> <Reference_Type> rank => 0
 <Embedded_SQL_Pl_I_Program> ::= <Lex365> <Lex488> rank => 0
-<Gen4009> ::= <Lex605> rank => 0
+<Gen4014> ::= <Lex605> rank => 0
             | <Lex347> rank => -1
-<Gen4011> ::= <Comma> <Pl_I_Host_Identifier> rank => 0
-<Gen4011_any> ::= <Gen4011>* rank => 0
-<Pl_I_Variable_Definition> ::= <Gen4009> <Pl_I_Host_Identifier> <Left_Paren> <Pl_I_Host_Identifier> <Gen4011_any> <Right_Paren> <Pl_I_Type_Specification> <Character_Representation_any> <Semicolon> rank => 0
+<Gen4016> ::= <Comma> <Pl_I_Host_Identifier> rank => 0
+<Gen4016_any> ::= <Gen4016>* rank => 0
+<Pl_I_Variable_Definition> ::= <Gen4014> <Pl_I_Host_Identifier> <Left_Paren> <Pl_I_Host_Identifier> <Gen4016_any> <Right_Paren> <Pl_I_Type_Specification> <Character_Representation_any> <Semicolon> rank => 0
 <Pl_I_Host_Identifier> ::= <Regular_Identifier> rank => 0
-<Gen4015> ::= <Lex316> rank => 0
+<Gen4020> ::= <Lex316> rank => 0
             | <Lex317> rank => -1
 <Lex523_maybe> ::= <Lex523> rank => 0
 <Lex523_maybe> ::= rank => -1
-<Gen4019> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
-<Gen4019_maybe> ::= <Gen4019> rank => 0
-<Gen4019_maybe> ::= rank => -1
-<Gen4022> ::= <Comma> <Scale> rank => 0
-<Gen4022_maybe> ::= <Gen4022> rank => 0
-<Gen4022_maybe> ::= rank => -1
-<Gen4025> ::= <Left_Paren> <Precision> <Right_Paren> rank => 0
-<Gen4025_maybe> ::= <Gen4025> rank => 0
-<Gen4025_maybe> ::= rank => -1
-<Pl_I_Type_Specification> ::= <Gen4015> <Lex523_maybe> <Left_Paren> <Length> <Right_Paren> <Gen4019_maybe> rank => 0
-                            | <Pl_I_Type_Fixed_Decimal> <Left_Paren> <Precision> <Gen4022_maybe> <Right_Paren> rank => -1
-                            | <Pl_I_Type_Fixed_Binary> <Gen4025_maybe> rank => -2
+<Gen4024> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
+<Gen4024_maybe> ::= <Gen4024> rank => 0
+<Gen4024_maybe> ::= rank => -1
+<Gen4027> ::= <Comma> <Scale> rank => 0
+<Gen4027_maybe> ::= <Gen4027> rank => 0
+<Gen4027_maybe> ::= rank => -1
+<Gen4030> ::= <Left_Paren> <Precision> <Right_Paren> rank => 0
+<Gen4030_maybe> ::= <Gen4030> rank => 0
+<Gen4030_maybe> ::= rank => -1
+<Pl_I_Type_Specification> ::= <Gen4020> <Lex523_maybe> <Left_Paren> <Length> <Right_Paren> <Gen4024_maybe> rank => 0
+                            | <Pl_I_Type_Fixed_Decimal> <Left_Paren> <Precision> <Gen4027_maybe> <Right_Paren> rank => -1
+                            | <Pl_I_Type_Fixed_Binary> <Gen4030_maybe> rank => -2
                             | <Pl_I_Type_Float_Binary> <Left_Paren> <Precision> <Right_Paren> rank => -3
                             | <Pl_I_Derived_Type_Specification> rank => -4
 <Pl_I_Derived_Type_Specification> ::= <Pl_I_Clob_Variable> rank => 0
@@ -4168,10 +4173,10 @@ lexeme default = action => [value] latm => 1
                                     | <Pl_I_Array_Locator_Variable> rank => -6
                                     | <Pl_I_Multiset_Locator_Variable> rank => -7
                                     | <Pl_I_Ref_Variable> rank => -8
-<Gen4042> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
-<Gen4042_maybe> ::= <Gen4042> rank => 0
-<Gen4042_maybe> ::= rank => -1
-<Pl_I_Clob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left_Paren> <Large_Object_Length> <Right_Paren> <Gen4042_maybe> rank => 0
+<Gen4047> ::= <Lex317> <Lex482> <Lex401_maybe> <Character_Set_Specification> rank => 0
+<Gen4047_maybe> ::= <Gen4047> rank => 0
+<Gen4047_maybe> ::= rank => -1
+<Pl_I_Clob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Left_Paren> <Large_Object_Length> <Right_Paren> <Gen4047_maybe> rank => 0
 <Pl_I_Blob_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex307> <Left_Paren> <Large_Object_Length> <Right_Paren> rank => 0
 <Pl_I_User_Defined_Type_Variable> ::= <Lex488> <Lex275> <Lex401> <Path_Resolved_User_Defined_Type_Name> <Lex297> <Predefined_Type> rank => 0
 <Pl_I_Clob_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Lex319> <Lex297> <Lex158> rank => 0
@@ -4180,24 +4185,24 @@ lexeme default = action => [value] latm => 1
 <Pl_I_Array_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Array_Type> <Lex297> <Lex158> rank => 0
 <Pl_I_Multiset_Locator_Variable> ::= <Lex488> <Lex275> <Lex401> <Multiset_Type> <Lex297> <Lex158> rank => 0
 <Pl_I_Ref_Variable> ::= <Lex488> <Lex275> <Lex401> <Reference_Type> rank => 0
-<Gen4054> ::= <Lex345> rank => 0
+<Gen4059> ::= <Lex345> rank => 0
             | <Lex346> rank => -1
-<Gen4056> ::= <Lex345> rank => 0
+<Gen4061> ::= <Lex345> rank => 0
             | <Lex346> rank => -1
-<Pl_I_Type_Fixed_Decimal> ::= <Gen4054> <Lex606> rank => 0
-                            | <Lex606> <Gen4056> rank => -1
-<Gen4060> ::= <Lex607> rank => 0
+<Pl_I_Type_Fixed_Decimal> ::= <Gen4059> <Lex606> rank => 0
+                            | <Lex606> <Gen4061> rank => -1
+<Gen4065> ::= <Lex607> rank => 0
             | <Lex306> rank => -1
-<Gen4062> ::= <Lex607> rank => 0
+<Gen4067> ::= <Lex607> rank => 0
             | <Lex306> rank => -1
-<Pl_I_Type_Fixed_Binary> ::= <Gen4060> <Lex606> rank => 0
-                           | <Lex606> <Gen4062> rank => -1
-<Gen4066> ::= <Lex607> rank => 0
+<Pl_I_Type_Fixed_Binary> ::= <Gen4065> <Lex606> rank => 0
+                           | <Lex606> <Gen4067> rank => -1
+<Gen4071> ::= <Lex607> rank => 0
             | <Lex306> rank => -1
-<Gen4068> ::= <Lex607> rank => 0
+<Gen4073> ::= <Lex607> rank => 0
             | <Lex306> rank => -1
-<Pl_I_Type_Float_Binary> ::= <Gen4066> <Lex372> rank => 0
-                           | <Lex372> <Gen4068> rank => -1
+<Pl_I_Type_Float_Binary> ::= <Gen4071> <Lex372> rank => 0
+                           | <Lex372> <Gen4073> rank => -1
 <Direct_SQL_Statement> ::= <Directly_Executable_Statement> <Semicolon> rank => 0
 <Directly_Executable_Statement> ::= <Direct_SQL_Data_Statement> rank => 0
                                   | <SQL_Schema_Statement> rank => -1
@@ -4214,9 +4219,9 @@ lexeme default = action => [value] latm => 1
 <Get_Diagnostics_Statement> ::= <Lex379> <Lex118> <SQL_Diagnostics_Information> rank => 0
 <SQL_Diagnostics_Information> ::= <Statement_Information> rank => 0
                                 | <Condition_Information> rank => -1
-<Gen4088> ::= <Comma> <Statement_Information_Item> rank => 0
-<Gen4088_any> ::= <Gen4088>* rank => 0
-<Statement_Information> ::= <Statement_Information_Item> <Gen4088_any> rank => 0
+<Gen4093> ::= <Comma> <Statement_Information_Item> rank => 0
+<Gen4093_any> ::= <Gen4093>* rank => 0
+<Statement_Information> ::= <Statement_Information_Item> <Gen4093_any> rank => 0
 <Statement_Information_Item> ::= <Simple_Target_Specification> <Equals_Operator> <Statement_Information_Item_Name> rank => 0
 <Statement_Information_Item_Name> ::= <Lex181> rank => 0
                                     | <Lex170> rank => -1
@@ -4228,11 +4233,11 @@ lexeme default = action => [value] latm => 1
                                     | <Lex265> rank => -7
                                     | <Lex266> rank => -8
                                     | <Lex267> rank => -9
-<Gen4102> ::= <Lex125> rank => 0
+<Gen4107> ::= <Lex125> rank => 0
             | <Lex087> rank => -1
-<Gen4104> ::= <Comma> <Condition_Information_Item> rank => 0
-<Gen4104_any> ::= <Gen4104>* rank => 0
-<Condition_Information> ::= <Gen4102> <Condition_Number> <Condition_Information_Item> <Gen4104_any> rank => 0
+<Gen4109> ::= <Comma> <Condition_Information_Item> rank => 0
+<Gen4109_any> ::= <Gen4109>* rank => 0
+<Condition_Information> ::= <Gen4107> <Condition_Number> <Condition_Information_Item> <Gen4109_any> rank => 0
 <Condition_Information_Item> ::= <Simple_Target_Specification> <Equals_Operator> <Condition_Information_Item_Name> rank => 0
 <Condition_Information_Item_Name> ::= <Lex062> rank => 0
                                     | <Lex074> rank => -1

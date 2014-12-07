@@ -1,6 +1,5 @@
 /*
 ############################################################################
-# All host identifiers are supposed to a regular identifier                #
 # <regular identifier> is supposed to match <SQL language identifier>      #
 # <direct implementation-defined statement> is skipped.                    #
 # <escaped character> prefix is fixed to '\'                               #
@@ -4255,7 +4254,8 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 		VARCHAR <MUMPS host identifier> <MUMPS length specification>
 		( <comma> <MUMPS host identifier> <MUMPS length specification> )*
 
-<MUMPS host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+/* As per http://71.174.62.16/Demo/AnnoStd?Frame=Main&Edition=MDC&Page=a106002#Def_0006 */
+<MUMPS host identifier> ::= ('%' | <simple Latin letter>) (<simple Latin letter> | <digit>)*
 
 <MUMPS length specification> ::= <left paren> <length> <right paren>
 
