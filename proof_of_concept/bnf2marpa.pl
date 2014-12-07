@@ -174,7 +174,7 @@ sub _symbol {
       my $match = substr($symbol, $-[1], $+[1] - $-[1]);
       push(@words, ($match eq 'SQL' ? $match : ucfirst(lc($match))));
     }
-    $symbol = join(' ', @words);
+    $symbol = join('_', @words);
   }
 
   return $symbol;
@@ -354,7 +354,7 @@ sub _termFactorQuantifier {
 
   my $symbol;
   if ($quantifier eq '*' || $quantifier eq '+') {
-      $symbol = $forcedSymbol || sprintf('%s %s', $factor, ($quantifier eq '*') ? 'any' : 'many');
+      $symbol = $forcedSymbol || sprintf('%s_%s', $factor, ($quantifier eq '*') ? 'any' : 'many');
       if (! exists($self->{quantifiedSymbols}->{$symbol})) {
 	  $self->{quantifiedSymbols}->{$symbol}++;
 	  if (exists($self->{lexemesExact}->{$factor}) &&
@@ -376,7 +376,7 @@ sub _termFactorQuantifier {
 		  my $thisContent = "$self->{lexemes}->{$factor}$thisQuantifier";
                   if ($quantifier eq '*') {
                     $thisQuantifier = '+';
-                    $thisSymbol = sprintf('%s %s', $factor, 'many');
+                    $thisSymbol = sprintf('%s_%s', $factor, 'many');
                   }
                   print STDERR "[INFO] Transformation to a lexeme: $thisSymbol ::= $factor$thisQuantifier\n";
                   $self->_factor($thisContent, $self->{lexemesExact}->{$factor}->{type}, $self->{lexemesExact}->{$factor}->{value}, $thisQuantifier, $thisSymbol);
@@ -412,7 +412,7 @@ sub _termFactorQuantifier {
 	  }
       }
   } elsif ($quantifier eq '?') {
-      $symbol = sprintf('%s maybe', $factor);
+      $symbol = sprintf('%s_maybe', $factor);
       if (! exists($self->{quantifiedSymbols}->{$symbol})) {
 	  $self->{quantifiedSymbols}->{$symbol}++;
 	  $self->_rule($symbol, '::=', [ [ [ "$factor" ] , {} ] ]);
