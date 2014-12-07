@@ -49,8 +49,20 @@ sub _pushLexemes {
         $content = join(' ', "<$_>", '~', '[' . $thisContent . ']');
       }
     } else {
-      $content = join(' ', "<$_>", '~', '\'' . $self->{$key}->{$_} . '\'');
-      $content .= ':i';   # FOR SQL ALL HARDCODED STRINGS ARE SUPPOSED TO BE CASE INSENSITIVE
+      #
+      # IF the string has a length > 1 that it is SUPPOSED TO BE A WORD, i.e.
+      # HAVING WORD BOUNDARIES.
+      # WE LET LATM handling this by saying that the lexeme is not really a
+      # lexeme but another G1, and associate an action that will concatenate
+      # all individual characters -;
+      #
+      if (length($self->{$key}->{$_}) > 1) {
+	my @rhs = map {"'$_':i"} (split(//, $self->{$key}->{$_}));
+	$content = join(' ', "<$_>", '::=', @rhs, 'action', '=>', 'fakedLexeme', '# Faked lexeme - LATM handling the ambiguities');
+      } else {
+	my $rhs = join(' ', '\'' . $self->{$key}->{$_} . '\'');
+	$content = join(' ', "<$_>", '~', $rhs);
+      }
     }
     push(@{$rcp}, $content);
     $self->{symbols}->{$_} = {terminal => 1, content => $content};
@@ -60,15 +72,37 @@ sub _pushLexemes {
 sub _pushG1 {
     my ($self, $rcp) = @_;
 
+    #
+    # SQL grammar is highly ambiguous, and it is assumed that every rule sharing the same LHS have a rank that
+    # is progressively decreasing
+    #
+
+    my %rank = ();
+    my $previous = '';
     foreach (@{$self->{rules}}) {
-      my $content;
       if (! (defined($_->{rhs}))) {
         print STDERR "[WARN] Internal error: undefined RHS list for symbol $_->{lhs}\n";
         exit(EXIT_FAILURE);
       }
       my $lhs = $_->{lhs} eq ':start' ? ':start' : "<$_->{lhs}>";
-      push(@{$rcp}, $content = join(' ', $lhs, $_->{rulesep}, @{$_->{rhs}} ? '<' . join('> <', @{$_->{rhs}}) . '>' : '', $_->{quantifier}));
+      my $content;
+      if (@{$_->{rhs}}) {
+	my $rhs = '<' . join('> <', @{$_->{rhs}}) . '>' . $_->{quantifier};
+	if ($previous ne $lhs) {
+	  $content = join(' ', $lhs, $_->{rulesep}, $rhs);
+	} else {
+	  $content = (' ' x length("$lhs  ")) . ' | ' . $rhs;
+	}
+      } else {
+	$content = join(' ', $lhs, $_->{rulesep});
+      }
+      $rank{$lhs} //= 0;
+      if ($lhs ne ':start') {
+	$content .= " rank => " . $rank{$lhs}--;
+      }
+      push(@{$rcp}, $content);
       $self->{symbols}->{$_->{lhs}} = {terminal => 0, content => $content};
+      $previous = $lhs;
     }
 
 }
@@ -78,136 +112,15 @@ sub _rules {
 
   my @rc = ();
   push(@rc, 'inaccessible is ok by default');
-  push(@rc, ':default ::= action => [values] bless => ::lhs');
-  push(@rc, 'lexeme default = action => [start,length,value] latm => 1');
+#   push(@rc, ':default ::= action => [values] bless => ::lhs');
+  push(@rc, ':default ::= action => nonTerminalSemantic');
+  push(@rc, 'lexeme default = action => [value] latm => 1');
   if (defined($self->{start}->{number})) {
       push(@rc, ':start ::= ' . $self->{start}->{rule});
   }
   push(@rc, '');
   $self->_pushG1(\@rc);
   $self->_pushLexemes(\@rc, 'lexemes');
-
-  #
-  # Grammar optimization has two steps:
-  # - Reduce number of symbols
-  # - Reduce number of lexemes
-  #
-  $self->{reQuantifiedSymbols} = {};
-  my $replaced;
-  do {
-      $replaced = 0;
-      foreach (0..$#{$self->{rules}}) {
-	  my $irule = $_;
-	  my $rule = $self->{rules}->[$irule];
-	  my $lhs = $rule->{lhs};
-	  next if ($#{$rule->{rhs}} != 0);
-	  my $rhs = $rule->{rhs}->[0];
-	  next if (! $self->{symbols}->{$rhs}->{terminal});
-	  next if (! exists($self->{lexemesExact}->{$rhs}));  # Then it is an exclusion, always done by hand
-	  #
-	  # We search for rule that has a single terminal on its RHS and that has NO alternative
-	  # ------------------------------------------------------------------------------------
-	  my $quantifier = $rule->{quantifier};
-	  if ($quantifier) {
-	      my $many = sprintf('%s %s', $rhs, 'many');
-	      next if (exists($self->{reQuantifiedSymbols}->{$many}));
-	  }
-
-	  my $ok = 1;
-	  foreach (0..$#{$self->{rules}}) {
-	      my $irule2 = $_;
-	      next if ($irule == $irule2);
-	      my $rule2 = $self->{rules}->[$irule2];
-	      my $lhs2 = $rule2->{lhs};
-	      if ($lhs2 eq $lhs) {
-		  $ok = 0;         # $rule has at least one alternative
-		  last;
-	      }
-	      my $found = 0;
-	      
-	      foreach (@{$rule2->{rhs}}) {
-		  my $rhs2 = $_;
-		  my $quantifier2 = $rule2->{quantifier};
-		  if ($rhs2 eq $rhs && $quantifier2 eq $quantifier) {
-		      $found = 1;
-		      last;
-		  }
-	      }
-	      if ($found) {
-		  $ok = 0;
-		  last;
-	      }
-	  }
-
-	  if ($ok) {
-	      if (! $quantifier) {
-		  my $content = $self->{symbols}->{$rhs}->{content};
-		  print STDERR "[INFO] Replacing LHS of $content by $lhs\n";
-		  $self->{symbols}->{$lhs} = $self->{symbols}->{$rhs};
-		  $self->{symbols}->{$lhs}->{content} =~ s/$rhs/$lhs/;
-		  print STDERR "[INFO] Deleting $rhs, replaced by $lhs\n";
-		  delete($self->{symbols}->{$rhs});
-		  $rule->{rhs}->[0] = $lhs;
-		  $self->{lexemes}->{$lhs} = $self->{lexemes}->{$rhs};
-		  delete($self->{lexemes}->{$rhs});
-		  if (exists($self->{lexemesExact}->{$rhs})) {
-		      $self->{lexemesExact}->{$lhs} = $self->{lexemesExact}->{$rhs};
-		      delete($self->{lexemesExact}->{$rhs});
-		  }
-		  $replaced = 1;
-	      } else {
-		  print STDERR "[INFO] Optimizing $rhs$quantifier definition\n";
-		  #
-		  # There is no destruction or rule, just a change of type, and $self->_termFactorQuantifier() will take care of that
-		  # We just have to force it to use our symbol name, and to remove its internal traking of quantified symbols
-		  # We also have to do this only ONCE.
-		  #
-		  my $many = sprintf('%s %s', $rhs, 'many');
-		  $self->{reQuantifiedSymbols}->{$many} = 1;
-		  delete($self->{quantifiedSymbols}->{$many});
-		  if ($quantifier eq '*') {
-		      my $any = sprintf('%s %s', $rhs, 'any');
-		      delete($self->{quantifiedSymbols}->{$any});
-		  }
-		  $self->_termFactorQuantifier($rhs, $quantifier, $lhs, 1);
-		  $replaced = 1;
-	      }
-	      splice(@{$self->{rules}}, $irule, 1);
-	      #
-	      # Since we maintained a mapping giving $irule, we check the impact of its removal
-	      #
-	      foreach (keys %{$self->{nullablesForParseEvents}}) {
-		  my $nullableName = $_;
-		  if ($self->{nullablesForParseEvents}->{$nullableName} > $irule) {
-		      $self->{nullablesForParseEvents}->{$nullableName}--;
-		  }
-	      }
-	  }
-      }
-  } while ($replaced);
-
-  #
-  # Now loop on all rules again and apply the following optimization:
-  # If a rule consist of a single exact lexeme with a quantifier, and if this exact lexeme is defined only once
-  # in the whole grammar, then, instead on relying of Marpa's sequence, do ourself the loop when reading data.
-  # this has the following big advantage:
-  # - reduce the number of calls to Mara => reduce the number of earlemes, reduce the number of gems (i.e. lexemes).
-  #
-  # for example
-  # XXX_any ::= XXX *                      YYY_many ::= YYY +
-  # XXX     ::= [abc]                      YYY      ::= [def]
-  #
-  # is translated to something like:
-  #
-  # XXX_any ::= XXX                        YYY_many ::= YYY
-  # XXX_any ::=
-  # XXX     ::= [abc]+                     YYY      ::= [def]+
-  #
-  # where XXX and YYYY are NOT sequences from Marpa point of view: the internal implementation will do the loop itself.
-  #
-  # Disadvantage: none because the error reporting exactitude will not suffer.
-  # Advantages: less earlemes, less lexemes, less everything, except more work on the most optimum part of the s/w: the reader
-  #
 
   push(@rc, <<DISCARD
 
