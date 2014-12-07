@@ -43,7 +43,7 @@ This module translates SQL source into an XML::LibXML AST. Be aware that this mo
     #
     my $sqlSourceCode = 'select * from myTable;';
     my $sqlAstObject = MarpaX::Languages::SQL::AST->new();
-    log->infof('%s', $sqlAstObject->parse(\$sqlSourceCode)->value()->toString(1));
+    $log->infof('%s', $sqlAstObject->parse(\$sqlSourceCode)->value()->toString(1));
 
 =head1 SUBROUTINES/METHODS
 
