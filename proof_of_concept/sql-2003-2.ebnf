@@ -4198,7 +4198,9 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 <Fortran variable definition> ::=
 		<Fortran type specification> <Fortran host identifier> ( <comma> <Fortran host identifier> )*
 
-<Fortran host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+/* As per http://www.meteor.iastate.edu/classes/mt227/lectures/BasicFortran.pdf - slide 6 */
+/* Limitation of 30 characters is removed */
+<Fortran host identifier> ::= <simple Latin letter> (<simple Latin letter> | <digit> | <underscore> )*
 
 <Fortran type specification> ::=
 		CHARACTER ( <asterisk> <length> )? ( CHARACTER SET IS? <character set specification> )?
