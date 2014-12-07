@@ -4055,7 +4055,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 		<character representation>* <period>
 
 /* As per http://www.cs.vu.nl/grammarware/browsable/vs-cobol-ii/#gdef:identifier */
-<COBOL host identifier> ::= <COBOL qualified-data-name> ( "(" <COBOL subscript> ")" )* ( "(" <COBOL leftmost-character-position> ":" [ <COBOL length> ] ")" )?
+<COBOL host identifier> ::= <COBOL qualified-data-name> ( "(" <COBOL subscript> ")" )* ( "(" <COBOL leftmost-character-position> ":" <COBOL length>? ")" )?
 
 <COBOL qualified-data-name> ::= <COBOL data-name> ( ( "IN" | "OF" ) <COBOL data-name> )* ( ( "IN" | "OF" ) <COBOL file-name> )?
 
@@ -4078,6 +4078,8 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <COBOL leftmost-character-position> ::= <COBOL arithmetic-expression>
 
+<COBOL length> ::= <COBOL arithmetic-expression>
+
 <COBOL arithmetic-expression> ::= <COBOL times-div> ( ( "+" | "-" ) <COBOL times-div> )*
 
 <COBOL times-div> ::= <COBOL power> ( ( "*" | "/" ) <COBOL power> )*
@@ -4093,8 +4095,8 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <COBOL nonnumeric> ::= '"' ([^"] | '"' '"')* '"'
                      | "'" ([^'] | "'" "'")* "'"
-                     | [Xx] '"' <COBOL hexdigits> '"'
-                     | [Xx] "'" <COBOL hexdigits> "'"
+                     | "X" '"' <COBOL hexdigits> '"'
+                     | "X" "'" <COBOL hexdigits> "'"
 
 <COBOL hexdigits> ::= [0-9A-Fa-f]+
 
