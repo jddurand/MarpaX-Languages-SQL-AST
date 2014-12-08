@@ -111,7 +111,7 @@ sub _pushG1 {
       } else {
 	$content = join(' ', $lhs, $_->{rulesep});
       }
-      if ($rulesep eq '::') {
+      if ($rulesep eq '::=') {
         $rank{$lhs} //= 0;
         if ($lhs ne ':start') {
           $content .= " rank => " . $rank{$lhs}--;
