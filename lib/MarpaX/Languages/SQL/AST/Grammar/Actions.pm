@@ -46,12 +46,16 @@ sub nonTerminalSemantic {
     $node->addChild($child);
   }
 
+  my $rc;
+
   if ($lhs eq 'SQL Start Sequence') {
     $self->{dom}->setDocumentElement($node);
-    return $self->{dom};
+    $rc = $self->{dom};
   } else {
-    return $node;
+    $rc = $node;
   }
+
+  return $rc;
 }
 
 sub getRuleDescription {
