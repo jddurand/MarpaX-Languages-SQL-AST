@@ -1,5 +1,6 @@
 /*
 ############################################################################
+# <host identifier> is approximated to [^\s]+ for any language             #
 # <regular identifier> is supposed to match <SQL language identifier>      #
 # <direct implementation-defined statement> is skipped.                    #
 # <escaped character> prefix is fixed to '\'                               #
@@ -2114,10 +2115,10 @@
 */
 
 /* <non_escaped character> ::= !! See the Syntax Rules. */
-<non_escaped character> ::= [^\[\]\(\)\|\^\-+*_%?{\\]
+<non_escaped character> ::= [^\[\]()|\^\-+*_%?{\\]
 
 /* <escaped character> ::= !! See the Syntax Rules. */
-<escaped character> ::= #x5c [\[\]\(\)\|\^\-+*_%?{\\]
+<escaped character> ::= #x5c [\[\]()|\^\-+*_%?{\\]
 
 <regular character set> ::=
 		<underscore>
@@ -3877,10 +3878,13 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <Ada assignment operator> ::= <colon><equals operator>
 
-/* A per http://cui.unige.ch/isi/bnf/Ada95/identifier.html */
+<Ada host identifier> ::= [^\s]+
+
+/*
 <Ada host identifier> ::= <Ada host identifier letter> ( <underscore>? ( <Ada host identifier letter> | <digit> ) )*
 
 <Ada host identifier letter> ::= <simple Latin letter>
+*/
 
 <Ada type specification> ::=
 		<Ada qualified type specification>
@@ -3963,7 +3967,10 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <C array specification> ::= <left bracket> <length> <right bracket>
 
-<C host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+<C host identifier> ::= [^\s]+
+
+/*
+<C host identifier> ::= <regular identifier> */ /* !! See the Syntax Rules. */
 
 <C derived variable> ::=
 		<C VARCHAR variable>
@@ -4049,11 +4056,14 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <embedded SQL COBOL program> ::= EXEC SQL /* !! See the Syntax Rules. */
 
+<COBOL host identifier> ::= [^\s]+
+
 <COBOL variable definition> ::=
 		( 01 | 77 ) <COBOL host identifier> <COBOL type specification>
 		<character representation>* <period>
 
 /* As per http://www.cs.vu.nl/grammarware/browsable/vs-cobol-ii/#gdef:identifier */
+/*
 <COBOL host identifier> ::= <COBOL qualified-data-name> ( "(" <COBOL subscript> ")" )* ( "(" <COBOL leftmost-character-position> ":" <COBOL length>? ")" )?
 
 <COBOL qualified-data-name> ::= <COBOL data-name> ( ( "IN" | "OF" ) <COBOL data-name> )* ( ( "IN" | "OF" ) <COBOL file-name> )?
@@ -4089,7 +4099,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <COBOL literal> ::= <COBOL nonnumeric>
                   | <COBOL numeric>
-/*                | <COBOL dbcs> */
+                  | <COBOL dbcs> 
                   | <COBOL figurative-constant>
 
 <COBOL nonnumeric> ::= '"' ([^"] | '"' '"')* '"'
@@ -4101,7 +4111,7 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <COBOL numeric> ::= ('+' | '-')? (<digit>* '.' <digit>+ | <digit>+)
 
-/* <COBOL dbcs> = NOT IMPLEMENTED */
+ <COBOL dbcs> = NOT IMPLEMENTED 
 
 <COBOL figurative-constant> ::= "ZERO"
                               | "ZEROS"
@@ -4117,6 +4127,8 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
                               | "ALL" <COBOL literal>
                               | "NULL"
                               | "NULLS"
+
+*/
 
 <COBOL type specification> ::=
 		<COBOL character type>
@@ -4194,12 +4206,14 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <embedded SQL Fortran program> ::= EXEC SQL /* !! See the Syntax Rules. */
 
+<Fortran host identifier> ::= [^\s]+
+
 <Fortran variable definition> ::=
 		<Fortran type specification> <Fortran host identifier> ( <comma> <Fortran host identifier> )*
 
-/* As per http://www.meteor.iastate.edu/classes/mt227/lectures/BasicFortran.pdf - slide 6 */
-/* Limitation of 30 characters is removed */
+/*
 <Fortran host identifier> ::= <simple Latin letter> (<simple Latin letter> | <digit> | <underscore> )*
+*/
 
 <Fortran type specification> ::=
 		CHARACTER ( <asterisk> <length> )? ( CHARACTER SET IS? <character set specification> )?
@@ -4250,12 +4264,15 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 	|	<MUMPS character variable> <semicolon>
 	|	<MUMPS derived type specification> <semicolon>
 
+<MUMPS host identifier> ::= [^\s]+
+
 <MUMPS character variable> ::=
 		VARCHAR <MUMPS host identifier> <MUMPS length specification>
 		( <comma> <MUMPS host identifier> <MUMPS length specification> )*
 
-/* As per http://71.174.62.16/Demo/AnnoStd?Frame=Main&Edition=MDC&Page=a106002#Def_0006 */
+/*
 <MUMPS host identifier> ::= ('%' | <simple Latin letter>) (<simple Latin letter> | <digit>)*
+*/
 
 <MUMPS length specification> ::= <left paren> <length> <right paren>
 
@@ -4299,11 +4316,14 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <embedded SQL Pascal program> ::= EXEC SQL /* !! See the Syntax Rules. */
 
+<Pascal host identifier> ::= [^\s]+
+
 <Pascal variable definition> ::=
 		<Pascal host identifier> ( <comma> <Pascal host identifier> )* <colon> <Pascal type specification> <semicolon>
 
-/* As per http://www.irietools.com/iriepascal/progref534.html */
+/*
 <Pascal host identifier> ::= (<simple Latin letter> | <underscore> ) (<simple Latin letter> | <underscore> | <digit> )*
+*/
 
 <Pascal type specification> ::=
 		PACKED ARRAY <left bracket> 1 <double period> <length> <right bracket> OF CHAR
@@ -4347,12 +4367,15 @@ ALTER TYPE <schema_resolved user_defined type name> <alter type action>
 
 <embedded SQL PL_I program> ::= EXEC SQL /* !! See the Syntax Rules. */
 
+<PL_I host identifier> ::= [^\s]+
+
 <PL_I variable definition> ::=
 		( DCL | DECLARE ) <PL_I host identifier>
 		<left paren> <PL_I host identifier> ( <comma> <PL_I host identifier> )* <right paren>
 		<PL_I type specification> <character representation>* <semicolon>
 
-<PL_I host identifier> ::= <regular identifier> /* !! See the Syntax Rules. */
+/*
+<PL_I host identifier> ::= <regular identifier> */ /* !! See the Syntax Rules. */
 
 <PL_I type specification> ::=
 		( CHAR | CHARACTER ) VARYING? <left paren><length><right paren> ( CHARACTER SET IS? <character set specification> )?

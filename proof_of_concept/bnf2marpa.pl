@@ -249,9 +249,9 @@ sub _ranges {
     my ($range, $exactRange) = @{$_};
     my ($range1, $range2) = @{$exactRange};
     if ($range1 ne $range2) {
-      $printRanges .= quotemeta($range1) . '-' . quotemeta($range2);
+      $printRanges .= "$range1-$range2";
     } else {
-      $printRanges .= quotemeta($range1);
+      $printRanges .= $range1;
     }
     push(@exactRanges, $exactRange);
   }
@@ -269,13 +269,10 @@ sub _printable {
 sub _range {
   my ($self, $char1, $char2) = @_;
   my $range;
-  if (substr($char1, 0, 1) eq '\\') { substr($char1, 0, 1, ''); }
-  if (defined($char2) && substr($char2, 0, 1) eq '\\') { substr($char2, 0, 1, ''); }
   my $exactRange = [$char1, defined($char2) ? $char2 : $char1];
   $char1 = $self->_printable($char1);
   if (defined($char2)) {
     $char2 = $self->_printable($char2);
-    $range = "$char1-$char2";
   } else {
     $range = $char1;
   }
@@ -306,6 +303,7 @@ sub _factor {
   if (! $name) {
       my @name = grep {$self->{lexemes}->{$_} eq $printableValue} keys %{$self->{lexemes}};
       if (! @name) {
+	# print STDERR "[$printableValue] not found in [" . join("][", sort values %{$self->{lexemes}}) . "]\n" if ($printableValue =~ /\\/);
 	  $name = sprintf('Lex%03d', 1 + (keys %{$self->{lexemes}}));
       } else {
 	  $name = $name[0];
@@ -548,15 +546,25 @@ STRING        ~ [[:alnum:]_-]+
 _STRING_DQUOTE_UNIT    ~ [^"] | '\"'
 _STRING_SQUOTE_UNIT    ~ [^'] | '\' [']
 _HEX                   ~ __HEX_START __HEX_END
-_CHAR_RANGE            ~ [^\r\n\t\v\f\]\[\-\^\\\(\)\|]
+_CHAR_RANGE            ~ [^\\\[\]\-\^]
                        | '\\'
                        | '\['
                        | '\]'
-                       | '\('
-                       | '\)'
                        | '\-'
-                       | '\|'
                        | '\^'
+# We add the perl's backslash sequences that are character classes
+                       | '\d'
+                       | '\D'
+                       | '\w'
+                       | '\W'
+                       | '\s'
+                       | '\S'
+                       | '\h'
+                       | '\H'
+                       | '\v'
+                       | '\V'
+                       | '\N'
+# We skip unicode character properties until needed
 _SYMBOL_START          ~ '<'
 _SYMBOL_END            ~ '>'
 _SYMBOL_INTERIOR       ~ [^>]+
