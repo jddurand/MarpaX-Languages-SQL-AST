@@ -68,10 +68,6 @@
 
 <simple Latin letter> ::= <simple Latin upper case letter> | <simple Latin lower case letter>
 
-/* Not just to make it more readable: by default my bnf2marpa.pl script will make ALL
-  strings not case sensitive. So saying A will create a lexeme like e.g. <Lex000> ~ 'A':i.
-  And saying a will create a lexeme like e.g. <Lex000> ~ 'a':i => ambiguity */
-
 <simple Latin upper case letter> ::= [A-Z]
 
 <simple Latin lower case letter> ::= [a-z]
