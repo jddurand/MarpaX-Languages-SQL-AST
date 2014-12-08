@@ -21,7 +21,7 @@ Log::Any::Adapter->set('Log4perl');
 #
 # Parse SQL
 #
-my $sqlSourceCode = 'select * from myTable;';
+my $sqlSourceCode = 'select * from myCatalog.mySchema.myTable;';
 my $sqlAstObject = MarpaX::Languages::SQL::AST->new();
 my $valuep = $sqlAstObject->parse(\$sqlSourceCode)->value();
 $log->infof('%s', ${$valuep}->toString(1));

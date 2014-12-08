@@ -40,6 +40,16 @@
 #   => Defined by <unsigned integer> ::= [\d]+                             #
 # * Undefined <unqualified schema name>                                    #
 #   => Defined by <unqualified schema name> ::= <identifier>               #
+#                                                                          #
+# Notes: my grammar is translating EBNF to Marpa's BNF with the following  #
+# rule: any expression enclosed in (...) is systematically converted to an #
+# internal G1. Nevertheless there are cases where you want to enforce      #
+# lexeme context. In such a case it is the responsability for the grammar  #
+# author to:                                                               #
+# * use explicitely ~ as rule separator instead of ::=                     #
+# * use ((...))) for any eventual enclosed expression on the rhs           #
+# * force every rhs that is a factor to be an uncopiable lexeme using      #
+#   LEX in front.                                                          #
 ############################################################################
 */
 
@@ -174,40 +184,45 @@
 
 <multiplier> ::= K | M | G
 
-<delimited identifier> ::= <double quote> <delimited identifier body> <double quote>
+<delimited identifier> ~ /*LEX*/'"' <delimited identifier body> /*LEX*/'"'
 
-<delimited identifier body> ::= <delimited identifier part>+
+<delimited identifier body> ~ ((<delimited identifier part>))+
 
-<delimited identifier part> ::= <nondoublequote character> | <doublequote symbol>
+<delimited identifier part> ~ <nondoublequote character> | <doublequote symbol>
 
-<Unicode delimited identifier> ::=
-		U<ampersand><double quote> <Unicode delimiter body> <double quote>
+<Unicode delimited identifier> ~
+		/*LEX*/U /*LEX*/'&' /*LEX*/'"' <Unicode delimiter body> /*LEX*/'"'
 		<Unicode escape specifier>
 
 
-<Unicode escape specifier> ::= ( UESCAPE <quote> <Unicode escape character> <quote> )?
+<Unicode escape specifier> ~ (( /*LEX*/UESCAPE /*LEX*/"'" <Unicode escape character> /*LEX*/"'" ))?
 
-<Unicode delimiter body> ::= <Unicode identifier part>+
+<Unicode delimiter body> ~ ((<Unicode identifier part>))+
 
-<Unicode identifier part> ::= <delimited identifier part> | <Unicode escape value>
+<Unicode identifier part> ~ <Unicode delimited identifier part> | <Unicode escape value internal>
 
-<Unicode escape value> ::=
+<Unicode delimited identifier part> ~ <nondoublequote character> | <doublequote symbol>
+
+<Unicode escape value internal> ~
 		<Unicode 4 digit escape value>
 	|	<Unicode 6 digit escape value>
 	|	<Unicode character escape value>
 
-<Unicode 4 digit escape value> ::= <Unicode escape character><hexit><hexit><hexit><hexit>
+<Unicode escape value> ~ <Unicode escape value internal>
 
-<Unicode 6 digit escape value> ::=
-		<Unicode escape character><plus sign><hexit><hexit><hexit><hexit><hexit><hexit>
+<Unicode hexit> ~ /*LEX*/[a-fA-f0-9]
 
-<Unicode character escape value> ::= <Unicode escape character><Unicode escape character>
+<Unicode 4 digit escape value> ~ <Unicode escape character><Unicode hexit><Unicode hexit><Unicode hexit><Unicode hexit>
 
-<Unicode escape character> ::= #x1b
+<Unicode 6 digit escape value> ~ <Unicode escape character>/*LEX*/'+'<Unicode hexit><Unicode hexit><Unicode hexit><Unicode hexit><Unicode hexit><Unicode hexit>
 
-<nondoublequote character> ::= [^"]
+<Unicode character escape value> ~ <Unicode escape character><Unicode escape character>
 
-<doublequote symbol> ::= '""'
+<Unicode escape character> ~ /*LEX*/#x1b
+
+<nondoublequote character> ~ /*LEX*/[^"]
+
+<doublequote symbol> ~ /*LEX*/'""'
 
 <delimiter token> ::=
 		<character string literal>
@@ -899,12 +914,13 @@
 
 <actual identifier> ::= <regular identifier> | <delimited identifier>
 
+/* Forced to be a lexeme */
+/*
 <SQL language identifier> ::=
 		<SQL language identifier start> ( <underscore> | <SQL language identifier part> )*
+*/
 
-<SQL language identifier start> ::= <simple Latin letter>
-
-<SQL language identifier part> ::= <simple Latin letter> | <digit>
+<SQL language identifier> ~ /*LEX*/ [a-zA-Z] (( /*LEX*/ [a-zA-Z0-9_] ))*
 
 <authorization identifier> ::= <role name> | <user identifier>
 

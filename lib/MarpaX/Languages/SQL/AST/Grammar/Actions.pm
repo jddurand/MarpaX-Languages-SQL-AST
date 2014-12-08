@@ -4,6 +4,7 @@ use warnings FATAL => 'all';
 package MarpaX::Languages::SQL::AST::Grammar::Actions;
 use XML::LibXML;
 use Carp qw/croak/;
+use Scalar::Util qw/blessed/;
 
 # ABSTRACT: SQL grammar generic actions
 
@@ -37,9 +38,14 @@ sub nonTerminalSemantic {
 
   foreach (0..$#_) {
     my $child;
-    if (ref($_[$_]) eq 'ARRAY') {
-      $child = XML::LibXML::Element->new('_Lexeme');
-      $child->setAttribute('text', $_[$_]->[0]);
+    if (! blessed($_[$_])) {
+      #
+      # This is a lexeme
+      #
+      $child = XML::LibXML::Element->new($rhs[$_]);
+      $child->setAttribute('start', $_[$_]->[0]);
+      $child->setAttribute('length', $_[$_]->[1]);
+      $child->setAttribute('text', $_[$_]->[2]);
     } else {
       $child = $_[$_];
     }
