@@ -42,14 +42,15 @@
 #   => Defined by <unqualified schema name> ::= <identifier>               #
 #                                                                          #
 # Notes: my grammar is translating EBNF to Marpa's BNF with the following  #
-# rule: any expression enclosed in (...) is systematically converted to an #
-# internal G1. Nevertheless there are cases where you want to enforce      #
+# extension: any expression enclosed in (...) is systematically converted  #
+# to an internal G1. Nevertheless there are cases where you want to enforce#
 # lexeme context. In such a case it is the responsability for the grammar  #
 # author to:                                                               #
 # * use explicitely ~ as rule separator instead of ::=                     #
 # * use ((...))) for any eventual enclosed expression on the rhs           #
 # * force every rhs that is a factor to be an uncopiable lexeme using      #
 #   LEX in front.                                                          #
+# * Lexemes can have priorities a in Marpa's BNF                           #
 ############################################################################
 */
 
@@ -530,252 +531,252 @@
 	|	ZONE
 
 <reserved word> ::=
-		ADD
-	|	ALL
-	|	ALLOCATE
-	|	ALTER
-	|	AND
-	|	ANY
-	|	ARE
-	|	ARRAY
-	|	AS
-	|	ASENSITIVE
-	|	ASYMMETRIC
-	|	AT
-	|	ATOMIC
-	|	AUTHORIZATION
-	|	BEGIN
-	|	BETWEEN
-	|	BIGINT
-	|	BINARY
-	|	BLOB
-	|	BOOLEAN
-	|	BOTH
-	|	BY
-	|	CALL
-	|	CALLED
-	|	CASCADED
-	|	CASE
-	|	CAST
-	|	CHAR
-	|	CHARACTER
-	|	CHECK
-	|	CLOB
-	|	CLOSE
-	|	COLLATE
-	|	COLUMN
-	|	COMMIT
-	|	CONNECT
-	|	CONSTRAINT
-	|	CONTINUE
-	|	CORRESPONDING
-	|	CREATE
-	|	CROSS
-	|	CUBE
-	|	CURRENT
-	|	CURRENT_DATE
-	|	CURRENT_DEFAULT_TRANSFORM_GROUP
-	|	CURRENT_PATH
-	|	CURRENT_ROLE
-	|	CURRENT_TIME
-	|	CURRENT_TIMESTAMP
-	|	CURRENT_TRANSFORM_GROUP_FOR_TYPE
-	|	CURRENT_USER
-	|	CURSOR
-	|	CYCLE
-	|	DATE
-	|	DAY
-	|	DEALLOCATE
-	|	DEC
-	|	DECIMAL
-	|	DECLARE
-	|	DEFAULT
-	|	DELETE
-	|	DEREF
-	|	DESCRIBE
-	|	DETERMINISTIC
-	|	DISCONNECT
-	|	DISTINCT
-	|	DOUBLE
-	|	DROP
-	|	DYNAMIC
-	|	EACH
-	|	ELEMENT
-	|	ELSE
-	|	END
-	|	END-EXEC
-	|	ESCAPE
-	|	EXCEPT
-	|	EXEC
-	|	EXECUTE
-	|	EXISTS
-	|	EXTERNAL
-	|	FALSE
-	|	FETCH
-	|	FILTER
-	|	FLOAT
-	|	FOR
-	|	FOREIGN
-	|	FREE
-	|	FROM
-	|	FULL
-	|	FUNCTION
-	|	GET
-	|	GLOBAL
-	|	GRANT
-	|	GROUP
-	|	GROUPING
-	|	HAVING
-	|	HOLD
-	|	HOUR
-	|	IDENTITY
-	|	IMMEDIATE
-	|	IN
-	|	INDICATOR
-	|	INNER
-	|	INOUT
-	|	INPUT
-	|	INSENSITIVE
-	|	INSERT
-	|	INT
-	|	INTEGER
-	|	INTERSECT
-	|	INTERVAL
-	|	INTO
-	|	IS
-	|	ISOLATION
-	|	JOIN
-	|	LANGUAGE
-	|	LARGE
-	|	LATERAL
-	|	LEADING
-	|	LEFT
-	|	LIKE
-	|	LOCAL
-	|	LOCALTIME
-	|	LOCALTIMESTAMP
-	|	MATCH
-	|	MEMBER
-	|	MERGE
-	|	METHOD
-	|	MINUTE
-	|	MODIFIES
-	|	MODULE
-	|	MONTH
-	|	MULTISET
-	|	NATIONAL
-	|	NATURAL
-	|	NCHAR
-	|	NCLOB
-	|	NEW
-	|	NO
-	|	NONE
-	|	NOT
-	|	NULL
-	|	NUMERIC
-	|	OF
-	|	OLD
-	|	ON
-	|	ONLY
-	|	OPEN
-	|	OR
-	|	ORDER
-	|	OUT
-	|	OUTER
-	|	OUTPUT
-	|	OVER
-	|	OVERLAPS
-	|	PARAMETER
-	|	PARTITION
-	|	PRECISION
-	|	PREPARE
-	|	PRIMARY
-	|	PROCEDURE
-	|	RANGE
-	|	READS
-	|	REAL
-	|	RECURSIVE
-	|	REF
-	|	REFERENCES
-	|	REFERENCING
-	|	REGR_AVGX
-	|	REGR_AVGY
-	|	REGR_COUNT
-	|	REGR_INTERCEPT
-	|	REGR_R2
-	|	REGR_SLOPE
-	|	REGR_SXX
-	|	REGR_SXY
-	|	REGR_SYY
-	|	RELEASE
-	|	RESULT
-	|	RETURN
-	|	RETURNS
-	|	REVOKE
-	|	RIGHT
-	|	ROLLBACK
-	|	ROLLUP
-	|	ROW
-	|	ROWS
-	|	SAVEPOINT
-	|	SCROLL
-	|	SEARCH
-	|	SECOND
-	|	SELECT
-	|	SENSITIVE
-	|	SESSION_USER
-	|	SET
-	|	SIMILAR
-	|	SMALLINT
-	|	SOME
-	|	SPECIFIC
-	|	SPECIFICTYPE
-	|	SQL
-	|	SQLEXCEPTION
-	|	SQLSTATE
-	|	SQLWARNING
-	|	START
-	|	STATIC
-	|	SUBMULTISET
-	|	SYMMETRIC
-	|	SYSTEM
-	|	SYSTEM_USER
-	|	TABLE
-	|	THEN
-	|	TIME
-	|	TIMESTAMP
-	|	TIMEZONE_HOUR
-	|	TIMEZONE_MINUTE
-	|	TO
-	|	TRAILING
-	|	TRANSLATION
-	|	TREAT
-	|	TRIGGER
-	|	TRUE
-	|	UESCAPE
-	|	UNION
-	|	UNIQUE
-	|	UNKNOWN
-	|	UNNEST
-	|	UPDATE
-	|	UPPER
-	|	USER
-	|	USING
-	|	VALUE
-	|	VALUES
-	|	VAR_POP
-	|	VAR_SAMP
-	|	VARCHAR
-	|	VARYING
-	|	WHEN
-	|	WHENEVER
-	|	WHERE
-	|	WIDTH_BUCKET
-	|	WINDOW
-	|	WITH
-	|	WITHIN
-	|	WITHOUT
-	|	YEAR
+		ADD                                priority => 1
+	|	ALL                                priority => 1
+	|	ALLOCATE                           priority => 1
+	|	ALTER                              priority => 1
+	|	AND                                priority => 1
+	|	ANY                                priority => 1
+	|	ARE                                priority => 1
+	|	ARRAY                              priority => 1
+	|	AS                                 priority => 1
+	|	ASENSITIVE                         priority => 1
+	|	ASYMMETRIC                         priority => 1
+	|	AT                                 priority => 1
+	|	ATOMIC                             priority => 1
+	|	AUTHORIZATION                      priority => 1
+	|	BEGIN                              priority => 1
+	|	BETWEEN                            priority => 1
+	|	BIGINT                             priority => 1
+	|	BINARY                             priority => 1
+	|	BLOB                               priority => 1
+	|	BOOLEAN                            priority => 1
+	|	BOTH                               priority => 1
+	|	BY                                 priority => 1
+	|	CALL                               priority => 1
+	|	CALLED                             priority => 1
+	|	CASCADED                           priority => 1
+	|	CASE                               priority => 1
+	|	CAST                               priority => 1
+	|	CHAR                               priority => 1
+	|	CHARACTER                          priority => 1
+	|	CHECK                              priority => 1
+	|	CLOB                               priority => 1
+	|	CLOSE                              priority => 1
+	|	COLLATE                            priority => 1
+	|	COLUMN                             priority => 1
+	|	COMMIT                             priority => 1
+	|	CONNECT                            priority => 1
+	|	CONSTRAINT                         priority => 1
+	|	CONTINUE                           priority => 1
+	|	CORRESPONDING                      priority => 1
+	|	CREATE                             priority => 1
+	|	CROSS                              priority => 1
+	|	CUBE                               priority => 1
+	|	CURRENT                            priority => 1
+	|	CURRENT_DATE                       priority => 1
+	|	CURRENT_DEFAULT_TRANSFORM_GROUP    priority => 1
+	|	CURRENT_PATH                       priority => 1
+	|	CURRENT_ROLE                       priority => 1
+	|	CURRENT_TIME                       priority => 1
+	|	CURRENT_TIMESTAMP                  priority => 1
+	|	CURRENT_TRANSFORM_GROUP_FOR_TYPE   priority => 1
+	|	CURRENT_USER                       priority => 1
+	|	CURSOR                             priority => 1
+	|	CYCLE                              priority => 1
+	|	DATE                               priority => 1
+	|	DAY                                priority => 1
+	|	DEALLOCATE                         priority => 1
+	|	DEC                                priority => 1
+	|	DECIMAL                            priority => 1
+	|	DECLARE                            priority => 1
+	|	DEFAULT                            priority => 1
+	|	DELETE                             priority => 1
+	|	DEREF                              priority => 1
+	|	DESCRIBE                           priority => 1
+	|	DETERMINISTIC                      priority => 1
+	|	DISCONNECT                         priority => 1
+	|	DISTINCT                           priority => 1
+	|	DOUBLE                             priority => 1
+	|	DROP                               priority => 1
+	|	DYNAMIC                            priority => 1
+	|	EACH                               priority => 1
+	|	ELEMENT                            priority => 1
+	|	ELSE                               priority => 1
+	|	END                                priority => 1
+	|	END-EXEC                           priority => 1
+	|	ESCAPE                             priority => 1
+	|	EXCEPT                             priority => 1
+	|	EXEC                               priority => 1
+	|	EXECUTE                            priority => 1
+	|	EXISTS                             priority => 1
+	|	EXTERNAL                           priority => 1
+	|	FALSE                              priority => 1
+	|	FETCH                              priority => 1
+	|	FILTER                             priority => 1
+	|	FLOAT                              priority => 1
+	|	FOR                                priority => 1
+	|	FOREIGN                            priority => 1
+	|	FREE                               priority => 1
+	|	FROM                               priority => 1
+	|	FULL                               priority => 1
+	|	FUNCTION                           priority => 1
+	|	GET                                priority => 1
+	|	GLOBAL                             priority => 1
+	|	GRANT                              priority => 1
+	|	GROUP                              priority => 1
+	|	GROUPING                           priority => 1
+	|	HAVING                             priority => 1
+	|	HOLD                               priority => 1
+	|	HOUR                               priority => 1
+	|	IDENTITY                           priority => 1
+	|	IMMEDIATE                          priority => 1
+	|	IN                                 priority => 1
+	|	INDICATOR                          priority => 1
+	|	INNER                              priority => 1
+	|	INOUT                              priority => 1
+	|	INPUT                              priority => 1
+	|	INSENSITIVE                        priority => 1
+	|	INSERT                             priority => 1
+	|	INT                                priority => 1
+	|	INTEGER                            priority => 1
+	|	INTERSECT                          priority => 1
+	|	INTERVAL                           priority => 1
+	|	INTO                               priority => 1
+	|	IS                                 priority => 1
+	|	ISOLATION                          priority => 1
+	|	JOIN                               priority => 1
+	|	LANGUAGE                           priority => 1
+	|	LARGE                              priority => 1
+	|	LATERAL                            priority => 1
+	|	LEADING                            priority => 1
+	|	LEFT                               priority => 1
+	|	LIKE                               priority => 1
+	|	LOCAL                              priority => 1
+	|	LOCALTIME                          priority => 1
+	|	LOCALTIMESTAMP                     priority => 1
+	|	MATCH                              priority => 1
+	|	MEMBER                             priority => 1
+	|	MERGE                              priority => 1
+	|	METHOD                             priority => 1
+	|	MINUTE                             priority => 1
+	|	MODIFIES                           priority => 1
+	|	MODULE                             priority => 1
+	|	MONTH                              priority => 1
+	|	MULTISET                           priority => 1
+	|	NATIONAL                           priority => 1
+	|	NATURAL                            priority => 1
+	|	NCHAR                              priority => 1
+	|	NCLOB                              priority => 1
+	|	NEW                                priority => 1
+	|	NO                                 priority => 1
+	|	NONE                               priority => 1
+	|	NOT                                priority => 1
+	|	NULL                               priority => 1
+	|	NUMERIC                            priority => 1
+	|	OF                                 priority => 1
+	|	OLD                                priority => 1
+	|	ON                                 priority => 1
+	|	ONLY                               priority => 1
+	|	OPEN                               priority => 1
+	|	OR                                 priority => 1
+	|	ORDER                              priority => 1
+	|	OUT                                priority => 1
+	|	OUTER                              priority => 1
+	|	OUTPUT                             priority => 1
+	|	OVER                               priority => 1
+	|	OVERLAPS                           priority => 1
+	|	PARAMETER                          priority => 1
+	|	PARTITION                          priority => 1
+	|	PRECISION                          priority => 1
+	|	PREPARE                            priority => 1
+	|	PRIMARY                            priority => 1
+	|	PROCEDURE                          priority => 1
+	|	RANGE                              priority => 1
+	|	READS                              priority => 1
+	|	REAL                               priority => 1
+	|	RECURSIVE                          priority => 1
+	|	REF                                priority => 1
+	|	REFERENCES                         priority => 1
+	|	REFERENCING                        priority => 1
+	|	REGR_AVGX                          priority => 1
+	|	REGR_AVGY                          priority => 1
+	|	REGR_COUNT                         priority => 1
+	|	REGR_INTERCEPT                     priority => 1
+	|	REGR_R2                            priority => 1
+	|	REGR_SLOPE                         priority => 1
+	|	REGR_SXX                           priority => 1
+	|	REGR_SXY                           priority => 1
+	|	REGR_SYY                           priority => 1
+	|	RELEASE                            priority => 1
+	|	RESULT                             priority => 1
+	|	RETURN                             priority => 1
+	|	RETURNS                            priority => 1
+	|	REVOKE                             priority => 1
+	|	RIGHT                              priority => 1
+	|	ROLLBACK                           priority => 1
+	|	ROLLUP                             priority => 1
+	|	ROW                                priority => 1
+	|	ROWS                               priority => 1
+	|	SAVEPOINT                          priority => 1
+	|	SCROLL                             priority => 1
+	|	SEARCH                             priority => 1
+	|	SECOND                             priority => 1
+	|	SELECT                             priority => 1
+	|	SENSITIVE                          priority => 1
+	|	SESSION_USER                       priority => 1
+	|	SET                                priority => 1
+	|	SIMILAR                            priority => 1
+	|	SMALLINT                           priority => 1
+	|	SOME                               priority => 1
+	|	SPECIFIC                           priority => 1
+	|	SPECIFICTYPE                       priority => 1
+	|	SQL                                priority => 1
+	|	SQLEXCEPTION                       priority => 1
+	|	SQLSTATE                           priority => 1
+	|	SQLWARNING                         priority => 1
+	|	START                              priority => 1
+	|	STATIC                             priority => 1
+	|	SUBMULTISET                        priority => 1
+	|	SYMMETRIC                          priority => 1
+	|	SYSTEM                             priority => 1
+	|	SYSTEM_USER                        priority => 1
+	|	TABLE                              priority => 1
+	|	THEN                               priority => 1
+	|	TIME                               priority => 1
+	|	TIMESTAMP                          priority => 1
+	|	TIMEZONE_HOUR                      priority => 1
+	|	TIMEZONE_MINUTE                    priority => 1
+	|	TO                                 priority => 1
+	|	TRAILING                           priority => 1
+	|	TRANSLATION                        priority => 1
+	|	TREAT                              priority => 1
+	|	TRIGGER                            priority => 1
+	|	TRUE                               priority => 1
+	|	UESCAPE                            priority => 1
+	|	UNION                              priority => 1
+	|	UNIQUE                             priority => 1
+	|	UNKNOWN                            priority => 1
+	|	UNNEST                             priority => 1
+	|	UPDATE                             priority => 1
+	|	UPPER                              priority => 1
+	|	USER                               priority => 1
+	|	USING                              priority => 1
+	|	VALUE                              priority => 1
+	|	VALUES                             priority => 1
+	|	VAR_POP                            priority => 1
+	|	VAR_SAMP                           priority => 1
+	|	VARCHAR                            priority => 1
+	|	VARYING                            priority => 1
+	|	WHEN                               priority => 1
+	|	WHENEVER                           priority => 1
+	|	WHERE                              priority => 1
+	|	WIDTH_BUCKET                       priority => 1
+	|	WINDOW                             priority => 1
+	|	WITH                               priority => 1
+	|	WITHIN                             priority => 1
+	|	WITHOUT                            priority => 1
+	|	YEAR                               priority => 1
 
 <literal> ::= <signed numeric literal> | <general literal>
 

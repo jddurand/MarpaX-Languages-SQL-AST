@@ -39,6 +39,7 @@ sub _pushLexemes {
       $self->{lexemes}->{$_} = '[\']';
     }
     my $content;
+    my $priority = $self->{lexemePriorities}->{$_};
     if ($self->{lexemes}->{$_} =~ /^\[.+/) {
       $content = join(' ', "<$_>", '~', $self->{lexemes}->{$_});
     } elsif ($self->{lexemes}->{$_} =~ /^\\x\{/) {
@@ -75,7 +76,7 @@ sub _pushLexemes {
       }
     }
     if ($self->{lexemePriorities}->{$_}) {
-      $content .= " priority => $self->{lexemePriorities}->{$_}";
+      push(@{$rcp}, ":lexeme ~ <$_>  priority => $self->{lexemePriorities}->{$_}");
     }
     push(@{$rcp}, $content);
     $self->{symbols}->{$_} = {terminal => 1, content => $content};
@@ -360,7 +361,9 @@ sub _factor {
   }
 
   $self->{unCopiableLexemes}->{$name} = $uncopiable;
-  $self->{lexemePriorities}->{$name} = $priority;
+  if (! exists($self->{lexemePriorities}->{$name}) || ($priority && ! $self->{lexemePriorities}->{$name})) {
+    $self->{lexemePriorities}->{$name} = $priority;
+  }
 
   return $name;
 }
